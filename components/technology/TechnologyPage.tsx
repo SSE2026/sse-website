@@ -75,7 +75,7 @@ function TechnologyPageContent() {
 }
 
 export default function TechnologyPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("zh");
+  const [locale, setLocale] = useState<"en" | "zh">("en");
   const currentMessages = messages[locale];
 
   return (

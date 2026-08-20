@@ -121,7 +121,7 @@ const milestones: Milestone[] = [
 ];
 
 export default function HistoryPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("zh");
+  const [locale, setLocale] = useState<"en" | "zh">("en");
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
   const [activeYear, setActiveYear] = useState<string>("2026");
