@@ -117,7 +117,7 @@ export default function SettingsPage() {
     description: "突破能量极限，重塑电动边界",
     email: "contact@shensafu.com",
     phone: "+86 755-1234 5678",
-    address: "深圳市南山区科技园南区",
+    address: "深圳市坪山区源通科技园",
     siteTitle: "Swift Safe Energy",
     siteTitleZh: "深安锂能",
     metaDescription: "High energy density, ultra-safe solid-state battery solutions for low-altitude flight, embodied AI, and deep-sea equipment.",

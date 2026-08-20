@@ -89,7 +89,7 @@ export function Footer({ translations, locale }: FooterProps) {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm text-[#71717A]">
                 <MapPin className="w-4 h-4 text-[#52525B]" />
-                <span>{locale === "zh" ? "深圳市南山区科技园" : "Shenzhen, China"}</span>
+                <span>{locale === "zh" ? "深圳市坪山区源通科技园" : "Shenzhen, China"}</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-[#71717A]">
                 <Mail className="w-4 h-4 text-[#52525B]" />
