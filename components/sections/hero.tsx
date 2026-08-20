@@ -12,7 +12,7 @@ const HERO_SLIDES_EN: HeroSlide[] = [
     title: "Aeroride Series",
     description: "Next-generation high energy density solid-state power solutions for low-altitude flight, embodied AI, and deep-sea equipment.",
     ctaText: "Customize Now",
-    ctaLink: "/en/contact",
+    ctaLink: "/contact",
     stats: [
       { value: "500+", unit: "Wh/kg", label: "Energy Density" },
       { value: "10C+", unit: "", label: "Peak Discharge" },
@@ -27,7 +27,7 @@ const HERO_SLIDES_EN: HeroSlide[] = [
     title: "Breaking Energy Limits",
     description: "Pushing the boundaries of energy density for drones, robotics, and industrial applications.",
     ctaText: "Explore Technology",
-    ctaLink: "/en/technology",
+    ctaLink: "/technology",
     stats: [
       { value: "400", unit: "Wh/kg", label: "Energy Density" },
       { value: "3C", unit: "", label: "Discharge Rate" },
@@ -60,7 +60,7 @@ const HERO_SLIDES_ZH: HeroSlide[] = [
     title: "云驰系列",
     description: "面向低空飞行、具身智能与深海装备的下一代高比能固态动力解决方案。",
     ctaText: "即刻定制",
-    ctaLink: "/zh/contact",
+    ctaLink: "/contact",
     stats: [
       { value: "500+", unit: "Wh/kg", label: "能量密度" },
       { value: "10C+", unit: "", label: "峰值放电" },
@@ -75,7 +75,7 @@ const HERO_SLIDES_ZH: HeroSlide[] = [
     title: "突破能量极限",
     description: "为无人机、机器人及工业应用突破能量密度边界。",
     ctaText: "探索技术",
-    ctaLink: "/zh/technology",
+    ctaLink: "/technology",
     stats: [
       { value: "400", unit: "Wh/kg", label: "能量密度" },
       { value: "3C", unit: "", label: "放电倍率" },

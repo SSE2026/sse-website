@@ -185,42 +185,25 @@ function HeroContent({
             {slide.description}
           </p>
 
-          {/* CTA Button - Static based on locale */}
-          <Link href={locale === "zh" ? "/zh/contact" : "/en/contact"}>
+          {/* CTA Button */}
+          <Link href={slide.ctaLink}>
             <button className="inline-flex items-center gap-2 px-6 md:px-8 py-3 bg-white text-[#0a0a0a] font-semibold text-[14px] rounded-lg hover:bg-gray-200 transition-all cursor-pointer">
-              {locale === "zh" ? "即刻定制" : "Customize Now"}
+              {slide.ctaText}
               <ArrowRight className="w-4 h-4" />
             </button>
           </Link>
 
           {/* Three Stats - Horizontal */}
           <div className="mt-8 pt-6 border-t border-white/10 flex gap-8">
-            <div>
-              <div className="text-2xl font-bold text-white font-mono">
-                500+
-                <span className="text-xs text-blue-400 ml-1">Wh/kg</span>
+            {slide.stats.map((stat, index) => (
+              <div key={index}>
+                <div className="text-2xl font-bold text-white font-mono">
+                  {stat.value}
+                  {stat.unit && <span className="text-xs text-blue-400 ml-1">{stat.unit}</span>}
+                </div>
+                <div className="text-[10px] text-gray-500 mt-0.5">{stat.label}</div>
               </div>
-              <div className="text-[10px] text-gray-500 mt-0.5">
-                {locale === "zh" ? "能量密度" : "Energy Density"}
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white font-mono">10C+</div>
-              <div className="text-[10px] text-gray-500 mt-0.5">
-                {locale === "zh" ? "峰值放电" : "Peak Discharge"}
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white font-mono">
-                1000+
-                <span className="text-xs text-blue-400 ml-1">
-                  {locale === "zh" ? "次" : "cycles"}
-                </span>
-              </div>
-              <div className="text-[10px] text-gray-500 mt-0.5">
-                {locale === "zh" ? "循环寿命" : "Cycle Life"}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

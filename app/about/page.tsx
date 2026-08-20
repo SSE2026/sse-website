@@ -31,7 +31,7 @@ const CHINESE_INTRO = `深安锂能（深圳）科技有限公司是一家专注
 未来，深安锂能将持续聚焦高端应用对电池性能边界的需求，以高比能、高安全、智能化为技术主线，加速先进电池技术从实验室创新向规模化产品转化，逐步构建"先进电芯—智能系统—场景能源"一体化技术与产品平台，致力于成为面向下一代航空器、智能机器人及高端装备的先进能源解决方案提供商。`;
 
 export default function AboutPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("zh");
+  const [locale, setLocale] = useState<"en" | "zh">("en");
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
 
