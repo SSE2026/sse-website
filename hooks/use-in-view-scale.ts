@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useInView } from "framer-motion";
 
 interface UseInViewScaleOptions {
@@ -36,10 +36,10 @@ export function useScrollScale(
   minScale = 0.8,
   maxScale = 1,
   speed = 0.3
-): { ref: React.RefObject<HTMLDivElement>; scale: number } {
+): { ref: React.RefObject<HTMLDivElement | null>; scale: number } {
   const ref = useRef<HTMLDivElement>(null);
 
-  const handleScroll = () => {
+  const calculateScale = () => {
     if (!ref.current) return 1;
 
     const rect = ref.current.getBoundingClientRect();
@@ -53,18 +53,16 @@ export function useScrollScale(
   const [scale, setScale] = useState(maxScale);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const newScale = handleScroll();
+    const onScroll = () => {
+      const newScale = calculateScale();
       setScale(newScale);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return { ref, scale };
 }
-
-import { useState, useEffect } from "react";

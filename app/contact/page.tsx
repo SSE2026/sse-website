@@ -1,260 +1,393 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { FadeIn } from "@/components/animated/fade-in";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { MapPin, Phone, Mail, Clock, Send, Check, MessageCircle } from "lucide-react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { ArrowUpRight, Copy, Check, MapPin, Globe, Clock } from "lucide-react";
+import ContactMap from "@/components/contact/ContactMap/ContactMap";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
 
 const messages = { en, zh };
 
+// 咨询类型选项
+const inquiryTags = {
+  zh: ["商务合作", "电芯及模组订制", "样品申请", "技术咨询"],
+  en: ["Business Cooperation", "Cell & Module Design", "Sample Request", "Technical Support"],
+};
+
 export default function ContactPage() {
   const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [selectedTag, setSelectedTag] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     company: "",
+    phone: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const isZh = locale === "zh";
   const currentMessages = messages[locale];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setFormData({ name: "", email: "", company: "", message: "" });
+  // 公司信息
+  const contactData = {
+    address: isZh
+      ? "深圳市坪山区坑梓街道沙田社区坪山大道6352号2栋210"
+      : "Unit 210, Building 2, No. 6352 Pingshan Avenue, Shatian Community, Kengzi Subdistrict, Pingshan District, Shenzhen",
+    phone: "+86 188 1031 1215",
+    email: "zhanwenwei@ssebatt.com",
+    coords: { lng: 114.402008, lat: 22.760216 },
   };
 
-  const contactInfo = [
-    {
-      icon: MapPin,
-      title: locale === "zh" ? "地址" : "Address",
-      content: locale === "zh"
-        ? "深圳市南山区科技园"
-        : "Shenzhen High-tech Park, China",
-    },
-    {
-      icon: Phone,
-      title: locale === "zh" ? "电话" : "Phone",
-      content: "+86 755 XXXX XXXX",
-    },
-    {
-      icon: Mail,
-      title: locale === "zh" ? "邮箱" : "Email",
-      content: "contact@swiftsafe.com",
-    },
-    {
-      icon: Clock,
-      title: locale === "zh" ? "营业时间" : "Business Hours",
-      content: locale === "zh" ? "周一至周五 9:00 - 18:00" : "Monday - Friday, 9:00 - 18:00",
-    },
-  ];
+  // 文本内容
+  const content = {
+    sectionLabel: "04 / Contact & Engagement",
+    title: isZh ? "与深安锂能\n工程团队取得联系" : "Connect with SSE\nEngineering Team",
+    subtitle: isZh
+      ? "专注于低空飞行与智能装备电源解决方案。无论您需要电池模组规格评估、样品调测或商务合作，我们随时提供专业支持。"
+      : "Focusing on low-altitude flight and intelligent equipment power solutions. Whether you need battery module evaluation, sample testing, or business cooperation, we provide professional support.",
+    locationTitle: isZh ? "Location / 总部" : "Location / HQ",
+    contactTitle: isZh ? "Direct Reach / 联系方式" : "Direct Reach / Contact",
+    serviceTitle: isZh ? "Service SLA / 服务响应" : "Service SLA / Response",
+    companyName: isZh
+      ? "深安锂能（深圳）科技有限公司"
+      : "Swift Safe Energy (Shenzhen) Tech Co., Ltd.",
+    phoneLabel: isZh ? "Phone" : "Phone",
+    emailLabel: isZh ? "Email" : "Email",
+    slaTitle: isZh ? "24h 快速工程响应" : "24h Fast Engineering Response",
+    slaDesc: isZh
+      ? "技术团队将直接参与评估需求，最快 1 个工作日内提供初步定制可行性报告。"
+      : "Our technical team will directly evaluate your requirements and provide an initial customization feasibility report within 1 business day.",
+    mapLabel: isZh ? "深圳总部" : "Shenzhen HQ",
+    mapSub: isZh ? "深圳总部" : "Shenzhen HQ",
+    mapAddr: isZh ? "坪山大道6352号2栋" : "No. 6352 Pingshan Avenue, Bldg 2",
+    navigateBtn: isZh ? "高德地图导航去总部" : "Navigate with AutoNavi",
+    studioTitle: isZh ? "在线提交需求" : "Submit Your Request",
+    studioDesc: isZh
+      ? "请选择您的咨询类型，我们的技术经理将根据您勾选的业务类别配备对应的工程人员与您对接。"
+      : "Please select your inquiry type, and our technical manager will connect you with the appropriate engineering staff.",
+    nameLabel: isZh ? "您的姓名 / Name *" : "Name / 姓名 *",
+    namePlaceholder: isZh ? "例如：张经理" : "e.g., John Smith",
+    emailContactLabel: isZh ? "工作邮箱 / Email *" : "Email / 邮箱 *",
+    emailPlaceholder: isZh ? "name@company.com" : "name@company.com",
+    companyLabel: isZh ? "公司名称 / Company" : "Company / 公司",
+    companyPlaceholder: isZh ? "您的公司全称" : "Company name",
+    phoneContactLabel: isZh ? "联系电话" : "Phone",
+    phoneContactPlaceholder: isZh ? "您的联系电话" : "Phone number",
+    messageLabel: isZh ? "需求描述 / Project Details *" : "Project Details / 需求描述 *",
+    messagePlaceholder: isZh
+      ? (tag: string) => `当前选择分类：[${tag}]。请简要说明您的应用场景、电池规格要求（如电压、容量、倍率等）...`
+      : (tag: string) => `Category: [${tag}]. Please describe your application, battery specs (voltage, capacity, rate, etc.)...`,
+    submitAgree: isZh
+      ? "* 提交即代表您同意我们将信息用于技术沟通"
+      : "* By submitting, you agree to use this information for technical communication",
+    submitBtn: isZh ? "发送信息 Send Request ↗" : "Send Request ↗",
+    submittedText: isZh ? "已成功发送 Request Sent" : "Request Sent Successfully",
+    copied: isZh ? "已复制" : "Copied",
+    copyAddress: isZh ? "复制地址" : "Copy Address",
+  };
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    setFormData({ name: "", email: "", company: "", phone: "", message: "" });
+  };
 
   return (
     <>
-      <ScrollProgress color="accent" height="sm" />
-      <CursorFollower color="rgba(47, 128, 255, 0.08)" size={500} />
+      <ScrollProgress color="#2563eb" height="sm" />
+      <CursorFollower color="rgba(37, 99, 235, 0.05)" size={400} />
 
-      <NextIntlClientProvider messages={currentMessages} locale={locale}>
+      <NextIntlClientProvider messages={currentMessages as any} locale={locale}>
         <Header
           translations={currentMessages}
           locale={locale}
           onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
+          forceLightText={false}
         />
 
-        <main className="pt-20">
-          {/* Hero Section */}
-          <section className="section-padding bg-primary relative overflow-hidden">
-            <div className="absolute inset-0 hero-gradient" />
-            <div className="absolute inset-0 grid-pattern-strong opacity-30" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/15 rounded-full blur-[150px]" />
-
-            <div className="container-padding mx-auto relative">
-              <FadeIn className="text-center max-w-4xl mx-auto">
-                <motion.span
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/60 mb-6"
-                >
-                  <MessageCircle className="w-4 h-4 text-accent" />
-                  {locale === "zh" ? "联系我们" : "Contact"}
-                </motion.span>
-
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-6">
-                  {locale === "zh" ? "与我们联系" : "Get in Touch"}
+        <main className="pt-16">
+          <section className="w-full bg-neutral-50 text-neutral-900 py-16 px-4 md:px-12 font-sans antialiased border-t border-neutral-200">
+            <div className="max-w-7xl mx-auto space-y-16">
+              {/* ==================== 1. 顶部 Header ==================== */}
+              <div className="max-w-3xl">
+                <h1 className="text-3xl md:text-5xl font-semibold tracking-tight text-neutral-900 leading-tight whitespace-pre-line">
+                  {content.title}
                 </h1>
-                <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto">
-                  {locale === "zh"
-                    ? "无论您是想了解我们的技术、探讨合作机会，还是有任何问题，我们都期待与您交流。"
-                    : "Whether you want to learn about our technology, explore partnerships, or have questions, we look forward to hearing from you."}
+                <p className="text-neutral-600 text-base mt-4 leading-relaxed">
+                  {content.subtitle}
                 </p>
-              </FadeIn>
-            </div>
-          </section>
+              </div>
 
-          {/* Contact Section */}
-          <section className="section-padding bg-secondary/[0.02]">
-            <div className="container-padding mx-auto">
-              <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-                {/* Contact Info */}
-                <FadeIn direction="right">
-                  <div>
-                    <h2 className="text-2xl font-heading font-bold text-white mb-8">
-                      {locale === "zh" ? "联系方式" : "Contact Information"}
-                    </h2>
-
-                    <div className="space-y-6 mb-12">
-                      {contactInfo.map((info, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: index * 0.1 }}
-                          className="flex items-start gap-4"
-                        >
-                          <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                            <info.icon className="w-5 h-5 text-accent" />
-                          </div>
-                          <div>
-                            <h3 className="text-white font-medium mb-1">{info.title}</h3>
-                            <p className="text-white/60">{info.content}</p>
-                          </div>
-                        </motion.div>
-                      ))}
+              {/* ==================== 2. 在线提交需求 ==================== */}
+              <div>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                  {/* 表单左侧说明与类别切换 */}
+                  <div className="lg:col-span-4 space-y-6">
+                    <div>
+                      <span className="text-xs font-medium uppercase tracking-wider text-neutral-400 block mb-2">
+                        Inquiry Studio
+                      </span>
+                      <h3 className="text-xl font-semibold text-neutral-900">{content.studioTitle}</h3>
                     </div>
 
-                    {/* Map Placeholder */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-white/5 border border-white/10"
-                    >
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center">
-                          <MapPin className="w-12 h-12 text-accent/50 mx-auto mb-4" />
-                          <p className="text-white/50">Shenzhen, China</p>
-                        </div>
-                      </div>
-                      {/* Grid pattern overlay */}
-                      <div className="absolute inset-0 grid-pattern opacity-30" />
-                    </motion.div>
+                    <p className="text-sm text-neutral-500 leading-relaxed">
+                      {content.studioDesc}
+                    </p>
+
+                    {/* 咨询类型纵向 Toggle */}
+                    <div className="space-y-2">
+                      {inquiryTags[locale].map((tag, index) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => setSelectedTag(index)}
+                          className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-all flex items-center justify-between border ${
+                            selectedTag === index
+                              ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
+                              : "border-neutral-200 bg-white text-neutral-600 hover:text-neutral-900 hover:border-neutral-300"
+                          }`}
+                        >
+                          <span>{tag}</span>
+                          <span
+                            className={`w-2 h-2 rounded-full ${
+                              selectedTag === index ? "bg-blue-500" : "bg-transparent"
+                            }`}
+                          />
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </FadeIn>
 
-                {/* Contact Form */}
-                <FadeIn direction="left" delay={0.1}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="p-8 md:p-10 rounded-3xl glass-card"
-                  >
-                    <h2 className="text-2xl font-heading font-bold text-white mb-6">
-                      {locale === "zh" ? "发送消息" : "Send a Message"}
-                    </h2>
-
-                    {isSubmitted ? (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="text-center py-12"
-                      >
-                        <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
-                          <Check className="w-8 h-8 text-emerald-400" />
+                  {/* 表单右侧 */}
+                  <div className="lg:col-span-8 bg-white border border-neutral-200 rounded-2xl p-8 md:p-10 shadow-sm">
+                    {submitted ? (
+                      <div className="flex flex-col items-center justify-center py-12 text-center">
+                        <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                          <Check className="w-7 h-7 text-green-600" />
                         </div>
-                        <h3 className="text-xl font-heading font-semibold text-white mb-2">
-                          {locale === "zh" ? "消息已发送！" : "Message Sent!"}
+                        <h3 className="text-xl font-semibold text-neutral-900 mb-2">
+                          {content.submittedText}
                         </h3>
-                        <p className="text-white/60 mb-6">
-                          {locale === "zh" ? "感谢您的留言，我们会尽快回复您。" : "Thank you! We'll get back to you soon."}
+                        <p className="text-neutral-500 text-sm mb-6">
+                          {isZh ? "我们的团队将尽快与您联系" : "Our team will contact you soon"}
                         </p>
-                        <Button onClick={() => setIsSubmitted(false)} variant="secondary">
-                          {locale === "zh" ? "发送另一条" : "Send Another"}
-                        </Button>
-                      </motion.div>
+                        <button
+                          onClick={() => setSubmitted(false)}
+                          className="px-6 py-2.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-sm font-medium transition-colors"
+                        >
+                          {isZh ? "继续留言" : "Send Another"}
+                        </button>
+                      </div>
                     ) : (
                       <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <div>
-                            <label className="block text-sm font-medium text-white/70 mb-2">
-                              {locale === "zh" ? "姓名 *" : "Name *"}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* 姓名 */}
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-neutral-600 block">
+                              {content.nameLabel}
                             </label>
-                            <Input
+                            <input
+                              type="text"
                               required
+                              placeholder={content.namePlaceholder}
                               value={formData.name}
                               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                              placeholder={locale === "zh" ? "请输入您的姓名" : "Enter your name"}
+                              className="w-full bg-neutral-50 border border-neutral-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-all"
                             />
                           </div>
-                          <div>
-                            <label className="block text-sm font-medium text-white/70 mb-2">
-                              {locale === "zh" ? "邮箱 *" : "Email *"}
+
+                          {/* 邮箱 */}
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-neutral-600 block">
+                              {content.emailContactLabel}
                             </label>
-                            <Input
+                            <input
                               type="email"
                               required
+                              placeholder={content.emailPlaceholder}
                               value={formData.email}
                               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                              placeholder={locale === "zh" ? "请输入您的邮箱" : "Enter your email"}
+                              className="w-full bg-neutral-50 border border-neutral-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-all"
                             />
                           </div>
                         </div>
 
-                        <div>
-                          <label className="block text-sm font-medium text-white/70 mb-2">
-                            {locale === "zh" ? "公司" : "Company"}
-                          </label>
-                          <Input
-                            value={formData.company}
-                            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                            placeholder={locale === "zh" ? "请输入您的公司名称" : "Enter your company"}
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* 公司 */}
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-neutral-600 block">
+                              {content.companyLabel}
+                            </label>
+                            <input
+                              type="text"
+                              placeholder={content.companyPlaceholder}
+                              value={formData.company}
+                              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                              className="w-full bg-neutral-50 border border-neutral-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-all"
+                            />
+                          </div>
+
+                          {/* 联系电话 */}
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-neutral-600 block">
+                              {content.phoneContactLabel}
+                            </label>
+                            <input
+                              type="tel"
+                              placeholder={content.phoneContactPlaceholder}
+                              value={formData.phone}
+                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                              className="w-full bg-neutral-50 border border-neutral-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-all"
+                            />
+                          </div>
                         </div>
 
-                        <div>
-                          <label className="block text-sm font-medium text-white/70 mb-2">
-                            {locale === "zh" ? "留言 *" : "Message *"}
+                        {/* 需求描述 */}
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-neutral-600 block">
+                            {content.messageLabel}
                           </label>
-                          <Textarea
+                          <textarea
+                            rows={3}
                             required
+                            placeholder={content.messagePlaceholder(inquiryTags[locale][selectedTag])}
                             value={formData.message}
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                            placeholder={locale === "zh" ? "请输入您的留言内容..." : "Enter your message..."}
-                            className="min-h-[150px]"
+                            className="w-full bg-neutral-50 border border-neutral-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-all resize-none"
                           />
                         </div>
 
-                        <Button type="submit" size="lg" className="w-full group" disabled={isSubmitting}>
-                          {isSubmitting ? (
-                            locale === "zh" ? "发送中..." : "Sending..."
-                          ) : (
-                            <>
-                              {locale === "zh" ? "发送消息" : "Send Message"}
-                              <Send className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </>
-                          )}
-                        </Button>
+                        {/* 提交按钮 */}
+                        <div className="pt-2 flex items-center justify-between flex-wrap gap-4">
+                          <span className="text-xs text-neutral-400">
+                            {content.submitAgree}
+                          </span>
+
+                          <button
+                            type="submit"
+                            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-all shadow-sm"
+                          >
+                            {content.submitBtn}
+                          </button>
+                        </div>
                       </form>
                     )}
-                  </motion.div>
-                </FadeIn>
+                  </div>
+                </div>
+              </div>
+
+              {/* ==================== 3. 三列信息矩阵 ==================== */}
+              <div className="grid grid-cols-1 md:grid-cols-3 border-y border-neutral-200 divide-y md:divide-y-0 md:divide-x divide-neutral-200">
+                {/* 列 1：总部地址 */}
+                <div className="py-6 md:p-6 space-y-3">
+                  <div className="flex items-center justify-between text-xs font-medium text-neutral-400 uppercase tracking-wider">
+                    <span>{content.locationTitle}</span>
+                    <MapPin className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div className="text-sm font-medium text-neutral-900 leading-snug">
+                    {content.companyName}
+                  </div>
+                  <p className="text-sm text-neutral-500 leading-relaxed">
+                    {contactData.address}
+                  </p>
+                  <button
+                    onClick={() => handleCopy(contactData.address, "address")}
+                    className="inline-flex items-center gap-2 text-xs text-neutral-500 hover:text-blue-600 transition-colors"
+                  >
+                    {copiedField === "address" ? (
+                      <span className="text-green-600 flex items-center gap-1">
+                        <Check className="w-3.5 h-3.5" /> {content.copied}
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1">
+                        <Copy className="w-3.5 h-3.5" /> {content.copyAddress}
+                      </span>
+                    )}
+                  </button>
+                </div>
+
+                {/* 列 2：直接通道 */}
+                <div className="py-6 md:p-6 space-y-3">
+                  <div className="flex items-center justify-between text-xs font-medium text-neutral-400 uppercase tracking-wider">
+                    <span>{content.contactTitle}</span>
+                    <Globe className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-xs text-neutral-400 uppercase block mb-1">
+                        {content.phoneLabel}
+                      </span>
+                      <a
+                        href={`tel:${contactData.phone}`}
+                        className="text-sm text-neutral-700 hover:text-blue-600 transition-colors"
+                      >
+                        {contactData.phone}
+                      </a>
+                    </div>
+                    <div>
+                      <span className="text-xs text-neutral-400 uppercase block mb-1">
+                        {content.emailLabel}
+                      </span>
+                      <a
+                        href={`mailto:${contactData.email}`}
+                        className="text-sm text-neutral-700 hover:text-blue-600 transition-colors"
+                      >
+                        {contactData.email}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 列 3：响应承诺 */}
+                <div className="py-6 md:p-6 space-y-3">
+                  <div className="flex items-center justify-between text-xs font-medium text-neutral-400 uppercase tracking-wider">
+                    <span>{content.serviceTitle}</span>
+                    <Clock className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div className="text-sm text-neutral-700 leading-relaxed">
+                    <span className="text-blue-600 font-semibold">{content.slaTitle}</span>
+                  </div>
+                  <p className="text-xs text-neutral-400 leading-relaxed">{content.slaDesc}</p>
+                </div>
+              </div>
+
+              {/* ==================== 4. 沉浸式地图画廊 ==================== */}
+              <div className="relative w-full h-[320px] md:h-[400px] rounded-xl overflow-hidden border border-neutral-200 bg-neutral-100">
+                {/* 地图组件 */}
+                <div className="absolute inset-0 w-full h-full">
+                  <ContactMap locale={locale} />
+                </div>
+
+                {/* 悬浮品牌地标卡 (左上角) */}
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm border border-neutral-200 rounded-xl p-3 hidden md:block max-w-[200px] shadow-lg">
+                  <div className="text-sm font-semibold text-neutral-900 mb-0.5">{content.mapSub}</div>
+                  <div className="text-xs text-neutral-500">{contactData.address.split('2')[0]}2...</div>
+                </div>
+
+                {/* 悬浮导航按钮 (右下角) */}
+                <a
+                  href={`https://uri.amap.com/marker?coordinate=${contactData.coords.lng},${contactData.coords.lat}&name=${encodeURIComponent(content.companyName)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="absolute bottom-4 right-4 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-lg"
+                >
+                  <span>{content.navigateBtn}</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
               </div>
             </div>
           </section>

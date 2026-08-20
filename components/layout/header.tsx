@@ -6,7 +6,6 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
   translations: {
@@ -15,23 +14,26 @@ interface HeaderProps {
       about: string;
       products: string;
       technology: string;
+      cases: string;
       industries: string;
       news: string;
       contact: string;
     };
+    [key: string]: any;
   };
   locale: string;
   onLocaleChange: (locale: string) => void;
+  forceLightText?: boolean; // Use light text for dark backgrounds (e.g., homepage with dark hero)
 }
 
-export function Header({ translations, locale, onLocaleChange }: HeaderProps) {
+export function Header({ translations, locale, onLocaleChange, forceLightText = false }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -51,107 +53,127 @@ export function Header({ translations, locale, onLocaleChange }: HeaderProps) {
   }, [isMobileMenuOpen]);
 
   const navItems = [
-    { href: `/${locale}`, label: translations.nav.home, key: "home" },
-    { href: `/${locale}/about`, label: translations.nav.about, key: "about" },
-    { href: `/${locale}/products`, label: translations.nav.products, key: "products" },
-    { href: `/${locale}/technology`, label: translations.nav.technology, key: "technology" },
-    { href: `/${locale}/industries`, label: translations.nav.industries, key: "industries" },
-    { href: `/${locale}/news`, label: translations.nav.news, key: "news" },
-    { href: `/${locale}/contact`, label: translations.nav.contact, key: "contact" },
+    { href: "/", label: translations.nav.home, key: "home" },
+    { href: "/about", label: translations.nav.about, key: "about" },
+    { href: "/products/cloudchi-360-p", label: translations.nav.products, key: "products" },
+    { href: "/technology", label: translations.nav.technology, key: "technology" },
+    { href: "/cases", label: translations.nav.cases, key: "cases" },
+    { href: "/news", label: translations.nav.news, key: "news" },
   ];
 
   return (
     <>
+      {/* Header - Tesla Style Glassmorphism */}
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
-            ? "bg-primary/90 backdrop-blur-2xl border-b border-white/5"
+            ? "bg-white/80 backdrop-blur-xl border-b border-[#E4E4E7]/50"
             : "bg-transparent"
         )}
       >
         <div className="container-padding mx-auto">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-[72px]">
             {/* Logo */}
-            <Link href={`/${locale}`} className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-3 group cursor-pointer">
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
               >
                 <Image
                   src="/logo.png"
-                  alt="Swift Safe Energy"
-                  width={44}
-                  height={44}
-                  className="w-11 h-11 object-contain"
+                  alt="深安锂能"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 object-contain"
                 />
               </motion.div>
               <div className="hidden sm:block">
-                <p className="font-heading font-semibold text-white text-sm leading-tight group-hover:text-accent transition-colors duration-300">
+                <p className={cn(
+                  "font-semibold text-sm leading-tight transition-colors duration-300",
+                  forceLightText && !isScrolled ? "text-white group-hover:text-[#60A5FA]" : "text-[#0A0A0A] group-hover:text-[#2563EB]"
+                )}>
                   {locale === "zh" ? "深安锂能" : "Swift Safe Energy"}
                 </p>
-                <p className="text-[10px] text-white/40">
-                  {locale === "zh" ? "高比能电池引领者" : "High Energy Density Battery Leader"}
+                <p className={cn(
+                  "text-[10px] transition-colors duration-300",
+                  forceLightText && !isScrolled ? "text-[#52525B]" : "text-[#A1A1AA]"
+                )}>
+                  {locale === "zh" ? "高比能电池专家" : "High Energy Density Battery Expert"}
                 </p>
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation - Clean & Minimal */}
             <nav className="hidden lg:flex items-center gap-1">
               {navItems.map((item, index) => (
                 <motion.div
                   key={item.key}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05, duration: 0.4 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
                 >
                   <Link
                     href={item.href}
                     className={cn(
-                      "relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300",
-                      "hover:text-white",
+                      "relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200",
+                      "hover:bg-[#F4F4F5]",
                       activeLink === item.key
-                        ? "text-white bg-white/10"
-                        : "text-white/60"
+                        ? "text-[#0A0A0A] bg-[#F4F4F5]"
+                        : forceLightText && !isScrolled ? "text-white" : "text-[#18181B]"
                     )}
                     onMouseEnter={() => setActiveLink(item.key)}
                     onMouseLeave={() => setActiveLink("")}
                   >
                     {item.label}
-                    {/* Active indicator */}
-                    {activeLink === item.key && (
-                      <motion.div
-                        layoutId="nav-indicator"
-                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-accent"
-                      />
-                    )}
                   </Link>
                 </motion.div>
               ))}
             </nav>
 
-            {/* Right Side */}
+            {/* Right Side - Tesla Style */}
             <div className="flex items-center gap-3">
               {/* Language Switcher */}
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => onLocaleChange(locale === "en" ? "zh" : "en")}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-white/60 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
               >
                 <Globe className="w-4 h-4" />
                 <span className="uppercase font-medium hidden sm:inline">{locale}</span>
               </motion.button>
 
+              {/* Contact Button - Tesla Blue */}
+              <Link href="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={cn(
+                    "px-5 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 cursor-pointer",
+                    forceLightText && !isScrolled
+                      ? "bg-white text-[#0A0A0A] hover:bg-[#F4F4F5]"
+                      : "bg-[#2563EB] text-white hover:bg-[#1D4ED8]"
+                  )}
+                >
+                  {locale === "zh" ? "联系我们" : "Contact"}
+                </motion.button>
+              </Link>
+
               {/* Mobile Menu Button */}
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300"
+                className={cn(
+                  "lg:hidden p-2 rounded-md transition-all duration-200 cursor-pointer",
+                  isScrolled
+                    ? "text-[#52525B] hover:bg-[#F4F4F5]"
+                    : "text-[#52525B] hover:bg-[#F4F4F5]"
+                )}
                 aria-label="Toggle menu"
               >
                 {isMobileMenuOpen ? (
@@ -163,15 +185,9 @@ export function Header({ translations, locale, onLocaleChange }: HeaderProps) {
             </div>
           </div>
         </div>
-
-        {/* Gradient line */}
-        <div className={cn(
-          "absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent transition-opacity duration-500",
-          isScrolled ? "opacity-100" : "opacity-0"
-        )} />
       </motion.header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu - Slide from Right */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -181,63 +197,88 @@ export function Header({ translations, locale, onLocaleChange }: HeaderProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-primary/95 backdrop-blur-xl z-40 lg:hidden"
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
               onClick={() => setIsMobileMenuOpen(false)}
             />
 
-            {/* Menu Content */}
+            {/* Menu Content - Slide in from right */}
             <motion.div
               initial={{ opacity: 0, x: "100%" }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: "100%" }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-primary/95 backdrop-blur-2xl z-50 lg:hidden overflow-y-auto"
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white z-50 lg:hidden overflow-y-auto"
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-white/5">
-                <span className="font-heading font-semibold text-white">
+              <div className="flex items-center justify-between p-6 border-b border-[#E4E4E7]">
+                <span className="font-semibold text-[#0A0A0A]">
                   {locale === "zh" ? "菜单" : "Menu"}
                 </span>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300"
+                  className="p-2 text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
                 >
                   <X className="w-6 h-6" />
                 </button>
               </div>
 
               {/* Navigation */}
-              <nav className="p-6 flex flex-col gap-2">
+              <nav className="p-6 flex flex-col gap-1">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.key}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 + 0.1, duration: 0.4 }}
+                    transition={{ delay: index * 0.05 + 0.1, duration: 0.3 }}
                   >
                     <Link
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-lg font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300"
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-3 text-base font-medium rounded-md transition-all duration-200",
+                        "text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5]"
+                      )}
                     >
-                      <span className="w-1 h-1 rounded-full bg-accent" />
                       {item.label}
                     </Link>
                   </motion.div>
                 ))}
-              </nav>
 
-              {/* Footer */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-white/5">
-                <Button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="w-full"
+                {/* Contact Button in Mobile Menu */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navItems.length * 0.05 + 0.1, duration: 0.3 }}
+                  className="mt-4 pt-4 border-t border-[#E4E4E7]"
                 >
-                  {translations.nav.contact}
-                </Button>
-              </div>
+                  <Link
+                    href="/contact"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-center gap-2 px-4 py-3 text-base font-semibold bg-[#2563EB] text-white rounded-md hover:bg-[#1D4ED8] transition-all duration-200"
+                  >
+                    {locale === "zh" ? "联系我们" : "Contact Us"}
+                  </Link>
+                </motion.div>
+
+                {/* Language Switcher in Mobile Menu */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navItems.length * 0.05 + 0.15, duration: 0.3 }}
+                  className="mt-3"
+                >
+                  <button
+                    onClick={() => {
+                      onLocaleChange(locale === "en" ? "zh" : "en");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-3 text-base font-medium text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
+                  >
+                    <Globe className="w-5 h-5" />
+                    {locale === "zh" ? "切换至 English" : "切换至 中文"}
+                  </button>
+                </motion.div>
+              </nav>
             </motion.div>
           </>
         )}

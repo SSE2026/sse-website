@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>测试地图</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background-color: #0f172a; }
+    #chart-container { width: 100%; height: 100%; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+</head>
+<body>
+  <div id="chart-container"></div>
+
+  <script>
+    console.log('Script starting...');
+
+    let chartDom = document.getElementById('chart-container');
+    let myChart = echarts.init(chartDom);
+    console.log('Chart initialized');
+
+    window.myChart = myChart;
+
+    // 简单测试数据
+    const testPoints = [
+      { name: '深圳', value: [114.05, 22.54] },
+      { name: '北京', value: [116.40, 39.90] }
+    ];
+
+    const testLines = [
+      { coords: [[114.05, 22.54], [116.40, 39.90]] }
+    ];
+
+    const option = {
+      animation: false,
+      geo: {
+        map: 'world',
+        zoom: 3,
+        center: [105, 35],
+        roam: false,
+        silent: true,
+        itemStyle: { areaColor: '#1e293b', borderColor: '#334155', borderWidth: 0.8 }
+      },
+      series: [
+        {
+          name: 'points',
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          z: 5,
+          symbolSize: 10,
+          rippleEffect: { brushType: 'stroke', scale: 4, period: 3 },
+          label: { show: true, position: 'right', formatter: '{b}', color: '#fff' },
+          data: testPoints
+        },
+        {
+          name: 'lines',
+          type: 'lines',
+          coordinateSystem: 'geo',
+          z: 3,
+          effect: { show: true, period: 6, trailLength: 0.15, symbolSize: 4, loop: true, color: '#fff' },
+          lineStyle: { color: '#38bdf8', width: 1.5, curveness: 0.2, opacity: 0.6 },
+          data: testLines
+        }
+      ]
+    };
+
+    console.log('Setting option...');
+    myChart.setOption(option, true);
+    console.log('Option set successfully');
+
+    window.addEventListener('load', function() {
+      console.log('Window loaded, sending MAP_READY');
+      window.parent.postMessage({ type: 'MAP_READY' }, '*');
+    });
+  </script>
+</body>
+</html>

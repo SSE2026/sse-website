@@ -1,0 +1,934 @@
+// Prisma Schema for Swift Safe Energy Platform - V2.0 B2B
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// 用户与认证 (现有，保留)
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  avatar        String?
+  role          UserRole  @default(USER)
+  isActive      Boolean   @default(true)
+  emailVerified DateTime?
+  portalStatus  PortalStatus @default(NONE)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Customer ownership (1:1)
+  customerId String?   @unique
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  // Portal invitation (reverse relation)
+  invitations PortalInvitation[]
+
+  accounts Account[]
+  sessions Session[]
+
+  @@index([customerId])
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// ============================================
+// 枚举定义
+// ============================================
+
+enum UserRole {
+  USER
+  ANALYST
+  ADMIN
+}
+
+enum LeadSource {
+  GOOGLE_ORGANIC
+  GOOGLE_ADS
+  LINKEDIN
+  DIRECT
+  REFERRAL
+  PRODUCT_PAGE
+  BLOG
+  APPLICATION_PAGE
+  DATASHEET
+  OTHER
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  QUOTING
+  SAMPLE
+  TESTING
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum ActivityType {
+  NOTE
+  EMAIL
+  CALL
+  MEETING
+  QUOTE
+  SAMPLE
+  FOLLOW_UP
+  STATUS_CHANGE
+  OTHER
+}
+
+enum DocumentType {
+  DATASHEET
+  MSDS
+  UN383
+  IEC
+  CE
+  ROHS
+  UL
+  TEST_REPORT
+  USER_MANUAL
+  APPLICATION_NOTE
+  BROCHURE
+  WHITE_PAPER
+  OTHER
+}
+
+enum AttachmentType {
+  SPECIFICATION
+  DRAWING
+  DATASHEET
+  CERTIFICATE
+  CONTRACT
+  OTHER
+}
+
+enum InquiryType {
+  PRODUCT
+  CUSTOM
+  GENERAL
+}
+
+// ============================================
+// Portal / Account Linking
+// ============================================
+
+enum PortalStatus {
+  NONE     // 未创建门户账户
+  INVITED  // 已邀请，等待验证
+  ACTIVE   // 活跃，可访问门户
+  DISABLED // 被禁用
+}
+
+enum InvitationStatus {
+  PENDING   // 等待接受
+  ACCEPTED  // 已接受
+  EXPIRED   // 已过期
+  REVOKED   // 已撤销
+}
+
+// ============================================
+// Company & Customer
+// ============================================
+
+model Company {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  website     String?
+  industry    String?
+  country     String?
+  countryCode String?
+  city        String?
+  address     String?
+
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
+
+  customers Customer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([country])
+  @@index([isActive])
+  @@map("companies")
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+
+  name        String
+  email       String  @unique
+  phone       String?
+  whatsapp    String?
+  position    String?
+  country     String?
+  countryCode String?
+
+  source      LeadSource @default(DIRECT)
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  landingPage String?
+  referrer    String?
+
+  isActive       Boolean   @default(true)
+  deletedAt      DateTime?
+  lastActivityAt DateTime?
+
+  // User ownership (1:1 reverse relation)
+  user      User?
+
+  // Portal invitations
+  invitations PortalInvitation[]
+  inquiries  Inquiry[]
+  activities LeadActivity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([country])
+  @@index([source])
+  @@map("customers")
+}
+
+// ============================================
+// Product System
+// ============================================
+
+model ProductCategory {
+  id String @id @default(cuid())
+
+  slug  String  @unique
+  image String?
+  icon  String?
+
+  parentId String?
+  parent   ProductCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children ProductCategory[] @relation("CategoryTree")
+
+  products Product[]
+
+  seoTitle       String?
+  seoDescription String?
+  canonicalUrl   String?
+  noIndex        Boolean @default(false)
+
+  sortOrder Int     @default(0)
+  published Boolean @default(true)
+
+  translations ProductCategoryTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([slug])
+  @@map("product_categories")
+}
+
+model ProductCategoryTranslation {
+  id         String          @id @default(cuid())
+  categoryId String
+  category   ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  locale String
+
+  name        String
+  description String?
+
+  @@unique([categoryId, locale])
+  @@map("product_category_translations")
+}
+
+model Product {
+  id String @id @default(cuid())
+
+  sku   String @unique
+  model String @unique
+  slug  String @unique
+
+  categoryId String
+  category   ProductCategory @relation(fields: [categoryId], references: [id])
+
+  brand     String?
+  chemistry String?
+
+  shortDescription String?
+  description      String? @db.Text
+
+  // 核心电气规格
+  nominalVoltage    Float?
+  nominalCapacity   Float?
+  energy            Float?
+  energyDensity     Float?
+  chargeRate        Float?
+  dischargeRate     Float?
+  peakDischargeRate Float?
+
+  // 核心机械规格
+  length Float?
+  width  Float?
+  height Float?
+  weight Float?
+
+  // 核心性能
+  cycleLife        Int?
+  operatingTempMin Int?
+  operatingTempMax Int?
+
+  // 商业条款
+  moq                    Int?
+  sampleAvailable        Boolean @default(false)
+  customizationAvailable Boolean @default(false)
+  leadTime               String?
+
+  // 扩展规格
+  specifications Json?
+
+  // 内容
+  features       Json?
+  applications   Json?
+  technicalNotes String? @db.Text
+
+  // SEO
+  seoTitle       String?
+  seoDescription String?
+  canonicalUrl   String?
+  noIndex        Boolean @default(false)
+
+  // 状态
+  published Boolean   @default(false)
+  featured  Boolean   @default(false)
+  sortOrder Int       @default(0)
+  deletedAt DateTime?
+
+  // 关联
+  variants            ProductVariant[]
+  images              ProductImage[]
+  translations        ProductTranslation[]
+  productApplications ProductApplication[]
+  // documents 通过 ProductDocument 关联，不需要直接反向关系
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  ProductDocument ProductDocument[]
+
+  @@index([categoryId])
+  @@index([published, deletedAt])
+  @@index([featured, published])
+  @@index([slug])
+  @@index([energyDensity])
+  @@index([nominalVoltage])
+  @@index([nominalCapacity])
+  @@map("products")
+}
+
+model ProductTranslation {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  locale String
+
+  name             String
+  shortDescription String?
+  description      String? @db.Text
+
+  features       Json?
+  technicalNotes String? @db.Text
+
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, locale])
+  @@index([locale])
+  @@map("product_translations")
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  sku    String  @unique
+  name   String
+  nameEn String?
+
+  // 规格覆盖
+  nominalVoltage  Float?
+  nominalCapacity Float?
+  energy          Float?
+  energyDensity   Float?
+  length          Float?
+  width           Float?
+  height          Float?
+  weight          Float?
+
+  // 扩展规格
+  specifications Json?
+
+  // 价格
+  priceUsd    Float?
+  priceUsdMin Float?
+  priceUsdMax Float?
+
+  // 状态
+  published Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  inquiries Inquiry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, sku])
+  @@index([productId])
+  @@map("product_variants")
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  url   String
+  alt   String?
+  altEn String?
+
+  isPrimary Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+// ============================================
+// Application System
+// ============================================
+
+model Application {
+  id String @id @default(cuid())
+
+  slug  String  @unique
+  icon  String?
+  color String?
+  image String?
+
+  shortDescription String?
+  description      String? @db.Text
+
+  seoTitle       String?
+  seoDescription String?
+  canonicalUrl   String?
+  noIndex        Boolean @default(false)
+
+  content String? @db.Text
+
+  sortOrder Int       @default(0)
+  published Boolean   @default(true)
+  deletedAt DateTime?
+
+  documents    ApplicationDocument[]
+  products     ProductApplication[]
+  translations ApplicationTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@map("applications")
+}
+
+model ApplicationTranslation {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  locale String
+
+  name             String
+  shortDescription String?
+  description      String? @db.Text
+
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicationId, locale])
+  @@map("application_translations")
+}
+
+model ProductApplication {
+  id            String      @id @default(cuid())
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  priority Int @default(0)
+
+  @@unique([productId, applicationId])
+  @@index([productId])
+  @@index([applicationId])
+  @@map("product_applications")
+}
+
+// ============================================
+// Inquiry System
+// ============================================
+
+model Inquiry {
+  id String @id @default(cuid())
+
+  // 询价编号
+  inquiryNumber String @unique
+
+  // 询价类型
+  inquiryType InquiryType @default(PRODUCT)
+
+  // 客户关联
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  companyId  String?
+
+  // 客户信息快照
+  customerName String?
+  companyName  String?
+  email        String
+  phone        String?
+  whatsapp     String?
+  country      String?
+  countryCode  String?
+
+  // 应用场景
+  applicationId   String?
+  applicationName String?
+
+  // 产品意向
+  productId    String?
+  productName  String?
+  productModel String?
+
+  productVariantId String?
+  variantName      String?
+  variantSku       String?
+
+  // 技术参数快照
+  voltageSnapshot        String?
+  capacitySnapshot       String?
+  energySnapshot         String?
+  energyDensitySnapshot  String?
+  weightSnapshot         String?
+  dimensionsSnapshot     String?
+  chargeRateSnapshot     String?
+  dischargeRateSnapshot  String?
+  cycleLifeSnapshot      String?
+  specificationsSnapshot Json?
+
+  // 商业条款
+  quantity           Int?
+  quantityUnit       String?
+  targetPrice        String?
+  expectedDelivery   String?
+  destinationCountry String?
+
+  // 客户留言
+  message String? @db.Text
+
+  // 附件
+  attachments InquiryAttachment[]
+
+  // CRM 状态
+  status     InquiryStatus @default(NEW)
+  priority   Priority      @default(NORMAL)
+  assignedTo String?
+
+  // 来源追踪
+  source      LeadSource @default(DIRECT)
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmTerm     String?
+  utmContent  String?
+  landingPage String?
+  referrer    String?
+
+  // 邮件状态
+  emailSent   Boolean   @default(false)
+  emailSentAt DateTime?
+
+  // 内部
+  internalNotes String? @db.Text
+
+  // 软删除
+  deletedAt DateTime?
+
+  // 关联
+  activities LeadActivity[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  ProductVariant ProductVariant? @relation(fields: [productVariantId], references: [id])
+
+  @@index([status])
+  @@index([email])
+  @@index([customerId])
+  @@index([companyId])
+  @@index([productId])
+  @@index([inquiryNumber])
+  @@index([country])
+  @@index([source])
+  @@index([createdAt])
+  @@map("inquiries")
+}
+
+model InquiryAttachment {
+  id        String  @id @default(cuid())
+  inquiryId String
+  inquiry   Inquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+
+  fileName String
+  fileUrl  String
+  fileSize Int?
+  mimeType String?
+  type     AttachmentType @default(OTHER)
+
+  createdAt DateTime @default(now())
+
+  @@index([inquiryId])
+  @@map("inquiry_attachments")
+}
+
+model LeadActivity {
+  id String @id @default(cuid())
+
+  // 主要关联: Inquiry
+  inquiryId String
+  inquiry   Inquiry @relation(fields: [inquiryId], references: [id])
+
+  // 次要关联: Customer
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  type    ActivityType
+  title   String
+  content String?      @db.Text
+
+  createdById   String?
+  createdByName String?
+
+  relatedType String?
+  relatedId   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([inquiryId])
+  @@index([customerId])
+  @@index([createdAt])
+  @@map("lead_activities")
+}
+
+// ============================================
+// Document System
+// ============================================
+
+enum DocumentStatus {
+  DRAFT      // 草稿，未上传文件
+  UPLOADING  // 上传中
+  READY      // 文件已上传
+  PUBLISHED  // 已发布
+  ARCHIVED   // 已归档
+}
+
+model Document {
+  id String @id @default(cuid())
+
+  name   String
+  nameEn String?
+  type   DocumentType
+
+  // 文件字段 - 改为 nullable 支持先创建 Metadata 再上传
+  fileName String?
+  fileUrl  String?
+  fileSize Int?
+  mimeType String?
+
+  // 文档生命周期状态
+  status DocumentStatus @default(DRAFT)
+
+  version  String?
+  language String        @default("en")
+  pages    Int?
+
+  leadRequired Boolean @default(true)
+  isPublic     Boolean @default(false)
+
+  downloadCount Int @default(0)
+
+  // 发布状态
+  published  Boolean    @default(true)
+  publishedAt DateTime? // 发布时间
+  archivedAt DateTime?  // 归档时间
+
+  // 软删除
+  deletedAt DateTime?
+  sortOrder Int         @default(0)
+
+  // 关联关系
+  products     ProductDocument[]
+  applications ApplicationDocument[]
+  downloads    DocumentDownload[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([published])
+  @@index([status])
+  @@map("documents")
+}
+
+model ProductDocument {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, documentId])
+  @@index([productId])
+  @@index([documentId])
+  @@map("product_documents")
+}
+
+model ApplicationDocument {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  documentId    String
+  document      Document    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([applicationId, documentId])
+  @@index([applicationId])
+  @@index([documentId])
+  @@map("application_documents")
+}
+
+model DocumentDownload {
+  id String @id @default(cuid())
+
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Restrict)
+
+  customerId  String?
+  email       String
+  name        String?
+  company     String?
+  country     String?
+  countryCode String?
+
+  source      LeadSource @default(DIRECT)
+  landingPage String?
+
+  createdAt DateTime @default(now())
+
+  @@index([documentId])
+  @@index([email])
+  @@index([createdAt])
+  @@map("document_downloads")
+}
+
+// ============================================
+// Blog System
+// ============================================
+
+model BlogCategory {
+  id        String @id @default(cuid())
+  slug      String @unique
+  sortOrder Int    @default(0)
+
+  posts BlogPost[]
+
+  translations BlogCategoryTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@map("blog_categories")
+}
+
+model BlogCategoryTranslation {
+  id         String       @id @default(cuid())
+  categoryId String
+  category   BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  locale      String
+  name        String
+  description String?
+
+  @@unique([categoryId, locale])
+  @@map("blog_category_translations")
+}
+
+model BlogPost {
+  id String @id @default(cuid())
+
+  slug String @unique
+
+  coverImage String?
+
+  authorId   String?
+  authorName String?
+
+  categoryId String?
+  category   BlogCategory? @relation(fields: [categoryId], references: [id])
+
+  tags String[]
+
+  excerpt String?
+  content String? @db.Text
+
+  seoTitle       String?
+  seoDescription String?
+  canonicalUrl   String?
+  noIndex        Boolean @default(false)
+
+  published Boolean @default(false)
+  featured  Boolean @default(false)
+
+  publishedAt DateTime?
+  viewCount   Int       @default(0)
+
+  translations BlogPostTranslation[]
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([published, publishedAt])
+  @@index([categoryId])
+  @@map("blog_posts")
+}
+
+model BlogPostTranslation {
+  id         String   @id @default(cuid())
+  blogPostId String
+  blogPost   BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+
+  locale  String
+  title   String
+  excerpt String?
+  content String? @db.Text
+
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([blogPostId, locale])
+  @@map("blog_post_translations")
+}
+
+// ============================================
+// Portal Invitation System
+// ============================================
+
+model PortalInvitation {
+  id         String   @id @default(cuid())
+  email      String
+
+  // 关联的用户 (创建时可能为 null)
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+
+  // 目标客户
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  // 安全令牌 (存储 hash)
+  tokenHash String   @unique
+
+  // 过期时间
+  expiresAt DateTime
+
+  // 邀请状态
+  status    InvitationStatus @default(PENDING)
+
+  // 邀请人
+  invitedById   String?
+  invitedByName String?
+
+  // 时间戳
+  createdAt  DateTime  @default(now())
+  acceptedAt DateTime?
+  revokedAt DateTime?
+  revokedReason String?
+
+  @@index([email])
+  @@index([tokenHash])
+  @@index([customerId])
+  @@index([userId])
+  @@index([status])
+  @@map("portal_invitations")
+}

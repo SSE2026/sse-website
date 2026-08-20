@@ -4,9 +4,78 @@
     "about": "About",
     "products": "Products",
     "technology": "Technology",
+    "cases": "Case Studies",
     "industries": "Industries",
     "news": "News",
     "contact": "Contact"
+  },
+  "techPage": {
+    "hero": {
+      "badge": "Solid-State Battery R&D",
+      "title": "Shaping the Future with Technology",
+      "subtitle": "Breaking through materials, cell architecture, and intelligent operations to build industrial-grade high-safety energy cores.",
+      "stats": {
+        "patents": "Invention Patents",
+        "papers": "Nature Publications",
+        "production": "SSE Production Line",
+        "samples": "Client A-Sample Validation"
+      }
+    },
+    "coreTech": {
+      "label": "CORE TECHNOLOGY",
+      "title": "Core Technologies",
+      "subtitle": "Focusing on breakthroughs in materials, cells, and intelligent systems",
+      "items": [
+        {
+          "title": "Multi-Dimensional Fast Charging",
+          "summary": "Efficient ion transport with electrochemical-thermal coordination",
+          "details": [
+            "Ultra-high ion conductivity liquid/additives",
+            "High-purity oxide solid electrolyte",
+            "Fast lossless self-heating with intelligent thermal control"
+          ]
+        },
+        {
+          "title": "High Energy Density",
+          "summary": "High-performance materials with compact structure design",
+          "details": [
+            "High-stability micro-nano composite electrode + high-temp flame-retardant electrolyte",
+            "High-temp oxide solid electrolyte innovation",
+            "In-situ interface softening technology",
+            "9-series high-nickel system + solid electrolyte",
+            "Sub-micron porous silicon-oxygen composite",
+            "High-voltage silicon-based / lithium metal electrolyte",
+            "Ultra-thin substrate design"
+          ]
+        },
+        {
+          "title": "Solid-State Materials & Interface",
+          "summary": "Solid electrolyte and interface engineering",
+          "details": [
+            "High-temp oxide solid electrolyte innovation",
+            "In-situ interface softening technology"
+          ]
+        },
+        {
+          "title": "Intelligent Operations",
+          "summary": "Mechanism models with AI-powered management",
+          "details": [
+            "High-precision battery mechanism models",
+            "Multi-dimensional heterogeneous database",
+            "Mechanism-AI integrated cloud-edge intelligent operations"
+          ]
+        }
+      ]
+    },
+    "rdStrength": {
+      "label": "R&D CAPABILITY",
+      "title": "END-TO-END IP"
+    },
+    "cta": {
+      "title": "Engineering What's Next",
+      "titleEn": "ENGINEERING WHAT'S NEXT",
+      "button": "Explore Products"
+    }
   },
   "hero": {
     "title": "Breaking Energy Limits, Reshaping Electric Boundaries",
@@ -27,8 +96,8 @@
     }
   },
   "about": {
-    "companyTitle": "Swift Safe Energy",
-    "companyDesc": "Swift Safe Energy (Shenzhen) Technology Co., Ltd. is a new energy technology enterprise dedicated to R&D and industrialization of high energy density, high safety advanced battery technology. Leveraging technical expertise from Beijing Institute of Technology and Shenzhen Automotive Research Institute, we have built a core technology system covering materials, cells, and systems, focused on breaking key bottlenecks in safety, reliability, and engineering applications of high-energy-density batteries."
+    "companyTitle": "Swift Safe Energy (Shenzhen) Technology Co., Ltd.",
+    "companyDesc": "Swift Safe Energy (Shenzhen) Technology Co., Ltd. is an advanced energy technology enterprise spun off from Beijing Institute of Technology (BIT). Backed by an academician-led team and top-tier global research resources, the company is headed by national overseas high-level talents and brings together an end-to-end engineering team specializing in battery materials, cells, and system operations.\n\nSwift Safe Energy focuses on the R&D and industrialization of high-energy-density, ultra-safe solid-state batteries with supercharging capabilities. By leveraging silicon/full-silicon anodes, high-safety solid electrolytes, and advanced battery structures, the company has established a full-stack proprietary technology framework spanning \"Materials–Cells–Systems.\" Through its disruptive solution integrating rapid heating and solid-state technology, Swift Safe Energy successfully resolves the long-standing industry trilemma of balancing high energy density, ultra-fast charging, and ultimate safety—delivering efficient, safe, and sustainable next-generation power solutions for cutting-edge sectors such as drones/UAVs, eVTOLs, and heavy-duty industrial equipment."
   },
   "advantages": {
     "title": "Core Advantages",
@@ -51,21 +120,21 @@
     }
   },
   "products": {
-    "title": "CloudChi Series",
+    "title": "Aeroride Series",
     "subtitle": "Mission-defined products for demanding boundary applications",
     "viewDetails": "View Details",
     "power": {
-      "title": "CloudChi 360-P",
+      "title": "Aeroride 360-P",
       "desc": "High-power platform for quadruped robots and multi-rotor drones requiring instant power response",
       "specs": "360 Wh/kg • 2C/5C Discharge • Quadruped / Drone"
     },
     "storage": {
-      "title": "CloudChi 400-E",
+      "title": "Aeroride 400-E",
       "desc": "High-energy platform for fixed-wing drones, AUVs, and inspection robots",
       "specs": "400 Wh/kg • 1C/3C Discharge • Long Endurance"
     },
     "drone": {
-      "title": "CloudChi 460-X",
+      "title": "Aeroride 460-X",
       "desc": "Ultra-high energy platform for extreme endurance or 10C high-power applications",
       "specs": "460+ Wh/kg • 10C Peak • Extreme Mission"
     },
@@ -136,7 +205,10 @@
     "legal": "Legal",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "copyright": "© 2024 Swift Safe Energy (Shenzhen) Technology Co., Ltd. All rights reserved."
+    "copyright": "© 2024 Swift Safe Energy (Shenzhen) Technology Co., Ltd. All rights reserved.",
+    "getInTouch": "Get in Touch",
+    "newsletter": "Newsletter",
+    "newsletterDesc": "Subscribe for updates on our latest innovations"
   },
   "contact": {
     "title": "Contact Us",
@@ -155,13 +227,196 @@
   },
   "timeline": {
     "title": "Our Journey",
-    "subtitle": "Milestones in our pursuit of energy storage innovation",
+    "subtitle": "From Research to Industrialization",
     "items": {
-      "2020": "Company Founded",
-      "2021": "First Prototype",
-      "2022": "Technology Breakthrough",
-      "2023": "Mass Production Ready",
-      "2024": "Global Expansion"
+      "2014": "Research Initiated",
+      "2016": "Nature Publication",
+      "2018": "Extreme Cold Fast Charging",
+      "2019": "6C Ultra-Fast Charging",
+      "2021": "Industrialization Team",
+      "2022": "Trial Platform Built",
+      "2023": "Mass Production Process",
+      "2024": "Shenzhen HQ",
+      "2025": "100M+ RMB Funding",
+      "2026": "0.5GWh Production Base"
+    },
+    "details": {
+      "2014": "Low-temp battery research | Solid-state battery research | Battery simulation research",
+      "2016": "All-climate battery technology published in Nature",
+      "2018": "Extreme cold fast charging (3.5C@-50℃) published in PNAS",
+      "2019": "World's first 6C ultra-fast heating technology, published in Joule",
+      "2021": "Ultra-fast charging SSB industrialization team formed | SSB key materials development | National Engineering Research Center for EVs · BIT",
+      "2022": "SSB trial and testing platform completed | 100kg-level SSE material scale-up | Ultra-fast charging SSB prototype development",
+      "2023": "100-ton-level SSE mass production process | A-sample high-energy ultra-fast charging SSB development completed",
+      "2024": "Shenzhen headquarters established",
+      "2025": "Funding exceeding 100 million RMB",
+      "2026": "0.5GWh production base construction"
     }
+  },
+  "casesPage": {
+    "hero": {
+      "badge": "Low-Altitude Energy Solutions",
+      "title": "CASE STUDIES",
+      "headline": "Powering Flight Beyond Limits.",
+      "subtitle": "High-Performance Battery Solutions: Pushing the limits of range and payload, built for extreme environments.",
+      "stats": {
+        "coldResilient": "Cold Resilient",
+        "maxPayload": "Max Payload",
+        "flightTime": "Flight Time"
+      }
+    },
+    "case01": {
+      "caseNumber": "Case 01",
+      "platform": "Large Compound-Wing UAV",
+      "battery": "14S3P · 123Ah",
+      "highlight": "5 h",
+      "highlightLabel": "Ultra-long Endurance",
+      "stats": {
+        "weight": {
+          "value": "33 kg",
+          "label": "Aircraft Weight"
+        },
+        "endurance": {
+          "value": "5 h",
+          "label": "Endurance"
+        },
+        "temperature": {
+          "value": "<50°C",
+          "label": "Module Temp."
+        }
+      }
+    },
+    "case02": {
+      "caseNumber": "Case 02",
+      "platform": "Medium Compound-Wing UAV",
+      "battery": "14S2P · 52Ah",
+      "highlight": "-2 kg",
+      "highlightLabel": "Weight Reduction",
+      "stats": {
+        "coldPerformance": {
+          "value": ">90%",
+          "label": "Capacity at -40°C"
+        },
+        "endurance": {
+          "value": "Significantly",
+          "label": "Improved"
+        },
+        "weightReduction": {
+          "value": "-2 kg",
+          "label": "Weight"
+        }
+      }
+    },
+    "case03": {
+      "caseNumber": "Case 03",
+      "platform": "Heavy-Lift Multirotor UAV",
+      "battery": "24S2P · 72Ah",
+      "highlight": "150 kg",
+      "highlightLabel": "Maximum Payload",
+      "stats": {
+        "payload": {
+          "value": "150 kg",
+          "label": "Max Payload"
+        },
+        "flightTime": {
+          "value": "30 min",
+          "label": "Flight Time"
+        },
+        "temperature": {
+          "value": "<60°C",
+          "label": "Module Temp."
+        }
+      }
+    },
+    "case04": {
+      "caseNumber": "Case 04",
+      "platform": "Medium Multirotor UAV",
+      "battery": "7S1P · 30Ah",
+      "highlight": "+63%",
+      "highlightLabel": "Endurance Improvement",
+      "stats": {
+        "endurance": {
+          "value": "100 min",
+          "label": "Flight Time"
+        },
+        "improvement": {
+          "value": "+63%",
+          "label": "vs Competitor"
+        }
+      },
+      "comparison": {
+        "title": "Endurance Comparison",
+        "competitor": {
+          "label": "Conventional Solution",
+          "value": "61 min"
+        },
+        "ours": {
+          "label": "Shenan Lithium",
+          "value": "100 min"
+        },
+        "improvement": "+63% Longer"
+      }
+    },
+    "metrics": {
+      "title": "ONE BATTERY PLATFORM.\nMULTIPLE FLIGHT SCENARIOS.",
+      "subtitle": "Versatile battery technology across diverse UAV applications.",
+      "stats": {
+        "endurance": {
+          "value": "5 h",
+          "label": "Longest Endurance"
+        },
+        "payload": {
+          "value": "150 kg",
+          "label": "Maximum Payload"
+        },
+        "temperature": {
+          "value": "-40°C",
+          "label": "Extreme Environment"
+        },
+        "improvement": {
+          "value": "+63%",
+          "label": "Endurance Gain"
+        }
+      }
+    },
+    "workflow": {
+      "title": "Engineered for Your Application",
+      "subtitle": "A systematic engineering approach to battery solutions tailored to specific applications.",
+      "steps": [
+        {
+          "title": "Flight Platform"
+        },
+        {
+          "title": "Mission Requirements"
+        },
+        {
+          "title": "Battery Architecture"
+        },
+        {
+          "title": "System Optimization"
+        },
+        {
+          "title": "Flight Validation"
+        }
+      ],
+      "keywords": [
+        "Voltage",
+        "Capacity",
+        "Energy Density",
+        "Weight",
+        "C-Rate",
+        "Thermal",
+        "Temperature"
+      ]
+    },
+    "cta": {
+      "badge": "Next Step",
+      "title": "Let's Build Your Next Flight.",
+      "subtitle": "Tell us your platform, payload and endurance requirements.",
+      "primary": "Customize Now",
+      "secondary": "Request a Sample",
+      "smallText": "OEM · ODM · Custom Battery Solutions"
+    },
+    "batteryArchitecture": "Battery Architecture"
   }
 }

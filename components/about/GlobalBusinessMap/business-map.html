@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>深安锂能 - 全球业务布局</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      padding: 20px;
+    }
+
+    .map-wrapper {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .map-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .map-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1E293B;
+    }
+
+    .map-subtitle {
+      font-size: 14px;
+      color: #64748B;
+      margin-top: 4px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 24px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .legend-line {
+      width: 32px;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    .legend-line.blue {
+      background: #3B82F6;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    }
+
+    .legend-line.orange {
+      background: #F97316;
+      box-shadow: 0 0 8px rgba(249, 115, 22, 0.5);
+    }
+
+    #mapCanvas {
+      display: block;
+      width: 100%;
+      height: 600px;
+    }
+
+    .footer {
+      padding: 16px 32px;
+      border-top: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #F8FAFC;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .logo-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1E293B;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: #64748B;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #64748B;
+    }
+
+    @media (max-width: 768px) {
+      .map-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .legend {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      #mapCanvas {
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="map-wrapper">
+      <div class="map-header">
+        <div>
+          <div class="map-title">全球业务布局</div>
+          <div class="map-subtitle">Global Business Network · 立足中国 · 辐射全球</div>
+        </div>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-line blue"></div>
+            <span>直属管理</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-line orange"></div>
+            <span>业务辐射</span>
+          </div>
+        </div>
+      </div>
+
+      <canvas id="mapCanvas"></canvas>
+
+      <div class="footer">
+        <div class="logo">
+          <div class="logo-icon">深</div>
+          <div>
+            <div class="logo-text">深安锂能</div>
+            <div class="logo-sub">SWIFT SAFE ENERGY</div>
+          </div>
+        </div>
+        <div class="status">动画循环播放中</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== 配置 ====================
+    const CONFIG = {
+      // 动画阶段时长（毫秒）
+      phases: {
+        nodeAppear: 2000,      // 节点出现
+        hqConnections: 3000,   // HQ连接
+        radiation: 5000,       // 业务辐射
+        hold: 2000,            // 保持
+      },
+      // 颜色
+      colors: {
+        china: '#3B82F6',
+        chinaFill: 'rgba(59, 130, 246, 0.15)',
+        chinaStroke: '#2563EB',
+        neighborFill: 'rgba(148, 163, 184, 0.15)',
+        neighborStroke: 'rgba(148, 163, 184, 0.4)',
+        hqLine: '#3B82F6',
+        radiationLine: '#F97316',
+        nodeCore: '#2563EB',
+        nodeGlow: 'rgba(37, 99, 235, 0.4)',
+        labelBg: 'rgba(255, 255, 255, 0.95)',
+      },
+      // 节点位置（相对于画布的比例，0-1）
+      nodes: {
+        shenzhen: { x: 0.72, y: 0.68, label: '深圳', sublabel: '总部 SHENZHEN HQ', isHQ: true },
+        shanghai: { x: 0.82, y: 0.45, label: '上海', sublabel: '业务中心 SHANGHAI BC', isHQ: false },
+        guangzhou: { x: 0.70, y: 0.72, label: '广州', sublabel: '业务中心 GUANGZHOU BC', isHQ: false },
+        shaoxing: { x: 0.80, y: 0.52, label: '绍兴', sublabel: '智造基地 SHAOXING TB', isHQ: false },
+      },
+      // 中国地图缩放和偏移
+      china: {
+        scale: 1.8,
+        offsetX: 0.38,
+        offsetY: 0.38,
+      }
+    };
+
+    // ==================== 中国地图数据 ====================
+    // 简化的中国地图轮廓点
+    const CHINA_OUTLINE = [
+      [95, 60], [105, 50], [120, 45], [140, 48], [160, 55], [175, 65], [180, 85],
+      [178, 105], [170, 125], [155, 140], [135, 150], [110, 145], [90, 135],
+      [80, 115], [82, 95], [90, 75]
+    ];
+
+    // 沿海区域（放大显示）
+    const COASTAL_OUTLINE = [
+      [110, 95], [130, 88], [150, 92], [165, 105], [168, 125], [155, 138], [135, 140],
+      [115, 132], [105, 115], [108, 100]
+    ];
+
+    // 省份边界
+    const PROVINCES = [
+      // 广东
+      [[105, 95], [120, 88], [135, 95], [140, 115], [130, 130], [110, 132], [100, 120], [103, 105]],
+      // 福建
+      [[140, 95], [155, 90], [168, 100], [165, 125], [150, 135], [138, 125], [140, 108]],
+      // 浙江
+      [[150, 70], [165, 65], [175, 80], [170, 100], [155, 108], [148, 90], [150, 70]],
+      // 江苏/上海
+      [[160, 55], [175, 52], [180, 70], [172, 85], [158, 88], [155, 70], [160, 55]],
+    ];
+
+    // 周边国家/地区简图
+    const NEIGHBOR_REGIONS = [
+      // 朝鲜半岛
+      [[165, 35], [175, 32], [180, 40], [178, 50], [170, 55], [165, 48], [165, 35]],
+      // 日本（北部）
+      [[178, 30], [185, 28], [190, 35], [185, 42], [178, 40], [178, 30]],
+      // 蒙古
+      [[120, 30], [155, 25], [175, 30], [180, 40], [160, 45], [130, 42], [115, 35], [120, 30]],
+      // 哈萨克斯坦等中亚
+      [[80, 45], [120, 35], [140, 40], [135, 55], [100, 60], [75, 55], [80, 45]],
+      // 印度半岛
+      [[100, 120], [115, 110], [125, 120], [120, 145], [110, 155], [95, 145], [100, 120]],
+      // 东南亚
+      [[130, 140], [150, 135], [160, 150], [155, 165], [140, 165], [130, 155], [130, 140]],
+      // 俄罗斯远东
+      [[175, 20], [200, 15], [220, 25], [210, 40], [185, 45], [175, 35], [175, 20]],
+    ];
+
+    // ==================== 辐射目标点 ====================
+    const RADIATION_TARGETS = {
+      china: [
+        // 国内辐射点
+        { x: 0.75, y: 0.35, label: '北京' },
+        { x: 0.78, y: 0.42, label: '天津' },
+        { x: 0.65, y: 0.50, label: '武汉' },
+        { x: 0.60, y: 0.55, label: '长沙' },
+        { x: 0.55, y: 0.58, label: '重庆' },
+        { x: 0.50, y: 0.52, label: '成都' },
+        { x: 0.72, y: 0.58, label: '厦门' },
+        { x: 0.75, y: 0.62, label: '福州' },
+      ],
+      middleEast: [
+        { x: 0.42, y: 0.52, label: '中东' },
+        { x: 0.38, y: 0.48, label: '沙特' },
+      ],
+      europe: [
+        { x: 0.28, y: 0.32, label: '欧洲' },
+        { x: 0.32, y: 0.28, label: '德国' },
+        { x: 0.30, y: 0.35, label: '法国' },
+        { x: 0.26, y: 0.30, label: '英国' },
+      ],
+      northAmerica: [
+        { x: 0.12, y: 0.38, label: '北美' },
+      ]
+    };
+
+    // ==================== 画布设置 ====================
+    const canvas = document.getElementById('mapCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // ==================== 动画状态 ====================
+    let animationPhase = 0; // 0: 节点出现, 1: HQ连接, 2: 业务辐射
+    let phaseStartTime = 0;
+    let globalTime = 0;
+    let particles = [];
+    let radiationLines = [];
+
+    // 粒子类
+    class Particle {
+      constructor(x, y, targetX, targetY, color, speed = 2) {
+        this.x = x;
+        this.y = y;
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.color = color;
+        this.speed = speed;
+        this.progress = 0;
+        this.size = 3 + Math.random() * 2;
+        this.alive = true;
+      }
+
+      update() {
+        this.progress += this.speed / 100;
+        if (this.progress >= 1) {
+          this.alive = false;
+          return;
+        }
+        // 贝塞尔曲线插值
+        const t = this.progress;
+        const midX = (this.x + this.targetX) / 2;
+        const midY = (this.y + this.targetY) / 2 - 50;
+        this.x = (1-t)*(1-t)*this.x + 2*(1-t)*t*midX + t*t*this.targetX;
+        this.y = (1-t)*(1-t)*this.y + 2*(1-t)*t*midY + t*t*this.targetY;
+      }
+
+      draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = 1 - this.progress * 0.5;
+
+        // 发光效果
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 10;
+
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    // ==================== 工具函数 ====================
+    function getNodePos(nodeKey) {
+      const node = CONFIG.nodes[nodeKey];
+      return {
+        x: node.x * width,
+        y: node.y * height,
+        ...node
+      };
+    }
+
+    function drawGlowCircle(x, y, radius, color, intensity = 1) {
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(1, 'transparent');
+      ctx.globalAlpha = intensity;
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawNode(x, y, isHQ, pulsePhase = 0, opacity = 1) {
+      ctx.save();
+      ctx.globalAlpha = opacity;
+
+      // 脉冲光圈
+      const pulseRadius = 25 + Math.sin(pulsePhase) * 8;
+      const pulseOpacity = 0.3 + Math.sin(pulsePhase) * 0.2;
+
+      // 外部发光
+      drawGlowCircle(x, y, isHQ ? 50 : 35, CONFIG.colors.nodeGlow, opacity);
+
+      // 脉冲环
+      ctx.strokeStyle = CONFIG.colors.nodeCore;
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = pulseOpacity * opacity;
+      ctx.beginPath();
+      ctx.arc(x, y, pulseRadius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 核心圆
+      ctx.globalAlpha = opacity;
+      ctx.fillStyle = CONFIG.colors.nodeCore;
+      ctx.shadowColor = CONFIG.colors.nodeCore;
+      ctx.shadowBlur = 15;
+      ctx.beginPath();
+      ctx.arc(x, y, isHQ ? 12 : 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 高光
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.beginPath();
+      ctx.arc(x - 3, y - 3, isHQ ? 4 : 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function drawLabel(x, y, label, sublabel, isHQ, opacity = 1) {
+      ctx.save();
+      ctx.globalAlpha = opacity;
+
+      const padding = 8;
+      ctx.font = `600 ${isHQ ? 13 : 11}px -apple-system, BlinkMacSystemFont, sans-serif`;
+      ctx.textAlign = 'center';
+
+      const labelWidth = Math.max(ctx.measureText(label).width, ctx.measureText(sublabel).width) + padding * 2;
+      const labelHeight = isHQ ? 50 : 40;
+
+      const labelX = x - labelWidth / 2;
+      const labelY = y + 20;
+
+      // 标签背景
+      ctx.fillStyle = CONFIG.colors.labelBg;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 2;
+      ctx.beginPath();
+      ctx.roundRect(labelX, labelY, labelWidth, labelHeight, 6);
+      ctx.fill();
+
+      // 标签文字
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.fillStyle = '#1E40AF';
+      ctx.fillText(isHQ ? '总部' : (sublabel.includes('BC') ? '业务中心' : '智造基地'), x, labelY + 16);
+
+      ctx.fillStyle = CONFIG.colors.nodeCore;
+      ctx.font = `700 ${isHQ ? 12 : 10}px -apple-system, BlinkMacSystemFont, sans-serif`;
+      ctx.fillText(label, x, labelY + 30);
+
+      ctx.fillStyle = '#64748B';
+      ctx.font = `400 9px -apple-system, BlinkMacSystemFont, sans-serif`;
+      ctx.fillText(sublabel.split(' ')[1] || sublabel, x, labelY + 42);
+
+      ctx.restore();
+    }
+
+    function drawConnectionLine(x1, y1, x2, y2, color, lineWidth = 2, dashPattern = null, opacity = 1) {
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 8;
+
+      if (dashPattern) {
+        ctx.setLineDash(dashPattern);
+      }
+
+      // 绘制曲线
+      const midX = (x1 + x2) / 2;
+      const midY = (y1 + y2) / 2;
+      const offset = Math.min(Math.abs(x2 - x1) * 0.3, 40);
+      const curveDir = y1 < y2 ? -1 : 1;
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.quadraticCurveTo(midX, midY + offset * curveDir, x2, y2);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawMap() {
+      const scale = CONFIG.china.scale;
+      const offsetX = width * CONFIG.china.offsetX;
+      const offsetY = height * CONFIG.china.offsetY;
+
+      ctx.save();
+      ctx.translate(offsetX, offsetY);
+      ctx.scale(scale, scale);
+
+      // 绘制周边国家（淡化）
+      ctx.fillStyle = CONFIG.colors.neighborFill;
+      ctx.strokeStyle = CONFIG.colors.neighborStroke;
+      ctx.lineWidth = 0.5;
+
+      NEIGHBOR_REGIONS.forEach(region => {
+        ctx.beginPath();
+        region.forEach((point, i) => {
+          if (i === 0) ctx.moveTo(point[0], point[1]);
+          else ctx.lineTo(point[0], point[1]);
+        });
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      });
+
+      // 绘制中国地图
+      ctx.fillStyle = CONFIG.colors.chinaFill;
+      ctx.strokeStyle = CONFIG.colors.chinaStroke;
+      ctx.lineWidth = 1.5;
+
+      ctx.beginPath();
+      CHINA_OUTLINE.forEach((point, i) => {
+        if (i === 0) ctx.moveTo(point[0], point[1]);
+        else ctx.lineTo(point[0], point[1]);
+      });
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // 绘制沿海高亮区域
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.25)';
+      ctx.strokeStyle = '#60A5FA';
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      COASTAL_OUTLINE.forEach((point, i) => {
+        if (i === 0) ctx.moveTo(point[0], point[1]);
+        else ctx.lineTo(point[0], point[1]);
+      });
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // 绘制省份边界
+      ctx.strokeStyle = 'rgba(96, 165, 250, 0.5)';
+      ctx.lineWidth = 0.5;
+
+      PROVINCES.forEach(province => {
+        ctx.beginPath();
+        province.forEach((point, i) => {
+          if (i === 0) ctx.moveTo(point[0], point[1]);
+          else ctx.lineTo(point[0], point[1]);
+        });
+        ctx.closePath();
+        ctx.stroke();
+      });
+
+      ctx.restore();
+    }
+
+    function drawRadiationTargets(phaseProgress) {
+      const allTargets = [
+        ...RADIATION_TARGETS.china.map(t => ({ ...t, type: 'china' })),
+        ...RADIATION_TARGETS.middleEast.map(t => ({ ...t, type: 'middleEast' })),
+        ...RADIATION_TARGETS.europe.map(t => ({ ...t, type: 'europe' })),
+        ...RADIATION_TARGETS.northAmerica.map(t => ({ ...t, type: 'northAmerica' })),
+      ];
+
+      allTargets.forEach(target => {
+        const x = target.x * width;
+        const y = target.y * height;
+        const opacity = phaseProgress * 0.6;
+
+        // 目标点发光
+        ctx.save();
+        ctx.globalAlpha = opacity;
+
+        // 外圈
+        ctx.fillStyle = CONFIG.colors.radiationLine;
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 脉冲
+        const pulseSize = 6 + Math.sin(globalTime / 500 + target.x) * 3;
+        ctx.strokeStyle = CONFIG.colors.radiationLine;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = opacity * 0.5;
+        ctx.beginPath();
+        ctx.arc(x, y, pulseSize, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 标签
+        if (target.label.length <= 3) {
+          ctx.font = '500 10px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = CONFIG.colors.radiationLine;
+          ctx.fillText(target.label, x, y - 10);
+        }
+
+        ctx.restore();
+      });
+    }
+
+    function drawRadiationLines(phaseProgress) {
+      const nodes = ['shanghai', 'guangzhou', 'shaoxing'];
+
+      nodes.forEach(nodeKey => {
+        const from = getNodePos(nodeKey);
+        const targets = [
+          ...RADIATION_TARGETS.china,
+          ...RADIATION_TARGETS.middleEast,
+          ...RADIATION_TARGETS.europe,
+          ...RADIATION_TARGETS.northAmerica
+        ];
+
+        targets.forEach((target, i) => {
+          const toX = target.x * width;
+          const toY = target.y * height;
+
+          // 错开绘制时机
+          const delay = (i * 50) % 500;
+          const lineOpacity = Math.max(0, Math.min(1, (phaseProgress * 1000 - delay) / 500));
+
+          if (lineOpacity > 0) {
+            drawConnectionLine(
+              from.x, from.y,
+              toX, toY,
+              CONFIG.colors.radiationLine,
+              target.type === 'china' ? 1 : 1.5,
+              target.type === 'china' ? [4, 4] : [6, 4],
+              lineOpacity * 0.5
+            );
+          }
+        });
+      });
+    }
+
+    function spawnParticle(x, y, targetX, targetY, color) {
+      if (particles.length < 50) {
+        particles.push(new Particle(x, y, targetX, targetY, color, 1.5 + Math.random()));
+      }
+    }
+
+    function updateParticles() {
+      particles = particles.filter(p => p.alive);
+      particles.forEach(p => p.update());
+    }
+
+    function drawParticles() {
+      particles.forEach(p => p.draw(ctx));
+    }
+
+    // ==================== 主渲染循环 ====================
+    function render(timestamp) {
+      globalTime = timestamp;
+
+      // 清空画布
+      ctx.clearRect(0, 0, width, height);
+
+      // 计算当前阶段和时间
+      const totalCycle = CONFIG.phases.nodeAppear + CONFIG.phases.hqConnections +
+                         CONFIG.phases.radiation + CONFIG.phases.hold;
+      const cycleTime = timestamp % totalCycle;
+
+      let phaseProgress = 0;
+
+      // 确定当前阶段
+      if (cycleTime < CONFIG.phases.nodeAppear) {
+        animationPhase = 0;
+        phaseProgress = cycleTime / CONFIG.phases.nodeAppear;
+      } else if (cycleTime < CONFIG.phases.nodeAppear + CONFIG.phases.hqConnections) {
+        animationPhase = 1;
+        phaseProgress = (cycleTime - CONFIG.phases.nodeAppear) / CONFIG.phases.hqConnections;
+      } else if (cycleTime < CONFIG.phases.nodeAppear + CONFIG.phases.hqConnections + CONFIG.phases.radiation) {
+        animationPhase = 2;
+        phaseProgress = (cycleTime - CONFIG.phases.nodeAppear - CONFIG.phases.hqConnections) / CONFIG.phases.radiation;
+      } else {
+        animationPhase = 3;
+        phaseProgress = 1;
+      }
+
+      // 绘制地图
+      drawMap();
+
+      // 阶段一：节点出现
+      const nodeOpacity = animationPhase >= 0 ? Math.min(1, phaseProgress * 2) : 0;
+
+      // 绘制节点
+      Object.entries(CONFIG.nodes).forEach(([key, node]) => {
+        const pos = getNodePos(key);
+        drawNode(pos.x, pos.y, node.isHQ, globalTime / 300, nodeOpacity);
+        drawLabel(pos.x, pos.y, node.label, node.sublabel, node.isHQ, nodeOpacity);
+      });
+
+      // 阶段二：HQ连接
+      if (animationPhase >= 1) {
+        const hqOpacity = animationPhase === 1 ? phaseProgress : 1;
+        const shenzhen = getNodePos('shenzhen');
+
+        // 深圳到其他三个节点的连接线
+        ['shanghai', 'guangzhou', 'shaoxing'].forEach(nodeKey => {
+          const target = getNodePos(nodeKey);
+          drawConnectionLine(
+            shenzhen.x, shenzhen.y,
+            target.x, target.y,
+            CONFIG.colors.hqLine,
+            2.5,
+            null,
+            hqOpacity
+          );
+
+          // 生成流光粒子
+          if (Math.random() < 0.03 * hqOpacity) {
+            spawnParticle(shenzhen.x, shenzhen.y, target.x, target.y, CONFIG.colors.hqLine);
+          }
+        });
+
+        // 连接节点
+        const midPoints = [
+          { x: (shenzhen.x + getNodePos('shanghai').x) / 2, y: (shenzhen.y + getNodePos('shanghai').y) / 2 },
+          { x: (shenzhen.x + getNodePos('guangzhou').x) / 2, y: (shenzhen.y + getNodePos('guangzhou').y) / 2 },
+          { x: (shenzhen.x + getNodePos('shaoxing').x) / 2, y: (shenzhen.y + getNodePos('shaoxing').y) / 2 },
+        ];
+
+        midPoints.forEach(point => {
+          ctx.fillStyle = CONFIG.colors.hqLine;
+          ctx.shadowColor = CONFIG.colors.hqLine;
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+      }
+
+      // 阶段三：业务辐射
+      if (animationPhase >= 2) {
+        const radiationOpacity = animationPhase === 2 ? phaseProgress : 1;
+
+        // 辐射线
+        drawRadiationLines(radiationOpacity);
+
+        // 辐射目标点
+        drawRadiationTargets(radiationOpacity);
+
+        // 从下属节点发射粒子到辐射目标
+        ['shanghai', 'guangzhou', 'shaoxing'].forEach(nodeKey => {
+          const from = getNodePos(nodeKey);
+          const targets = [...RADIATION_TARGETS.china, ...RADIATION_TARGETS.middleEast,
+                          ...RADIATION_TARGETS.europe, ...RADIATION_TARGETS.northAmerica];
+
+          if (Math.random() < 0.02 * radiationOpacity) {
+            const target = targets[Math.floor(Math.random() * targets.length)];
+            spawnParticle(from.x, from.y, target.x * width, target.y * height, CONFIG.colors.radiationLine);
+          }
+        });
+      }
+
+      // 更新和绘制粒子
+      updateParticles();
+      drawParticles();
+
+      // 区域标签（阶段二之后）
+      if (animationPhase >= 2) {
+        const labelOpacity = animationPhase === 2 ? phaseProgress : 1;
+
+        ctx.save();
+        ctx.globalAlpha = labelOpacity * 0.9;
+
+        // 中东标签
+        drawRegionLabel(0.40 * width, 0.50 * height, '中东 Middle East');
+
+        // 欧洲标签
+        drawRegionLabel(0.28 * width, 0.30 * height, '欧洲 Europe');
+
+        // 北美标签
+        drawRegionLabel(0.10 * width, 0.38 * height, '北美 North America');
+
+        ctx.restore();
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    function drawRegionLabel(x, y, text) {
+      ctx.font = '500 11px -apple-system, BlinkMacSystemFont, sans-serif';
+      const metrics = ctx.measureText(text);
+      const padding = 8;
+      const boxWidth = metrics.width + padding * 2;
+      const boxHeight = 24;
+
+      // 背景
+      ctx.fillStyle = 'rgba(249, 115, 22, 0.15)';
+      ctx.strokeStyle = CONFIG.colors.radiationLine;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(x - boxWidth/2, y - boxHeight/2, boxWidth, boxHeight, 4);
+      ctx.fill();
+      ctx.stroke();
+
+      // 文字
+      ctx.fillStyle = '#C2410C';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, x, y);
+    }
+
+    // ==================== 启动 ====================
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>

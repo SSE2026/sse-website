@@ -22,8 +22,9 @@ export function useScrollProgress(
   const [direction, setDirection] = useState<"up" | "down" | null>(null);
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { scrollYProgress } = useScroll({
-    offset: offset,
+    offset: offset as any,
   });
 
   const progress = useTransform(scrollYProgress, [0, 1], [0, 100]);

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>车规级软包锂电池 3D 拆解与复原展示</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { width: 100vw; height: 100vh; overflow: hidden; background: #050811; color: #f8fafc; user-select: none; }
+    canvas { display: block; width: 100%; height: 100%; position: absolute; inset: 0; z-index: 1; }
+
+    .hud { position: fixed; inset: 0; pointer-events: none; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 32px 40px; }
+
+    .brand-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 8px 16px; border-radius: 30px;
+      background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      font-size: 13px; font-weight: 600; letter-spacing: 1.5px; color: #38bdf8;
+      align-self: flex-start; pointer-events: auto;
+    }
+    .brand-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
+
+    .cards-container { position: relative; width: 100%; height: 100%; pointer-events: none; }
+    .info-card {
+      position: absolute; top: 40%; transform: translateY(-50%);
+      width: 380px; padding: 24px 28px; border-radius: 16px;
+      background: rgba(10, 15, 30, 0.75); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+      opacity: 0; transform: translateY(-40%) scale(0.95);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+    .info-card.left { left: 40px; }
+    .info-card.right { right: 40px; }
+    .info-card.active { opacity: 1; transform: translateY(-50%) scale(1); }
+
+    .card-tag { font-size: 11px; font-weight: 700; color: #f59e0b; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+    .info-card h2 { font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 10px; line-height: 1.25; }
+    .info-card p { font-size: 13.5px; color: #94a3b8; line-height: 1.6; }
+
+    .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .spec-item span { display: block; font-size: 11px; color: #64748b; }
+    .spec-item strong { font-size: 13px; color: #e2e8f0; font-weight: 600; }
+
+    .controls-wrapper { align-self: center; display: flex; flex-direction: column; align-items: center; gap: 14px; pointer-events: auto; margin-bottom: 10px; }
+    .stage-tabs { display: flex; gap: 8px; background: rgba(15, 23, 42, 0.7); padding: 5px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); }
+    .tab-btn {
+      padding: 8px 20px; border-radius: 18px; border: none; background: transparent;
+      color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+    }
+    .tab-btn.active { background: #38bdf8; color: #0f172a; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+
+    .scrub-bar-container { display: flex; align-items: center; gap: 14px; }
+    .scrub-slider {
+      -webkit-appearance: none; appearance: none; width: 340px; height: 6px;
+      background: rgba(255, 255, 255, 0.15); border-radius: 3px; outline: none; cursor: pointer;
+    }
+    .scrub-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%;
+      background: #38bdf8; box-shadow: 0 0 12px #38bdf8; cursor: pointer; transition: transform 0.1s;
+    }
+    .scrub-slider::-webkit-slider-thumb:hover { transform: scale(1.25); }
+    .time-code { font-family: monospace; font-size: 12px; color: #64748b; width: 45px; text-align: right; }
+    .hint-text { font-size: 11px; color: #475569; text-align: center; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div class="hud">
+    <div class="brand-badge">
+      <span class="dot"></span>
+      <span>AUTOMOTIVE POUCH CELL / 软包电芯全景工程拆解</span>
+    </div>
+
+    <div class="cards-container">
+      <div class="info-card left active" id="card-0">
+        <div class="card-tag">Stage 01 — Overview</div>
+        <h2>车规级铝塑膜软包电芯</h2>
+        <p>采用高阻隔多层冲深铝塑复合膜热封封装。具备极高的体积能量密度与优秀的散热防爆特性。</p>
+        <div class="spec-grid">
+          <div class="spec-item"><span>封装材质</span><strong>多层铝塑复合膜</strong></div>
+          <div class="spec-item"><span>极耳材质</span><strong>正铝 (Al) / 负铜 (Cu)</strong></div>
+        </div>
+      </div>
+
+      <div class="info-card right" id="card-1">
+        <div class="card-tag">Stage 02 — Anatomy</div>
+        <h2>叠片芯体与电极结构透视</h2>
+        <p>Z-Fold 高速叠片工艺。暴露内部铝箔正极片、铜箔负极片及微孔陶瓷隔膜交替堆叠结构。</p>
+        <div class="spec-grid">
+          <div class="spec-item"><span>正极集流体</span><strong>高纯铝箔 + 正极涂层</strong></div>
+          <div class="spec-item"><span>负极集流体</span><strong>电解铜箔 + 石墨涂层</strong></div>
+        </div>
+      </div>
+
+      <div class="info-card left" id="card-2">
+        <div class="card-tag">Stage 03 — Convergence</div>
+        <h2>极耳超声焊接与封装复原</h2>
+        <p>内部多层集流体极耳汇集后，通过超声波焊接至外部正负极耳，并密封于高温极耳胶内。</p>
+        <div class="spec-grid">
+          <div class="spec-item"><span>绝缘防护</span><strong>琥珀色 Kapton 极耳胶</strong></div>
+          <div class="spec-item"><span>焊接工艺</span><strong>超声波金属焊接</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-wrapper">
+      <div class="stage-tabs">
+        <button class="tab-btn active" onclick="jumpToProgress(0)">01 完整形态</button>
+        <button class="tab-btn" onclick="jumpToProgress(0.5)">02 内部拆解</button>
+        <button class="tab-btn" onclick="jumpToProgress(1.0)">03 紧密合成</button>
+      </div>
+      <div class="scrub-bar-container">
+        <input type="range" class="scrub-slider" id="scrub-slider" min="0" max="1" step="0.001" value="0">
+        <span class="time-code" id="time-code">0%</span>
+      </div>
+      <div class="hint-text">支持按住鼠标左键自由旋转视角 / 滚轮拖拽进度条拆解</div>
+    </div>
+  </div>
+
+  <script src="js/three.min.js"></script>
+
+  <script>
+    class SimpleOrbitControls {
+      constructor(camera, domElement) {
+        this.camera = camera;
+        this.domElement = domElement;
+        this.target = new THREE.Vector3(0, 0, 0);
+        this.enableDamping = true;
+        this.dampingFactor = 0.08;
+        this.enabled = true;
+        this.spherical = new THREE.Spherical();
+        this.sphericalDelta = new THREE.Spherical();
+        const offset = new THREE.Vector3();
+        offset.copy(camera.position).sub(this.target);
+        this.spherical.setFromVector3(offset);
+        this.isMouseDown = false;
+        this.lastMousePos = { x: 0, y: 0 };
+        this.minDistance = 8;
+        this.maxDistance = 50;
+        this._bindEvents();
+      }
+
+      _bindEvents() {
+        this.domElement.addEventListener('mousedown', (e) => {
+          if (e.button === 0) {
+            this.isMouseDown = true;
+            this.lastMousePos = { x: e.clientX, y: e.clientY };
+          }
+        });
+        window.addEventListener('mouseup', () => { this.isMouseDown = false; });
+        window.addEventListener('mousemove', (e) => {
+          if (!this.isMouseDown || !this.enabled) return;
+          const deltaX = e.clientX - this.lastMousePos.x;
+          const deltaY = e.clientY - this.lastMousePos.y;
+          this.sphericalDelta.theta -= deltaX * 0.005;
+          this.sphericalDelta.phi -= deltaY * 0.005;
+          this.lastMousePos = { x: e.clientX, y: e.clientY };
+        });
+        this.domElement.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          if (e.deltaY < 0) { this.spherical.radius *= 0.9; }
+          else { this.spherical.radius *= 1.1; }
+          this.spherical.radius = Math.max(this.minDistance, Math.min(this.maxDistance, this.spherical.radius));
+        }, { passive: false });
+      }
+
+      update() {
+        const offset = new THREE.Vector3();
+        const quat = new THREE.Quaternion().setFromUnitVectors(this.camera.up, new THREE.Vector3(0, 1, 0));
+        const quatInverse = quat.clone().invert();
+        offset.copy(this.camera.position).sub(this.target);
+        offset.applyQuaternion(quat);
+        this.spherical.setFromVector3(offset);
+        if (this.enableDamping) {
+          this.spherical.theta += this.sphericalDelta.theta * this.dampingFactor;
+          this.spherical.phi += this.sphericalDelta.phi * this.dampingFactor;
+        } else {
+          this.spherical.theta += this.sphericalDelta.theta;
+          this.spherical.phi += this.sphericalDelta.phi;
+        }
+        this.spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, this.spherical.phi));
+        this.spherical.radius = Math.max(this.minDistance, Math.min(this.maxDistance, this.spherical.radius));
+        this.target.applyQuaternion(quat);
+        offset.setFromSpherical(this.spherical);
+        offset.applyQuaternion(quatInverse);
+        this.camera.position.copy(this.target).add(offset);
+        this.camera.lookAt(this.target);
+        if (this.enableDamping) {
+          this.sphericalDelta.theta *= (1 - this.dampingFactor);
+          this.sphericalDelta.phi *= (1 - this.dampingFactor);
+        } else {
+          this.sphericalDelta.set(0, 0, 0);
+        }
+      }
+    }
+
+    const canvas = document.getElementById('canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    renderer.shadowMap.enabled = true;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050811);
+    scene.fog = new THREE.FogExp2(0x050811, 0.018);
+
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 22);
+
+    const controls = new SimpleOrbitControls(camera, renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0x94a3b8, 0.8));
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    mainLight.position.set(12, 15, 15);
+    mainLight.castShadow = true;
+    scene.add(mainLight);
+
+    const rimBlue = new THREE.DirectionalLight(0x38bdf8, 3.5);
+    rimBlue.position.set(-15, -10, -10);
+    scene.add(rimBlue);
+
+    const goldAccent = new THREE.PointLight(0xf59e0b, 2.5, 30);
+    goldAccent.position.set(0, 8, 8);
+    scene.add(goldAccent);
+
+    const rootGroup = new THREE.Group();
+    scene.add(rootGroup);
+
+    const pouchMaterial = new THREE.MeshStandardMaterial({
+      color: 0xcccccc, metalness: 0.92, roughness: 0.22,
+      envMapIntensity: 1.5, transparent: true, opacity: 1.0, depthWrite: false
+    });
+
+    const posTabMaterial = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.15 });
+    const negTabMaterial = new THREE.MeshStandardMaterial({ color: 0xb87333, metalness: 0.88, roughness: 0.25 });
+    const tapeMaterial = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.35, transparent: true, opacity: 0.85 });
+
+    const cathodeMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.85, metalness: 0.1 });
+    const alFoilMat = new THREE.MeshStandardMaterial({ color: 0xd1d5db, metalness: 0.95, roughness: 0.2 });
+    const anodeMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.75, metalness: 0.2 });
+    const cuFoilMat = new THREE.MeshStandardMaterial({ color: 0x9a3412, metalness: 0.9, roughness: 0.3 });
+    const separatorMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.95, transparent: true, opacity: 0.65, depthWrite: false });
+
+    function createPouchShell(isTop) {
+      const group = new THREE.Group();
+      const dir = isTop ? 1 : -1;
+      const pocketGeo = new THREE.BoxGeometry(8.0, 12.0, 0.7);
+      const pocket = new THREE.Mesh(pocketGeo, pouchMaterial);
+      pocket.position.z = dir * 0.35;
+      group.add(pocket);
+
+      const rimShape = new THREE.Shape();
+      const w = 9.4, h = 13.8, border = 0.7;
+      rimShape.moveTo(-w/2, -h/2);
+      rimShape.lineTo(w/2, -h/2);
+      rimShape.lineTo(w/2, h/2);
+      rimShape.lineTo(-w/2, h/2);
+      rimShape.closePath();
+
+      const holePath = new THREE.Path();
+      holePath.moveTo(-w/2 + border, -h/2 + border);
+      holePath.lineTo(w/2 - border, -h/2 + border);
+      holePath.lineTo(w/2 - border, h/2 - border);
+      holePath.lineTo(-w/2 + border, h/2 - border);
+      holePath.closePath();
+      rimShape.holes.push(holePath);
+
+      const rimExtrude = new THREE.ExtrudeGeometry(rimShape, { depth: 0.1, bevelEnabled: false });
+      const rim = new THREE.Mesh(rimExtrude, pouchMaterial);
+      rim.position.z = -0.05;
+      group.add(rim);
+
+      group.position.z = dir * 0.75;
+      return group;
+    }
+
+    const topPouch = createPouchShell(true);
+    const bottomPouch = createPouchShell(false);
+    rootGroup.add(topPouch);
+    rootGroup.add(bottomPouch);
+
+    const tabsGroup = new THREE.Group();
+    const posTab = new THREE.Mesh(new THREE.BoxGeometry(1.4, 2.8, 0.12), posTabMaterial);
+    posTab.position.set(-2.2, 7.2, 0);
+    const negTab = new THREE.Mesh(new THREE.BoxGeometry(1.4, 2.8, 0.12), negTabMaterial);
+    negTab.position.set(2.2, 7.2, 0);
+    const posTape = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.8, 0.3), tapeMaterial);
+    posTape.position.set(-2.2, 6.2, 0);
+    const negTape = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.8, 0.3), tapeMaterial);
+    negTape.position.set(2.2, 6.2, 0);
+    tabsGroup.add(posTab, negTab, posTape, negTape);
+    rootGroup.add(tabsGroup);
+
+    const layers = [];
+    const LAYER_COUNT = 14;
+
+    for (let i = 0; i < LAYER_COUNT; i++) {
+      const layerGroup = new THREE.Group();
+      const isCathode = i % 2 === 0;
+
+      if (isCathode) {
+        const coating = new THREE.Mesh(new THREE.BoxGeometry(7.4, 11.2, 0.04), cathodeMat);
+        const alTabLead = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.02), alFoilMat);
+        alTabLead.position.set(-2.2, 6.0, 0);
+        layerGroup.add(coating, alTabLead);
+      } else {
+        const coating = new THREE.Mesh(new THREE.BoxGeometry(7.7, 11.5, 0.04), anodeMat);
+        const cuTabLead = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.02), cuFoilMat);
+        cuTabLead.position.set(2.2, 6.0, 0);
+        layerGroup.add(coating, cuTabLead);
+      }
+
+      const sep = new THREE.Mesh(new THREE.BoxGeometry(8.0, 11.8, 0.02), separatorMat);
+      sep.position.z = 0.03;
+      layerGroup.add(sep);
+
+      const initialZ = (i - LAYER_COUNT / 2) * 0.08;
+      layerGroup.position.set(0, 0, initialZ);
+      layerGroup.userData = { baseZ: initialZ, index: i, isCathode };
+
+      rootGroup.add(layerGroup);
+      layers.push(layerGroup);
+    }
+
+    let currentProgress = 0;
+    let targetProgress = 0;
+    let isUserDragging = false;
+
+    const slider = document.getElementById('scrub-slider');
+    const timeCode = document.getElementById('time-code');
+    const cardEls = [0, 1, 2].map(i => document.getElementById('card-' + i));
+    const tabBtns = document.querySelectorAll('.tab-btn');
+
+    function updateHUD(p) {
+      timeCode.textContent = Math.round(p * 100) + '%';
+      if (!isUserDragging) {
+        slider.value = p;
+      }
+      const activeIdx = p < 0.35 ? 0 : p < 0.7 ? 1 : 2;
+      cardEls.forEach((card, idx) => card.classList.toggle('active', idx === activeIdx));
+      tabBtns.forEach((btn, idx) => btn.classList.toggle('active', idx === activeIdx));
+    }
+
+    slider.addEventListener('pointerdown', () => { isUserDragging = true; });
+    window.addEventListener('pointerup', () => { isUserDragging = false; });
+
+    slider.addEventListener('input', (e) => {
+      targetProgress = parseFloat(e.target.value);
+    });
+
+    window.jumpToProgress = function(val) {
+      targetProgress = val;
+    };
+
+    window.addEventListener('wheel', (e) => {
+      targetProgress = Math.max(0, Math.min(1, targetProgress + e.deltaY * 0.0008));
+    }, { passive: true });
+
+    function easeOutQuad(t) { return t * (2 - t); }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      currentProgress += (targetProgress - currentProgress) * 0.08;
+      const p = currentProgress;
+      updateHUD(p);
+
+      controls.update();
+
+      const p1 = Math.min(1, Math.max(0, p / 0.45));
+      const e1 = easeOutQuad(p1);
+
+      topPouch.position.y = e1 * 7.5;
+      topPouch.position.z = 0.75 + e1 * 4.0;
+      topPouch.rotation.x = -e1 * 0.4;
+      pouchMaterial.opacity = 1.0 - e1 * 0.65;
+
+      bottomPouch.position.y = -e1 * 7.5;
+      bottomPouch.position.z = -0.75 - e1 * 4.0;
+      bottomPouch.rotation.x = e1 * 0.4;
+
+      tabsGroup.position.y = e1 * 2.0;
+
+      const p2 = Math.min(1, Math.max(0, (p - 0.2) / 0.65));
+      const e2 = easeOutQuad(p2);
+
+      layers.forEach((layer) => {
+        const i = layer.userData.index;
+        const centerOffset = i - LAYER_COUNT / 2;
+        layer.position.z = layer.userData.baseZ + centerOffset * e2 * 0.45;
+        const sideDir = layer.userData.isCathode ? -1 : 1;
+        layer.position.x = sideDir * e2 * 0.8;
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    requestAnimationFrame(animate);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

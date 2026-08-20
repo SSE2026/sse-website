@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface ScrollProgressProps {
   className?: string;
-  color?: "accent" | "cyan" | "white";
+  color?: "accent" | "cyan" | "white" | string;
   height?: "sm" | "md" | "lg";
 }
 
@@ -22,9 +22,9 @@ export function ScrollProgress({
     restDelta: 0.001,
   });
 
-  const colorClasses = {
+  const colorClasses: Record<string, string> = {
     accent: "bg-accent",
-    cyan: "bg-cyan",
+    cyan: "bg-accent-light",
     white: "bg-white",
   };
 
@@ -89,7 +89,7 @@ export function ReadingProgress({ targetId, className }: ReadingProgressProps) {
   return (
     <div className={cn("fixed left-0 top-0 h-1 bg-white/10 z-[100]", className)}>
       <motion.div
-        className="h-full bg-gradient-to-r from-accent to-cyan"
+        className="h-full bg-gradient-to-r from-accent to-accent-light"
         initial={{ width: 0 }}
         animate={{ width: `${progress}%` }}
         transition={{ type: "spring", stiffness: 100, damping: 30 }}

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>全球业务辐射地图</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, #101923 0%, #060A0F 55%, #030507 100%);
+      overflow: hidden;
+    }
+    #map-container { width: 100vw; height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="map-container"></div>
+
+  <script>
+    // ============================================================
+    // 统一 Timeline 架构 - GSAP-like 实现
+    // ============================================================
+
+    const chart = echarts.init(document.getElementById('map-container'));
+
+    // ============================================================
+    // 1. 数据定义
+    // ============================================================
+
+    const NODES = [
+      // 国内节点
+      { id: 'shenzhen', name: '深圳总部', coords: [114.0579, 22.5431], type: 'hq', domestic: true, showLabel: true, color: '#38EF7D', size: 12, appearAt: 0 },
+      { id: 'guangzhou', name: '广州', coords: [113.2644, 23.1291], type: 'business', domestic: true, showLabel: true, color: '#E2E8F0', size: 8, appearAt: 0.2 },
+      { id: 'shanghai', name: '上海', coords: [121.4737, 31.2304], type: 'business', domestic: true, showLabel: true, color: '#E2E8F0', size: 8, appearAt: 0.3 },
+      { id: 'hangzhou', name: '杭州', coords: [120.1551, 30.2741], type: 'business', domestic: true, showLabel: true, color: '#E2E8F0', size: 8, appearAt: 0.4 },
+      { id: 'shaoxing', name: '绍兴', coords: [120.5821, 30.0515], type: 'manufacturing', domestic: true, showLabel: true, color: '#F59E0B', size: 10, appearAt: 0.5 },
+      { id: 'beijing', name: '北京', coords: [116.4074, 39.9042], type: 'business', domestic: true, showLabel: true, color: '#E2E8F0', size: 8, appearAt: 0.6 },
+      // 海外节点
+      { id: 'germany', name: '', coords: [8.6821, 50.1109], type: 'international', domestic: false, showLabel: false, color: '#A78BFA', size: 6, appearAt: 0.7 },
+      { id: 'netherlands', name: '', coords: [4.9041, 52.3676], type: 'international', domestic: false, showLabel: false, color: '#A78BFA', size: 6, appearAt: 0.75 },
+      { id: 'poland', name: '', coords: [21.0122, 52.2297], type: 'international', domestic: false, showLabel: false, color: '#A78BFA', size: 6, appearAt: 0.8 },
+      { id: 'newyork', name: '', coords: [-74.006, 40.7128], type: 'international', domestic: false, showLabel: false, color: '#A78BFA', size: 6, appearAt: 0.85 },
+      { id: 'kyiv', name: '', coords: [30.5234, 50.4501], type: 'international', domestic: false, showLabel: false, color: '#A78BFA', size: 6, appearAt: 0.9 },
+    ];
+
+    const ROUTES = [
+      // 国内飞线
+      { id: 'sz-gz', from: 'shenzhen', to: 'guangzhou', type: 'domestic', color: '#60A5FA', appearAt: 0.25 },
+      { id: 'sz-sh', from: 'shenzhen', to: 'shanghai', type: 'domestic', color: '#60A5FA', appearAt: 0.35 },
+      { id: 'sz-hz', from: 'shenzhen', to: 'hangzhou', type: 'domestic', color: '#60A5FA', appearAt: 0.45 },
+      { id: 'hz-sx', from: 'hangzhou', to: 'shaoxing', type: 'manufacturing', color: '#F59E0B', appearAt: 0.55 },
+      { id: 'sh-sx', from: 'shanghai', to: 'shaoxing', type: 'manufacturing', color: '#F59E0B', appearAt: 0.58 },
+      { id: 'sz-bj', from: 'shenzhen', to: 'beijing', type: 'domestic', color: '#60A5FA', appearAt: 0.65 },
+      // 国际飞线
+      { id: 'sz-de', from: 'shenzhen', to: 'germany', type: 'international', color: '#A855F7', appearAt: 0.72 },
+      { id: 'sh-nl', from: 'shanghai', to: 'netherlands', type: 'international', color: '#A855F7', appearAt: 0.77 },
+      { id: 'hz-pl', from: 'hangzhou', to: 'poland', type: 'international', color: '#A855F7', appearAt: 0.82 },
+      { id: 'sz-us', from: 'shenzhen', to: 'newyork', type: 'international', color: '#A855F7', appearAt: 0.87 },
+      { id: 'sh-ua', from: 'shanghai', to: 'kyiv', type: 'international', color: '#A855F7', appearAt: 0.92 },
+    ];
+
+    // Camera 关键帧
+    const CAMERA_KEYFRAMES = [
+      { progress: 0, center: [114.05, 22.54], zoom: 12 },    // 深圳特写
+      { progress: 0.15, center: [115, 27], zoom: 8 },       // 广州/上海/杭州同时发出
+      { progress: 0.3, center: [115, 27], zoom: 7 },         // 绍兴
+      { progress: 0.4, center: [115, 30], zoom: 5 },         // 北京
+      { progress: 0.5, center: [80, 35], zoom: 4 },         // 国际开始
+      { progress: 0.65, center: [40, 30], zoom: 2 },        // 全球视图
+      { progress: 1.0, center: [40, 30], zoom: 2 },          // 保持
+    ];
+
+    // ============================================================
+    // 2. 工具函数
+    // ============================================================
+
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function interpolateKeyframes(progress, keyframes) {
+      let start = keyframes[0];
+      let end = keyframes[keyframes.length - 1];
+
+      for (let i = 0; i < keyframes.length - 1; i++) {
+        if (progress >= keyframes[i].progress && progress <= keyframes[i + 1].progress) {
+          start = keyframes[i];
+          end = keyframes[i + 1];
+          break;
+        }
+      }
+
+      const range = end.progress - start.progress;
+      const localProgress = range > 0 ? (progress - start.progress) / range : 0;
+      const eased = easeInOutCubic(localProgress);
+
+      return {
+        center: [
+          start.center[0] + (end.center[0] - start.center[0]) * eased,
+          start.center[1] + (end.center[1] - start.center[1]) * eased,
+        ],
+        zoom: start.zoom + (end.zoom - start.zoom) * eased,
+      };
+    }
+
+    function getNodeById(id) {
+      return NODES.find(n => n.id === id);
+    }
+
+    function getVisibleNodes(progress) {
+      return NODES.filter(n => progress >= n.appearAt);
+    }
+
+    function getVisibleRoutes(progress) {
+      return ROUTES.filter(r => progress >= r.appearAt);
+    }
+
+    // ============================================================
+    // 3. 统一 Timeline 控制器
+    // ============================================================
+
+    const TOTAL_DURATION = 20000; // 20 秒
+    let startTime = null;
+    let paused = false;
+    let animationId = null;
+
+    function update(timestamp) {
+      if (paused) {
+        animationId = requestAnimationFrame(update);
+        return;
+      }
+
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      let progress = (elapsed % TOTAL_DURATION) / TOTAL_DURATION;
+
+      // 计算当前状态
+      const camera = interpolateKeyframes(progress, CAMERA_KEYFRAMES);
+      const visibleNodes = getVisibleNodes(progress);
+      const visibleRoutes = getVisibleRoutes(progress);
+
+      // 生成 ECharts 配置
+      const nodeData = visibleNodes.map(n => ({
+        name: n.name,
+        value: [n.coords[0], n.coords[1], n.size],
+        itemStyle: { color: n.color },
+        label: {
+          show: n.showLabel && n.domestic, // 仅国内节点显示标签
+          position: 'right',
+          formatter: n.showLabel && n.domestic ? n.name : '',
+          color: n.color,
+          fontSize: 11,
+          fontWeight: 400,
+          backgroundColor: 'rgba(5, 7, 11, 0.85)',
+          padding: [4, 8],
+          borderRadius: 4,
+        },
+        rippleEffect: {
+          brushType: 'stroke',
+          scale: 4,
+          period: 3,
+        },
+      }));
+
+      const lineData = visibleRoutes.map(r => {
+        const from = getNodeById(r.from);
+        const to = getNodeById(r.to);
+        if (!from || !to) return null;
+        return {
+          coords: [from.coords, to.coords],
+          lineStyle: {
+            color: r.color,
+            width: 1.5,
+            curveness: r.type === 'international' ? 0.35 : 0.15,
+            opacity: 0.6,
+          },
+        };
+      }).filter(Boolean);
+
+      // 更新图表
+      chart.setOption({
+        geo: {
+          center: camera.center,
+          zoom: camera.zoom,
+        },
+        series: [
+          { name: 'nodes', data: nodeData },
+          {
+            name: 'flylines',
+            data: lineData,
+            effect: {
+              show: true,
+              period: 4,
+              trailLength: 0.15,
+              symbolSize: 4,
+              color: '#ffffff',
+            },
+          },
+        ],
+      });
+
+      animationId = requestAnimationFrame(update);
+    }
+
+    function start() {
+      paused = false;
+      if (!animationId) {
+        startTime = null;
+        animationId = requestAnimationFrame(update);
+      }
+    }
+
+    function pause() {
+      paused = true;
+    }
+
+    // ============================================================
+    // 4. 初始化
+    // ============================================================
+
+    chart.setOption({
+      backgroundColor: 'transparent',
+      geo: {
+        map: 'world',
+        roam: false,
+        silent: true,
+        itemStyle: {
+          areaColor: '#0B1118',
+          borderColor: '#1C2A4A',
+          borderWidth: 0.5,
+        },
+        emphasis: { disabled: true },
+      },
+      series: [
+        {
+          name: 'nodes',
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          z: 3,
+          symbolSize: (val) => val[2] || 8,
+          data: [],
+        },
+        {
+          name: 'flylines',
+          type: 'lines',
+          coordinateSystem: 'geo',
+          z: 2,
+          effect: {
+            show: true,
+            period: 4,
+            trailLength: 0.15,
+            symbolSize: 4,
+            color: '#ffffff',
+          },
+          lineStyle: {
+            width: 1.5,
+            opacity: 0.6,
+            curveness: 0.2,
+          },
+          data: [],
+        },
+      ],
+    });
+
+    // 启动动画
+    start();
+
+    // Page Visibility API - 页面不可见时暂停
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        pause();
+      } else {
+        start();
+      }
+    });
+
+    // 响应式
+    window.addEventListener('resize', () => {
+      chart.resize();
+    });
+
+    // 通知父页面
+    window.addEventListener('load', () => {
+      window.parent.postMessage({ type: 'MAP_READY' }, '*');
+    });
+
+    // 暴露控制接口
+    window.mapController = { start, pause, chart };
+  </script>
+</body>
+</html>

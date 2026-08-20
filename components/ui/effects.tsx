@@ -17,7 +17,7 @@ export function MouseFollower({
   children,
   className,
   size = 300,
-  color = "rgba(47, 128, 255, 0.1)",
+  color = "rgba(245, 158, 11, 0.1)",
   isActive = true,
 }: MouseFollowerProps) {
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -278,7 +278,7 @@ interface PulsingDotProps {
 
 export function PulsingDot({
   size = 8,
-  color = "#2F80FF",
+  color = "#F59E0B",
   className,
 }: PulsingDotProps) {
   return (

@@ -3,8 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { ArrowRight, Zap, Battery, Cpu, Settings } from "lucide-react";
-import { FadeIn } from "@/components/animated/fade-in";
+import { ArrowRight, Zap, Battery, Cpu, Settings, Box, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -29,71 +28,99 @@ const products = [
     image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80",
     icon: Zap,
     badge: "360-P",
-    gradient: "from-accent/20 to-transparent",
-    accentColor: "#2F80FF",
+    badgeColor: "bg-[#2563EB]",
+    accentColor: "#2563EB",
+    specs: ["500Wh/kg", "10C Discharge", "Ultra Safe"],
   },
   {
     key: "storage",
     image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=80",
     icon: Battery,
     badge: "400-E",
-    gradient: "from-emerald-500/20 to-transparent",
+    badgeColor: "bg-emerald-500",
     accentColor: "#10B981",
+    specs: ["400Wh/kg", "8000+ Cycles", "Smart BMS"],
   },
   {
     key: "drone",
     image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80",
     icon: Cpu,
     badge: "460-X",
-    gradient: "from-purple-500/20 to-transparent",
+    badgeColor: "bg-purple-500",
     accentColor: "#A855F7",
+    specs: ["460Wh/kg", "Lightweight", "High Power"],
   },
   {
     key: "consumer",
     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
     icon: Settings,
     badge: "System",
-    gradient: "from-orange-500/20 to-transparent",
-    accentColor: "#F97316",
+    badgeColor: "bg-amber-500",
+    accentColor: "#F59E0B",
+    specs: ["Custom Design", "Fast Delivery", "Full Support"],
   },
 ];
 
 export function Products({ translations, locale }: ProductsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
   const sectionInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const isZh = locale === "zh";
 
   return (
-    <section ref={containerRef} className="section-padding bg-primary relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[150px]" />
-      <div className="absolute inset-0 grid-pattern-strong opacity-30" />
+    <section ref={containerRef} className="py-20 md:py-32 bg-[#FAFAFA] relative overflow-hidden">
+      {/* Section transition gradient - top */}
+      <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white to-transparent pointer-events-none z-10" />
+      {/* Section transition gradient - bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none z-10" />
+      {/* Background decorations */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#2563EB]/5 to-transparent rounded-full blur-3xl bg-breathe" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-[#2563EB]/5 to-transparent rounded-full blur-3xl bg-breathe-slow" />
+      </div>
 
       <div className="container-padding mx-auto relative">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={sectionInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center max-w-2xl mx-auto mb-16"
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
         >
-          <span className="inline-block text-sm font-medium text-accent mb-4 tracking-wider uppercase">
-            {locale === "zh" ? "产品中心" : "Products"}
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-4">
-            {translations.products.title}
-          </h2>
-          <p className="text-lg text-white/60">
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={sectionInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-3 mb-4"
+            >
+              <div className="w-10 h-px bg-[#2563EB]" />
+              <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-wider">
+                {isZh ? "产品中心" : "Products"}
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={sectionInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.2 }}
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#0A0A0A]"
+            >
+              {translations.products.title}
+            </motion.h2>
+          </div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={sectionInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.3 }}
+            className="text-base text-[#52525B] max-w-md"
+          >
             {translations.products.subtitle}
-          </p>
+          </motion.p>
         </motion.div>
 
-        {/* Products Grid - Bento style layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        {/* Products Grid - Bento Style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product, index) => {
             const data = (translations.products as Record<string, {title?: string; desc?: string; specs?: string}>)[product.key];
             const Icon = product.icon;
@@ -102,45 +129,47 @@ export function Products({ translations, locale }: ProductsProps) {
             return (
               <motion.div
                 key={product.key}
-                initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
-                animate={sectionInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                initial={{ opacity: 0, y: 50 }}
+                animate={sectionInView ? { opacity: 1, y: 0 } : {}}
                 transition={{
-                  delay: index * 0.15,
-                  duration: 0.7,
-                  ease: [0.22, 1, 0.36, 1],
+                  delay: 0.2 + index * 0.1,
+                  duration: 0.6,
+                  ease: [0.16, 1, 0.3, 1],
                 }}
-                className="group relative"
+                className={cn(
+                  "group relative",
+                  isLarge ? "lg:col-span-2" : ""
+                )}
               >
-                <Link href={`/${locale}/products`}>
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    transition={{ duration: 0.4 }}
+                <Link href="/products/cloudchi-360-p">
+                  <div
                     className={cn(
                       "relative rounded-3xl overflow-hidden",
-                      "bg-gradient-to-br",
-                      product.gradient,
-                      "border border-white/[0.06]",
-                      "hover:border-white/[0.12]",
+                      "bg-white border border-[#E4E4E7]",
                       "transition-all duration-400",
-                      isLarge ? "aspect-[16/10]" : "aspect-[4/3] md:aspect-square"
+                      "hover:border-[#D4D4D8] hover:shadow-2xl",
+                      isLarge ? "aspect-[16/9]" : "aspect-square lg:aspect-[4/3]"
                     )}
                   >
-                    {/* Background Image with Parallax */}
+                    {/* Background Image */}
                     <ProductImage src={product.image} alt={data?.title ?? ''} />
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/90 via-[#0A0A0A]/40 to-transparent" />
 
-                    {/* Top Badge */}
-                    <div className="absolute top-4 left-4 flex items-center gap-2">
-                      <div className="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-                        <span className="text-xs font-medium text-white">{product.badge}</span>
+                    {/* Badge */}
+                    <div className="absolute top-4 left-4 md:top-6 md:left-6">
+                      <div className={cn(
+                        "px-3 py-1.5 rounded-full text-xs font-semibold text-white",
+                        product.badgeColor
+                      )}>
+                        {product.badge}
                       </div>
                     </div>
 
                     {/* Icon */}
                     <div
-                      className="absolute bottom-4 right-4 w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+                      className="absolute top-4 right-4 md:top-6 md:right-6 w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
                       style={{ color: product.accentColor }}
                     >
                       <Icon className="w-6 h-6" />
@@ -148,34 +177,40 @@ export function Products({ translations, locale }: ProductsProps) {
 
                     {/* Content */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                      <h3 className="text-xl md:text-2xl font-heading font-semibold text-white mb-2 group-hover:text-white/90 transition-colors">
+                      <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
                         {data.title}
                       </h3>
-                      <p className="text-sm md:text-base text-white/60 mb-3 line-clamp-2">
+                      <p className="text-sm text-white/70 mb-4 line-clamp-2">
                         {data.desc}
                       </p>
-                      <p className="text-xs md:text-sm font-medium tracking-wide" style={{ color: product.accentColor }}>
-                        {data.specs}
-                      </p>
+
+                      {/* Specs */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {product.specs.map((spec, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-1 text-xs font-mono bg-white/10 rounded text-white/80"
+                          >
+                            {spec}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* CTA */}
+                      <div className="flex items-center gap-2 text-sm font-medium" style={{ color: product.accentColor }}>
+                        <span>{isZh ? "了解更多" : "Learn More"}</span>
+                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
 
-                    {/* Arrow indicator */}
-                    <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      whileHover={{ opacity: 1, x: 0 }}
-                      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
-                    >
-                      <ArrowRight className="w-5 h-5 text-white" />
-                    </motion.div>
-
-                    {/* Animated border glow on hover */}
+                    {/* Hover overlay effect */}
                     <div
-                      className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                       style={{
-                        boxShadow: `inset 0 0 0 1px ${product.accentColor}40`,
+                        background: `linear-gradient(to top, ${product.accentColor}20, transparent 50%)`
                       }}
                     />
-                  </motion.div>
+                  </div>
                 </Link>
               </motion.div>
             );
@@ -186,16 +221,15 @@ export function Products({ translations, locale }: ProductsProps) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={sectionInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.6, duration: 0.5 }}
+          transition={{ delay: 0.6 }}
           className="text-center mt-12"
         >
           <Link
-            href={`/${locale}/products`}
-            className="inline-flex items-center gap-2 text-accent hover:text-cyan transition-colors duration-300 group"
+            href="/products/cloudchi-360-p"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#0A0A0A] text-white font-semibold rounded-lg hover:bg-[#18181B] transition-colors group"
           >
-            <span className="font-medium">
-              {locale === "zh" ? "查看全部产品" : "View All Products"}
-            </span>
+            <Box className="w-5 h-5" />
+            <span>{isZh ? "查看全部产品" : "View All Products"}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </motion.div>
@@ -212,7 +246,7 @@ function ProductImage({ src, alt }: { src: string; alt: string }) {
     offset: ["start end", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [-30, 30]);
+  const y = useTransform(scrollYProgress, [0, 1], [-20, 20]);
 
   return (
     <div ref={ref} className="absolute inset-0 overflow-hidden">

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>软包锂电池 3D 拆解动画</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; background: #070a12; }
+    canvas { display: block; width: 100%; height: 100%; }
+
+    .hud {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px;
+    }
+
+    .header-title {
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: #38bdf8;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      align-self: flex-start;
+    }
+
+    .text-card-container {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: calc(100% - 80px);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .text-card {
+      max-width: 420px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      padding: 28px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transform: translateY(30px);
+      position: absolute;
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .text-card.left { left: 0; }
+    .text-card.right { right: 0; text-align: right; }
+    .text-card.active { opacity: 1; transform: translateY(0); }
+
+    .text-card .step-num {
+      color: #f59e0b;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .text-card h2 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #f8fafc;
+      line-height: 1.2;
+    }
+
+    .text-card p {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    .bottom-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stage-indicators {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stage-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .stage-dot.active {
+      background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+    }
+
+    .progress-track {
+      width: 300px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #f59e0b);
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div class="hud">
+    <div class="header-title">AUTOMOTIVE POUCH CELL / 车规级软包电芯</div>
+
+    <div class="text-card-container">
+      <div class="text-card left active" id="card-1">
+        <span class="step-num">STAGE 01 — OVERVIEW</span>
+        <h2>极致轻量化软包电芯</h2>
+        <p>采用高阻隔多层复合铝塑膜封装，相比硬壳电池重量降低 20%，具备极高能量密度与出色的结构安全性。</p>
+      </div>
+      <div class="text-card left" id="card-2">
+        <span class="step-num">STAGE 02 — PACKAGING</span>
+        <h2>冲深铝塑膜与高温密封</h2>
+        <p>冲深成型坑完美贴合内部电芯，四周采用高可靠性热封工艺，有效抵抗电解液腐蚀并阻隔水氧渗透。</p>
+      </div>
+      <div class="text-card right" id="card-3">
+        <span class="step-num">STAGE 03 — INTERNAL STACK</span>
+        <h2>Z-Fold 高速叠片工艺</h2>
+        <p>正负极片与高孔隙率隔膜交替堆叠，相比传统卷绕工艺消除内部应力集中，循环寿命与快充性能大幅提升。</p>
+      </div>
+      <div class="text-card right" id="card-4">
+        <span class="step-num">STAGE 04 — WELDING</span>
+        <h2>多极耳激光/超声波焊接</h2>
+        <p>纯铝正极耳与镀镍铜负极耳采用多点超声波精密焊接，极低接触内阻，轻松承载 4C-6C 超级快充。</p>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="stage-indicators">
+        <div class="stage-dot active" id="dot-1"></div>
+        <div class="stage-dot" id="dot-2"></div>
+        <div class="stage-dot" id="dot-3"></div>
+        <div class="stage-dot" id="dot-4"></div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script>
+    // --- 场景设置 ---
+    const canvas = document.getElementById('canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x070a12);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 32);
+
+    // --- 灯光 ---
+    scene.add(new THREE.AmbientLight(0xdbeafe, 1.2));
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    mainLight.position.set(15, 20, 25);
+    scene.add(mainLight);
+
+    const blueRimLight = new THREE.DirectionalLight(0x38bdf8, 2.0);
+    blueRimLight.position.set(-20, -10, -15);
+    scene.add(blueRimLight);
+
+    const goldAccentLight = new THREE.PointLight(0xf59e0b, 3.0, 50);
+    goldAccentLight.position.set(0, 12, 10);
+    scene.add(goldAccentLight);
+
+    // --- 电池模型 ---
+    const batteryGroup = new THREE.Group();
+    scene.add(batteryGroup);
+
+    // 材质
+    const casingMat = new THREE.MeshStandardMaterial({
+      color: 0x94a3b8,
+      metalness: 0.85,
+      roughness: 0.25
+    });
+    const posTabMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.15 });
+    const negTabMat = new THREE.MeshStandardMaterial({ color: 0xb87333, metalness: 0.9, roughness: 0.2 });
+    const tapeMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.5, transparent: true, opacity: 0.85 });
+    const cathodeMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+    const anodeMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.7 });
+    const separatorMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.9, transparent: true, opacity: 0.75 });
+
+    // 顶部外壳
+    const topCasingGroup = new THREE.Group();
+    topCasingGroup.add(new THREE.Mesh(new THREE.BoxGeometry(11.6, 17.6, 0.15), casingMat));
+    const topPocket = new THREE.Mesh(new THREE.BoxGeometry(10.0, 15.0, 0.7), casingMat);
+    topPocket.position.z = 0.35;
+    topCasingGroup.add(topPocket);
+    topCasingGroup.position.z = 0.75;
+    batteryGroup.add(topCasingGroup);
+
+    // 底部外壳
+    const bottomCasingGroup = new THREE.Group();
+    bottomCasingGroup.add(new THREE.Mesh(new THREE.BoxGeometry(11.6, 17.6, 0.15), casingMat));
+    const bottomPocket = new THREE.Mesh(new THREE.BoxGeometry(10.0, 15.0, 0.7), casingMat);
+    bottomPocket.position.z = -0.35;
+    bottomCasingGroup.add(bottomPocket);
+    bottomCasingGroup.position.z = -0.75;
+    batteryGroup.add(bottomCasingGroup);
+
+    // 极耳
+    const tabsGroup = new THREE.Group();
+    const posTab = new THREE.Mesh(new THREE.BoxGeometry(1.6, 3.5, 0.1), posTabMat);
+    posTab.position.set(-2.6, 9.2, 0);
+    const negTab = new THREE.Mesh(new THREE.BoxGeometry(1.6, 3.5, 0.1), negTabMat);
+    negTab.position.set(2.6, 9.2, 0);
+    const posTape = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.0, 0.25), tapeMat);
+    posTape.position.set(-2.6, 8.2, 0);
+    const negTape = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.0, 0.25), tapeMat);
+    negTape.position.set(2.6, 8.2, 0);
+    tabsGroup.add(posTab, negTab, posTape, negTape);
+    batteryGroup.add(tabsGroup);
+
+    // 内部叠片
+    const layers = [];
+    for (let i = 0; i < 18; i++) {
+      const isCathode = i % 2 === 0;
+      const layerGroup = new THREE.Group();
+      layerGroup.add(new THREE.Mesh(new THREE.BoxGeometry(9.6, 14.6, 0.04), isCathode ? cathodeMat : anodeMat));
+      const sep = new THREE.Mesh(new THREE.BoxGeometry(9.8, 14.8, 0.02), separatorMat);
+      sep.position.z = 0.03;
+      layerGroup.add(sep);
+      const z = (i - 9) * 0.07;
+      layerGroup.position.set(0, 0, z);
+      layerGroup.userData = { baseZ: z };
+      batteryGroup.add(layerGroup);
+      layers.push(layerGroup);
+    }
+
+    batteryGroup.rotation.x = 0.3;
+    batteryGroup.rotation.y = -0.4;
+
+    // --- 动画 ---
+    const cardEls = [1,2,3,4].map(i => document.getElementById('card-' + i));
+    const dotEls = [1,2,3,4].map(i => document.getElementById('dot-' + i));
+    const progressFill = document.getElementById('progress-fill');
+
+    function setActive(index) {
+      cardEls.forEach((el, i) => el.classList.toggle('active', i === index));
+      dotEls.forEach((el, i) => el.classList.toggle('active', i === index));
+    }
+
+    const TOTAL = 16000;
+    let startTime = null;
+
+    function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+    function easeInOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const p = Math.min((timestamp - startTime) / TOTAL, 1);
+
+      progressFill.style.width = (p * 100) + '%';
+      setActive(p < 0.25 ? 0 : p < 0.5 ? 1 : p < 0.75 ? 2 : 3);
+
+      // 阶段1: 旋转
+      const e1 = easeInOut(Math.min(p / 0.25, 1));
+      batteryGroup.rotation.x = 0.3 + e1 * (-0.1);
+      batteryGroup.rotation.y = -0.4 + e1 * 1.0;
+
+      // 阶段2: 外壳分离
+      if (p > 0.25) {
+        const e2 = easeOut(Math.min((p - 0.25) / 0.25, 1));
+        topCasingGroup.position.z = 0.75 + e2 * 6.25;
+        topCasingGroup.position.y = e2 * 1.0;
+        topCasingGroup.rotation.x = e2 * (-0.2);
+        bottomCasingGroup.position.z = -0.75 - e2 * 6.25;
+        bottomCasingGroup.position.y = -e2 * 1.0;
+        bottomCasingGroup.rotation.x = e2 * 0.2;
+        batteryGroup.rotation.x = 0.2 + e2 * 0.3;
+        batteryGroup.rotation.y = 0.6 + e2 * (-0.8);
+        batteryGroup.rotation.z = e2 * 0.3;
+      }
+
+      // 阶段3: 叠片展开
+      if (p > 0.5) {
+        const e3 = easeOut(Math.min((p - 0.5) / 0.25, 1));
+        topCasingGroup.position.z = 7.0 + e3 * 2.0;
+        bottomCasingGroup.position.z = -7.0 - e3 * 2.0;
+        batteryGroup.rotation.x = 0.5 + e3 * (-0.4);
+        batteryGroup.rotation.y = -0.2 + e3 * 0.2;
+        batteryGroup.rotation.z = 0.3 - e3 * 0.3;
+        layers.forEach(l => {
+          const spread = (l.userData.baseZ / 0.07 - 9) * 0.35;
+          l.position.z = l.userData.baseZ + spread * e3;
+        });
+      }
+
+      // 阶段4: 镜头推近
+      if (p > 0.75) {
+        const e4 = easeInOut(Math.min((p - 0.75) / 0.25, 1));
+        camera.position.y = e4 * 4;
+        camera.position.z = 32 + e4 * (-20);
+        batteryGroup.position.y = e4 * (-2);
+        batteryGroup.rotation.x = 0.1;
+        batteryGroup.rotation.y = 0;
+        batteryGroup.rotation.z = 0;
+        tabsGroup.position.z = e4 * 0.5;
+      }
+
+      // 循环
+      if (p >= 1) {
+        startTime = timestamp;
+        topCasingGroup.position.set(0, 0, 0.75);
+        topCasingGroup.rotation.set(0, 0, 0);
+        bottomCasingGroup.position.set(0, 0, -0.75);
+        bottomCasingGroup.rotation.set(0, 0, 0);
+        batteryGroup.position.set(0, 0, 0);
+        batteryGroup.rotation.set(0.3, -0.4, 0);
+        camera.position.set(0, 0, 32);
+        tabsGroup.position.set(0, 0, 0);
+        layers.forEach(l => l.position.z = l.userData.baseZ);
+      }
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

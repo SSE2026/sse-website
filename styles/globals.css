@@ -1,35 +1,116 @@
 @import "tailwindcss";
 
 /* ============================================
-   Design System Variables
+   Design System Variables - Tesla + DJI Style
+   深安锂能国际站 V2.0
    ============================================ */
 @theme {
-  /* Primary Colors */
-  --color-primary: #0B1020;
-  --color-secondary: #F5F7FA;
+  /* ============================================
+     Colors - Light Mode (Primary)
+     ============================================ */
+  --color-primary: #0A0A0A;
+  --color-on-primary: #FFFFFF;
+  --color-secondary: #52525B;
+  --color-tertiary: #A1A1AA;
 
-  /* Accent Colors */
-  --color-accent: #2F80FF;
-  --color-cyan: #4FD1FF;
+  /* Accent - Tesla Blue */
+  --color-accent: #2563EB;
+  --color-accent-hover: #1D4ED8;
+  --color-accent-light: rgba(37, 99, 235, 0.1);
+
+  /* Backgrounds */
+  --color-background: #FAFAFA;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #F4F4F5;
+  --color-surface-hover: #F0F0F1;
+
+  /* Borders */
+  --color-border: #E4E4E7;
+  --color-border-subtle: #F4F4F5;
 
   /* Semantic Colors */
-  --color-success: #10B981;
+  --color-success: #16A34A;
   --color-warning: #F59E0B;
-  --color-error: #EF4444;
+  --color-error: #DC2626;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #0B1020 0%, #1a2042 25%, #0B1020 50%, #1e3559 75%, #0B1020 100%);
-  --gradient-accent: linear-gradient(135deg, #2F80FF 0%, #4FD1FF 100%);
-  --gradient-glow: radial-gradient(ellipse at center, rgba(47, 128, 255, 0.15) 0%, transparent 70%);
+  /* ============================================
+     Dark Mode Colors
+     ============================================ */
+  --color-primary-dark: #FAFAFA;
+  --color-on-primary-dark: #0A0A0A;
+  --color-secondary-dark: #A1A1AA;
+  --color-tertiary-dark: #71717A;
+  --color-accent-dark: #3B82F6;
+  --color-background-dark: #09090B;
+  --color-surface-dark: #18181B;
+  --color-surface-elevated-dark: #27272A;
+  --color-border-dark: #27272A;
 
-  /* Fonts */
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-heading: var(--font-space-grotesk), system-ui, sans-serif;
+  /* ============================================
+     Gradients
+     ============================================ */
+  --gradient-primary: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  --gradient-hero: linear-gradient(180deg, #FAFAFA 0%, #F4F4F5 100%);
+  --gradient-dark-hero: linear-gradient(180deg, #09090B 0%, #18181B 100%);
+  --gradient-accent-glow: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
 
-  /* Animation */
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-quart: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  /* ============================================
+     Typography - Noto Sans SC + Inter
+     ============================================ */
+  /* 中文：Noto Sans SC (Google Fonts) / system-ui */
+  --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  /* 英文及数字：Inter */
+  --font-inter: 'Inter', var(--font-sans);
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  /* ============================================
+     Spacing (8px Grid)
+     ============================================ */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ============================================
+     Border Radius
+     ============================================ */
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* ============================================
+     Shadows
+     ============================================ */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.12);
+  --shadow-2xl: 0 32px 64px rgba(0, 0, 0, 0.16);
+
+  /* ============================================
+     Animation
+     ============================================ */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 400ms;
 }
 
 /* ============================================
@@ -40,46 +121,53 @@ html {
 }
 
 body {
-  background-color: #0B1020;
-  color: #f5f5f7;
-  font-family: var(--font-inter), system-ui, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Light Mode Default */
+body {
+  background-color: #FAFAFA;
+  color: #0A0A0A;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(47, 128, 255, 0.3);
+  background: rgba(37, 99, 235, 0.2);
   color: inherit;
 }
 
 /* ============================================
-   Custom Scrollbar
+   Custom Scrollbar - Tesla Style
    ============================================ */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(47, 128, 255, 0.3);
-  border-radius: 3px;
+  background: #D4D4D8;
+  border-radius: 4px;
   transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(47, 128, 255, 0.5);
+  background: #A1A1AA;
 }
 
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(47, 128, 255, 0.3) rgba(255, 255, 255, 0.02);
+  scrollbar-color: #D4D4D8 transparent;
 }
 
 /* ============================================
@@ -96,19 +184,7 @@ body {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Fade In Down */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -120,7 +196,7 @@ body {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -131,19 +207,13 @@ body {
 /* Float */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-10px); }
 }
 
-/* Pulse Glow */
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.6;
-    filter: blur(60px);
-  }
-  50% {
-    opacity: 1;
-    filter: blur(80px);
-  }
+/* Pulse */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 /* Gradient Flow */
@@ -158,22 +228,46 @@ body {
   100% { background-position: 200% 0; }
 }
 
-/* Text Reveal */
-@keyframes textReveal {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-  100% {
-    clip-path: inset(0 0 0 0);
-  }
+/* Text Shimmer Effect - 适用于白色文字 */
+.text-shimmer {
+  background: linear-gradient(
+    110deg,
+    #ffffff 0%,
+    #e8eaed 25%,
+    #ffffff 50%,
+    #c4c7cc 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Text Shimmer - 浅色版本 */
+.text-shimmer-light {
+  background: linear-gradient(
+    110deg,
+    rgba(232, 237, 245, 0.9) 0%,
+    rgba(200, 204, 210, 0.9) 25%,
+    rgba(232, 237, 245, 0.9) 50%,
+    rgba(180, 185, 195, 0.9) 75%,
+    rgba(232, 237, 245, 0.9) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
 }
 
 /* Blur In */
 @keyframes blurIn {
   from {
     opacity: 0;
-    filter: blur(20px);
-    transform: scale(1.1);
+    filter: blur(10px);
+    transform: scale(1.05);
   }
   to {
     opacity: 1;
@@ -186,7 +280,7 @@ body {
 @keyframes slideInLeft {
   from {
     opacity: 0;
-    transform: translateX(-60px);
+    transform: translateX(-30px);
   }
   to {
     opacity: 1;
@@ -198,7 +292,7 @@ body {
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(60px);
+    transform: translateX(30px);
   }
   to {
     opacity: 1;
@@ -206,55 +300,39 @@ body {
   }
 }
 
-/* Border Glow */
-@keyframes borderGlow {
-  0%, 100% {
-    border-color: rgba(47, 128, 255, 0.3);
-    box-shadow: 0 0 20px rgba(47, 128, 255, 0.2);
-  }
-  50% {
-    border-color: rgba(79, 209, 255, 0.5);
-    box-shadow: 0 0 30px rgba(79, 209, 255, 0.3);
-  }
-}
-
-/* Rotate */
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 /* Scroll Bounce */
 @keyframes scrollBounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(8px); }
+  50% { transform: translateY(6px); }
+}
+
+/* Number Counter Animation */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ============================================
    Animation Classes
    ============================================ */
 .animate-fade-in {
-  animation: fadeIn 0.6s var(--ease-out-expo) forwards;
+  animation: fadeIn 0.6s var(--ease-out) forwards;
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
-}
-
-.animate-fade-in-down {
-  animation: fadeInDown 0.8s var(--ease-out-expo) forwards;
+  animation: fadeInUp 0.6s var(--ease-out) forwards;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.6s var(--ease-out-expo) forwards;
+  animation: scaleIn 0.5s var(--ease-out) forwards;
 }
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
 
-.animate-pulse-glow {
-  animation: pulseGlow 4s ease-in-out infinite;
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
 }
 
 .animate-gradient-flow {
@@ -274,140 +352,191 @@ body {
 }
 
 .animate-blur-in {
-  animation: blurIn 0.8s var(--ease-out-expo) forwards;
+  animation: blurIn 0.8s var(--ease-out) forwards;
 }
 
 .animate-slide-in-left {
-  animation: slideInLeft 0.8s var(--ease-out-expo) forwards;
+  animation: slideInLeft 0.6s var(--ease-out) forwards;
 }
 
 .animate-slide-in-right {
-  animation: slideInRight 0.8s var(--ease-out-expo) forwards;
+  animation: slideInRight 0.6s var(--ease-out) forwards;
 }
 
 .animate-scroll-bounce {
   animation: scrollBounce 2s ease-in-out infinite;
 }
 
-/* ============================================
-   Glass Morphism
-   ============================================ */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Scroll-triggered animation */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
 
-.glass-strong {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.glass-dark {
-  background: rgba(11, 16, 32, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Stagger children */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-.glass-card-hover {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-card-hover:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(47, 128, 255, 0.2);
-  box-shadow:
-    0 0 40px rgba(47, 128, 255, 0.15),
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transform: translateY(-4px);
-}
+.stagger-children.visible > *:nth-child(1) { transition-delay: 0ms; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(2) { transition-delay: 100ms; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(3) { transition-delay: 200ms; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(4) { transition-delay: 300ms; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(5) { transition-delay: 400ms; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(6) { transition-delay: 500ms; opacity: 1; transform: translateY(0); }
 
 /* ============================================
-   Gradient Text
+   Typography Classes - Tesla/DJI Style
    ============================================ */
+.text-display {
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.text-h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.text-h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.text-h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.text-h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.text-body-lg {
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-body {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-body-sm {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-caption {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+.text-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+}
+
+/* Gradient Text - Tesla Blue */
 .gradient-text {
-  background: linear-gradient(135deg, #2F80FF 0%, #4FD1FF 50%, #2F80FF 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  background-size: 200% 100%;
-  animation: gradientFlow 4s ease infinite;
 }
 
 .gradient-text-subtle {
-  background: linear-gradient(135deg, rgba(47, 128, 255, 0.8) 0%, rgba(79, 209, 255, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.9) 0%, rgba(59, 130, 246, 0.9) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Highlight Text - More prominent */
-.highlight-text {
-  background: linear-gradient(135deg, #2F80FF 0%, #4FD1FF 50%, #2F80FF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% 200%;
-  animation: gradientFlow 3s ease infinite;
-  filter: drop-shadow(0 0 30px rgba(47, 128, 255, 0.3));
+/* ============================================
+   Glass Morphism - Subtle Version
+   ============================================ */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(228, 228, 231, 0.5);
+}
+
+.glass-dark {
+  background: rgba(9, 9, 11, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(39, 39, 42, 0.5);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(228, 228, 231, 0.4);
 }
 
 /* ============================================
    Background Effects
    ============================================ */
 .hero-gradient {
-  background: linear-gradient(135deg, #0B1020 0%, #1a2042 25%, #0B1020 50%, #1e3559 75%, #0B1020 100%);
-  background-size: 200% 200%;
-  animation: gradientFlow 12s ease infinite;
+  background: linear-gradient(180deg, #FAFAFA 0%, #F4F4F5 100%);
 }
 
-.glow-blue {
+.glow-accent {
   box-shadow:
-    0 0 60px rgba(47, 128, 255, 0.3),
-    0 0 100px rgba(47, 128, 255, 0.1);
+    0 0 60px rgba(37, 99, 235, 0.2),
+    0 0 100px rgba(37, 99, 235, 0.1);
 }
 
-.glow-cyan {
-  box-shadow:
-    0 0 60px rgba(79, 209, 255, 0.3),
-    0 0 100px rgba(79, 209, 255, 0.1);
-}
-
-/* Tech Grid Pattern */
+/* Tech Grid Pattern - Subtle */
 .grid-pattern {
   background-image:
-    linear-gradient(rgba(47, 128, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(47, 128, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(37, 99, 235, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.02) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
 .grid-pattern-strong {
   background-image:
-    linear-gradient(rgba(47, 128, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(47, 128, 255, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 0%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 0%, transparent 70%);
 }
 
 /* Dot Pattern */
 .dot-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(10, 10, 10, 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -415,19 +544,38 @@ body {
    Layout Utilities
    ============================================ */
 .section-padding {
-  padding-top: 6rem;
-  padding-bottom: 6rem;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 @media (min-width: 768px) {
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+@media (min-width: 1024px) {
   .section-padding {
     padding-top: 8rem;
     padding-bottom: 8rem;
   }
 }
 
+.section-padding-lg {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding-lg {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+}
+
 @media (min-width: 1024px) {
-  .section-padding {
+  .section-padding-lg {
     padding-top: 10rem;
     padding-bottom: 10rem;
   }
@@ -438,31 +586,17 @@ body {
   padding-right: 1.5rem;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .container-padding {
     padding-left: 2rem;
     padding-right: 2rem;
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .container-padding {
     padding-left: 3rem;
     padding-right: 3rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container-padding {
-    padding-left: 5rem;
-    padding-right: 5rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container-padding {
-    padding-left: 6rem;
-    padding-right: 6rem;
   }
 }
 
@@ -483,63 +617,192 @@ body {
    Component Styles
    ============================================ */
 
-/* Card Glow Effect */
-.card-glow {
-  position: relative;
+/* Card Hover Effect - Tesla Style */
+.card-hover {
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
 }
 
-.card-glow::before {
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card Image Zoom */
+.card-image-wrapper {
+  overflow: hidden;
+}
+
+.card-image-wrapper img {
+  transition: transform 0.5s var(--ease-out);
+}
+
+.card-hover:hover .card-image-wrapper img {
+  transform: scale(1.05);
+}
+
+/* Border Hover */
+.border-hover {
+  transition: border-color 0.2s ease;
+}
+
+.border-hover:hover {
+  border-color: var(--color-accent);
+}
+
+/* ============================================
+   Micro-interactions - Premium Feel
+   ============================================ */
+
+/* Smooth link underline animation */
+.link-animated {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-animated::after {
   content: '';
   position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(47, 128, 255, 0.3), transparent, rgba(79, 209, 255, 0.3));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.3s var(--ease-out);
 }
 
-.card-glow:hover::before {
-  opacity: 1;
+.link-animated:hover::after {
+  width: 100%;
 }
 
-/* Border Gradient */
-.border-gradient {
-  position: relative;
+/* Button lift effect */
+.btn-lift {
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
 }
 
-.border-gradient::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, #2F80FF, #4FD1FF);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
+.btn-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Icon rotate on hover */
+.icon-rotate:hover svg {
+  transform: rotate(15deg);
+}
+
+.icon-rotate svg {
+  transition: transform 0.3s var(--ease-out);
+}
+
+/* Arrow slide right on hover */
+.arrow-slide:hover svg {
+  transform: translateX(4px);
+}
+
+.arrow-slide svg {
+  transition: transform 0.2s var(--ease-out);
+}
+
+/* Scale up on hover for small elements */
+.scale-hover {
+  transition: transform 0.2s var(--ease-out);
+}
+
+.scale-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Glow effect on focus */
+.glow-focus:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Subtle gradient animation */
+@keyframes gradientShift {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+.gradient-pulse {
+  animation: gradientShift 4s ease-in-out infinite;
+}
+
+/* ============================================
+   Background Breathing Animation
+   ============================================ */
+@keyframes breathe {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1) translateY(0px);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.15) translateY(-30px);
+  }
+}
+
+@keyframes breatheIntense {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1) translateX(0px) translateY(0px);
+  }
+  33% {
+    opacity: 0.5;
+    transform: scale(1.2) translateX(20px) translateY(-20px);
+  }
+  66% {
+    opacity: 0.35;
+    transform: scale(1.1) translateX(-15px) translateY(-25px);
+  }
+}
+
+.bg-breathe {
+  animation: breatheIntense 8s ease-in-out infinite;
+}
+
+.bg-breathe-slow {
+  animation: breatheIntense 12s ease-in-out infinite;
+}
+
+.bg-breathe-slower {
+  animation: breatheIntense 16s ease-in-out infinite;
+}
+
+/* Subtle floating particles */
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-10px) translateX(5px); }
+  50% { transform: translateY(-5px) translateX(-5px); }
+  75% { transform: translateY(-15px) translateX(3px); }
+}
+
+.float-subtle {
+  animation: float 20s ease-in-out infinite;
+}
+
+/* ============================================
+   Section Transitions
+   ============================================ */
+.section-fade {
   transition: opacity 0.3s ease;
 }
 
-.border-gradient:hover::after {
-  opacity: 1;
+.section-fade:hover {
+  opacity: 0.95;
 }
 
-/* Noise Texture Overlay */
-.noise-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
-  mix-blend-mode: overlay;
+/* Gradient mesh animation for hero section */
+@keyframes meshMove {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.bg-mesh-animate {
+  background-size: 200% 200%;
+  animation: meshMove 15s ease infinite;
 }
 
 /* ============================================
@@ -588,17 +851,24 @@ body {
 }
 
 /* ============================================
-   Focus States
+   Focus States - Tesla Blue
    ============================================ */
 :focus-visible {
-  outline: 2px solid rgba(47, 128, 255, 0.5);
+  outline: 2px solid rgba(37, 99, 235, 0.5);
   outline-offset: 2px;
 }
 
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid rgba(47, 128, 255, 0.5);
+  outline: 2px solid rgba(37, 99, 235, 0.5);
   outline-offset: 2px;
+}
+
+/* ============================================
+   Cursor
+   ============================================ */
+.cursor-pointer {
+  cursor: pointer;
 }
 
 /* ============================================
@@ -611,5 +881,115 @@ a:focus-visible {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+
+  .animate-on-scroll {
+    opacity: 1;
+    transform: none;
+  }
+
+  .stagger-children > * {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================
+   Dark Mode Support
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #09090B;
+    color: #FAFAFA;
+  }
+
+  ::selection {
+    background: rgba(59, 130, 246, 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #3F3F46;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #52525B;
+  }
+
+  .glass {
+    background: rgba(24, 24, 27, 0.8);
+    border-color: rgba(39, 39, 42, 0.5);
+  }
+
+  .hero-gradient {
+    background: linear-gradient(180deg, #09090B 0%, #18181B 100%);
+  }
+
+  .grid-pattern {
+    background-image:
+      linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+  }
+
+  .dot-pattern {
+    background-image: radial-gradient(rgba(250, 250, 250, 0.05) 1px, transparent 1px);
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+/* Hover Lift */
+.hover-lift {
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Hover Scale */
+.hover-scale {
+  transition: transform 0.3s var(--ease-out);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Link Underline Animation */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.3s var(--ease-out);
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Badge Pulse */
+.badge-pulse::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
 }

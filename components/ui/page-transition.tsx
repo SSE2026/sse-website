@@ -59,7 +59,7 @@ export function PageLoader({ isLoading, onComplete }: PageLoaderProps) {
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
             />
             <motion.div
-              className="absolute inset-2 w-20 h-20 rounded-full border border-cyan/20"
+              className="absolute inset-2 w-20 h-20 rounded-full border border-accent-light/20"
               animate={{ rotate: -360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             />
@@ -79,9 +79,9 @@ export function PageLoader({ isLoading, onComplete }: PageLoaderProps) {
                   scale: [1, 1.3, 1],
                   opacity: [0.8, 1, 0.8],
                   boxShadow: [
-                    "0 0 20px rgba(47, 128, 255, 0.5)",
-                    "0 0 40px rgba(47, 128, 255, 0.8)",
-                    "0 0 20px rgba(47, 128, 255, 0.5)",
+                    "0 0 20px rgba(245, 158, 11, 0.5)",
+                    "0 0 40px rgba(245, 158, 11, 0.8)",
+                    "0 0 20px rgba(245, 158, 11, 0.5)",
                   ],
                 }}
                 transition={{ duration: 1.5, repeat: Infinity }}
@@ -140,7 +140,7 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
             />
             {/* Inner ring */}
             <motion.div
-              className="absolute inset-2 w-16 h-16 rounded-full border-2 border-cyan/30"
+              className="absolute inset-2 w-16 h-16 rounded-full border-2 border-accent-light/30"
               animate={{ rotate: -360 }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
             />

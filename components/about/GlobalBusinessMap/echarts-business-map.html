@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>深安锂能 - 全球业务布局</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/map/js/china.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/map/js/world.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 50%, #F8FAFC 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1E293B;
+      letter-spacing: -0.5px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #64748B;
+      margin-top: 6px;
+    }
+
+    .map-container {
+      width: 100%;
+      max-width: 1400px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+    }
+
+    #chart {
+      width: 100%;
+      height: 680px;
+    }
+
+    .footer {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1E293B;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: #64748B;
+    }
+
+    .legend {
+      display: flex;
+      gap: 24px;
+      margin-left: auto;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .legend-line {
+      width: 36px;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    .legend-line.hq {
+      background: linear-gradient(90deg, #3B82F6, #60A5FA);
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    }
+
+    .legend-line.radiation {
+      background: linear-gradient(90deg, #F97316, #FB923C);
+      box-shadow: 0 0 8px rgba(249, 115, 22, 0.5);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.hq {
+      background: #3B82F6;
+      box-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
+    }
+
+    .legend-dot.radiation {
+      background: #F97316;
+      box-shadow: 0 0 6px rgba(249, 115, 22, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 22px;
+      }
+
+      #chart {
+        height: 500px;
+      }
+
+      .footer {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .legend {
+        margin-left: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>全球业务布局</h1>
+    <p>Global Business Network · 立足中国 · 辐射全球</p>
+  </div>
+
+  <div class="map-container">
+    <div id="chart"></div>
+  </div>
+
+  <div class="footer">
+    <div class="logo">
+      <div class="logo-icon">深</div>
+      <div>
+        <div class="logo-text">深安锂能</div>
+        <div class="logo-sub">SWIFT SAFE ENERGY</div>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot hq"></div>
+        <span>总部 / 节点</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line hq"></div>
+        <span>直属管理</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line radiation"></div>
+        <span>业务辐射</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 初始化图表
+    const chart = echarts.init(document.getElementById('chart'), null, { renderer: 'canvas' });
+
+    // ==================== 配置数据 ====================
+
+    // 核心节点数据
+    const HQ_NODES = [
+      {
+        name: '深圳总部',
+        nameEn: 'SHENZHEN HQ',
+        coord: [114.07, 22.54],
+        type: 'hq',
+        value: 100,
+        itemStyle: { color: '#3B82F6' },
+        label: { show: true, formatter: '{b}', position: 'bottom', distance: 8 }
+      },
+      {
+        name: '上海业务中心',
+        nameEn: 'SHANGHAI BC',
+        coord: [121.47, 31.23],
+        type: 'bc',
+        value: 80,
+        itemStyle: { color: '#60A5FA' },
+        label: { show: true, formatter: '{b}', position: 'bottom', distance: 8 }
+      },
+      {
+        name: '广州业务中心',
+        nameEn: 'GUANGZHOU BC',
+        coord: [113.26, 23.13],
+        type: 'bc',
+        value: 80,
+        itemStyle: { color: '#60A5FA' },
+        label: { show: true, formatter: '{b}', position: 'bottom', distance: 8 }
+      },
+      {
+        name: '绍兴智造基地',
+        nameEn: 'SHAOXING TB',
+        coord: [120.58, 29.99],
+        type: 'tb',
+        value: 80,
+        itemStyle: { color: '#93C5FD' },
+        label: { show: true, formatter: '{b}', position: 'bottom', distance: 8 }
+      }
+    ];
+
+    // 国内辐射目标城市
+    const DOMESTIC_TARGETS = [
+      { name: '北京', coord: [116.46, 39.92] },
+      { name: '天津', coord: [117.20, 39.13] },
+      { name: '成都', coord: [104.06, 30.67] },
+      { name: '西安', coord: [108.95, 34.27] },
+      { name: '武汉', coord: [114.31, 30.52] },
+      { name: '重庆', coord: [106.55, 29.56] },
+      { name: '杭州', coord: [120.19, 30.26] },
+      { name: '南京', coord: [118.78, 32.04] },
+      { name: '厦门', coord: [118.10, 24.46] },
+      { name: '福州', coord: [119.30, 26.08] },
+      { name: '长沙', coord: [112.94, 28.23] },
+      { name: '郑州', coord: [113.65, 34.76] },
+    ];
+
+    // 海外辐射目标
+    const OVERSEAS_TARGETS = [
+      // 中东
+      { name: '迪拜 Dubai', coord: [55.27, 25.20], region: '中东' },
+      { name: '利雅得 Riyadh', coord: [46.72, 24.69], region: '中东' },
+      // 欧洲
+      { name: '伦敦 London', coord: [-0.13, 51.51], region: '欧洲' },
+      { name: '法兰克福 Frankfurt', coord: [8.68, 50.11], region: '欧洲' },
+      { name: '巴黎 Paris', coord: [2.35, 48.86], region: '欧洲' },
+      { name: '阿姆斯特丹 Amsterdam', coord: [4.90, 52.37], region: '欧洲' },
+      // 北美
+      { name: '纽约 New York', coord: [-74.00, 40.71], region: '北美' },
+      { name: '洛杉矶 Los Angeles', coord: [-118.24, 34.05], region: '北美' },
+      // 亚洲其他
+      { name: '新加坡 Singapore', coord: [103.82, 1.35], region: '亚太' },
+      { name: '东京 Tokyo', coord: [139.69, 35.69], region: '亚太' },
+      { name: '首尔 Seoul', coord: [126.98, 37.57], region: '亚太' },
+    ];
+
+    // HQ 连接线数据（深圳 -> 其他三个节点）
+    const HQ_CONNECTIONS = [
+      {
+        from: [114.07, 22.54],
+        to: [121.47, 31.23],  // 深圳 -> 上海
+        fromName: '深圳',
+        toName: '上海'
+      },
+      {
+        from: [114.07, 22.54],
+        to: [113.26, 23.13],  // 深圳 -> 广州
+        fromName: '深圳',
+        toName: '广州'
+      },
+      {
+        from: [114.07, 22.54],
+        to: [120.58, 29.99],  // 深圳 -> 绍兴
+        fromName: '深圳',
+        toName: '绍兴'
+      }
+    ];
+
+    // 国内辐射连接线
+    const DOMESTIC_RADIATION = [
+      // 从上海出发
+      ...DOMESTIC_TARGETS.slice(0, 4).map(t => ({
+        from: [121.47, 31.23],
+        to: t.coord,
+        fromName: '上海'
+      })),
+      // 从广州出发
+      ...DOMESTIC_TARGETS.slice(4, 8).map(t => ({
+        from: [113.26, 23.13],
+        to: t.coord,
+        fromName: '广州'
+      })),
+      // 从绍兴出发
+      ...DOMESTIC_TARGETS.slice(8, 12).map(t => ({
+        from: [120.58, 29.99],
+        to: t.coord,
+        fromName: '绍兴'
+      }))
+    ];
+
+    // 海外辐射连接线
+    const OVERSEAS_RADIATION = [
+      // 从深圳/上海出发到中东
+      { from: [114.07, 22.54], to: [55.27, 25.20] },
+      { from: [121.47, 31.23], to: [46.72, 24.69] },
+      // 从深圳/绍兴出发到欧洲
+      { from: [114.07, 22.54], to: [-0.13, 51.51] },
+      { from: [121.47, 31.23], to: [8.68, 50.11] },
+      { from: [120.58, 29.99], to: [2.35, 48.86] },
+      { from: [114.07, 22.54], to: [4.90, 52.37] },
+      // 从广州出发到北美
+      { from: [113.26, 23.13], to: [-74.00, 40.71] },
+      { from: [113.26, 23.13], to: [-118.24, 34.05] },
+      // 亚太区域
+      { from: [114.07, 22.54], to: [103.82, 1.35] },
+      { from: [121.47, 31.23], to: [139.69, 35.69] },
+      { from: [120.58, 29.99], to: [126.98, 37.57] },
+    ];
+
+    // ==================== 图表配置 ====================
+
+    const option = {
+      backgroundColor: 'transparent',
+
+      // 地理坐标系
+      geo: [
+        // 世界地图（背景）
+        {
+          type: 'map',
+          map: 'world',
+          roam: false,
+          silent: true,
+          z: 1,
+          itemStyle: {
+            areaColor: '#E2E8F0',
+            borderColor: '#CBD5E1',
+            borderWidth: 0.5
+          },
+          emphasis: {
+            disabled: true
+          }
+        },
+        // 中国地图
+        {
+          type: 'map',
+          map: 'china',
+          roam: false,
+          z: 2,
+          center: [105, 36],
+          zoom: 1.2,
+          itemStyle: {
+            areaColor: {
+              type: 'linear',
+              x: 0, y: 0, x2: 1, y2: 1,
+              colorStops: [
+                { offset: 0, color: 'rgba(59, 130, 246, 0.25)' },
+                { offset: 0.5, color: 'rgba(59, 130, 246, 0.35)' },
+                { offset: 1, color: 'rgba(59, 130, 246, 0.2)' }
+              ]
+            },
+            borderColor: '#2563EB',
+            borderWidth: 1.5,
+            shadowColor: 'rgba(37, 99, 235, 0.3)',
+            shadowBlur: 10
+          },
+          emphasis: {
+            disabled: true
+          },
+          select: {
+            disabled: true
+          }
+        }
+      ],
+
+      // 系列配置
+      series: [
+        // 国内辐射目标点
+        {
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          geoIndex: 1,
+          z: 3,
+          data: DOMESTIC_TARGETS.map(t => ({
+            ...t,
+            value: t.coord,
+            itemStyle: { color: '#F97316' },
+            symbolSize: 6,
+            rippleEffect: {
+              brushType: 'stroke',
+              scale: 3,
+              period: 4
+            }
+          })),
+          label: {
+            show: true,
+            formatter: '{b}',
+            position: 'right',
+            fontSize: 9,
+            color: '#64748B',
+            distance: 5
+          }
+        },
+
+        // 海外辐射目标点
+        {
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          z: 3,
+          data: OVERSEAS_TARGETS.map(t => ({
+            ...t,
+            value: t.coord,
+            itemStyle: { color: '#F97316' },
+            symbolSize: 8,
+            rippleEffect: {
+              brushType: 'stroke',
+              scale: 4,
+              period: 5
+            }
+          })),
+          label: {
+            show: true,
+            formatter: '{b}',
+            position: 'right',
+            fontSize: 9,
+            color: '#C2410C',
+            distance: 5
+          }
+        },
+
+        // HQ节点 - 深圳
+        {
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          geoIndex: 1,
+          z: 5,
+          data: [HQ_NODES[0]],
+          symbolSize: 18,
+          rippleEffect: {
+            brushType: 'stroke',
+            scale: 6,
+            period: 3,
+            color: '#3B82F6'
+          },
+          itemStyle: {
+            color: {
+              type: 'radial',
+              x: 0.5, y: 0.5, r: 0.5,
+              colorStops: [
+                { offset: 0, color: '#60A5FA' },
+                { offset: 0.5, color: '#3B82F6' },
+                { offset: 1, color: '#2563EB' }
+              ]
+            },
+            shadowColor: 'rgba(59, 130, 246, 0.8)',
+            shadowBlur: 20
+          },
+          label: {
+            show: true,
+            formatter: (params) => {
+              return `{title|总部}\n{zh|深圳}\n{en|SHENZHEN HQ}`;
+            },
+            position: 'bottom',
+            distance: 15,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderColor: '#3B82F6',
+            borderWidth: 1,
+            borderRadius: 6,
+            padding: [8, 12],
+            shadowColor: 'rgba(0, 0, 0, 0.1)',
+            shadowBlur: 8,
+            rich: {
+              title: {
+                fontSize: 10,
+                color: '#1E40AF',
+                lineHeight: 16
+              },
+              zh: {
+                fontSize: 13,
+                fontWeight: 'bold',
+                color: '#1E293B',
+                lineHeight: 18
+              },
+              en: {
+                fontSize: 9,
+                color: '#64748B',
+                lineHeight: 14
+              }
+            }
+          }
+        },
+
+        // 业务中心节点 - 上海、广州
+        {
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          geoIndex: 1,
+          z: 5,
+          data: [HQ_NODES[1], HQ_NODES[2]],
+          symbolSize: 14,
+          rippleEffect: {
+            brushType: 'stroke',
+            scale: 4,
+            period: 3,
+            color: '#60A5FA'
+          },
+          itemStyle: {
+            color: {
+              type: 'radial',
+              x: 0.5, y: 0.5, r: 0.5,
+              colorStops: [
+                { offset: 0, color: '#93C5FD' },
+                { offset: 0.5, color: '#60A5FA' },
+                { offset: 1, color: '#3B82F6' }
+              ]
+            },
+            shadowColor: 'rgba(59, 130, 246, 0.6)',
+            shadowBlur: 15
+          },
+          label: {
+            show: true,
+            formatter: (params) => {
+              const isShanghai = params.data.name.includes('上海');
+              const zh = isShanghai ? '上海' : '广州';
+              const en = isShanghai ? 'SHANGHAI BC' : 'GUANGZHOU BC';
+              return `{title|业务中心}\n{zhi|${zh}}\n{en|${en}}`;
+            },
+            position: 'bottom',
+            distance: 12,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderColor: '#60A5FA',
+            borderWidth: 1,
+            borderRadius: 6,
+            padding: [6, 10],
+            shadowColor: 'rgba(0, 0, 0, 0.1)',
+            shadowBlur: 8,
+            rich: {
+              title: {
+                fontSize: 9,
+                color: '#1E40AF',
+                lineHeight: 14
+              },
+              zhi: {
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: '#1E293B',
+                lineHeight: 16
+              },
+              en: {
+                fontSize: 8,
+                color: '#64748B',
+                lineHeight: 12
+              }
+            }
+          }
+        },
+
+        // 智造基地节点 - 绍兴
+        {
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          geoIndex: 1,
+          z: 5,
+          data: [HQ_NODES[3]],
+          symbolSize: 12,
+          rippleEffect: {
+            brushType: 'stroke',
+            scale: 3,
+            period: 3,
+            color: '#93C5FD'
+          },
+          itemStyle: {
+            color: {
+              type: 'radial',
+              x: 0.5, y: 0.5, r: 0.5,
+              colorStops: [
+                { offset: 0, color: '#BFDBFE' },
+                { offset: 0.5, color: '#93C5FD' },
+                { offset: 1, color: '#60A5FA' }
+              ]
+            },
+            shadowColor: 'rgba(59, 130, 246, 0.5)',
+            shadowBlur: 12
+          },
+          label: {
+            show: true,
+            formatter: '{title|智造基地}\n{zhi|绍兴}\n{en|SHAOXING TB}',
+            position: 'bottom',
+            distance: 12,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderColor: '#93C5FD',
+            borderWidth: 1,
+            borderRadius: 6,
+            padding: [6, 10],
+            shadowColor: 'rgba(0, 0, 0, 0.1)',
+            shadowBlur: 8,
+            rich: {
+              title: {
+                fontSize: 9,
+                color: '#1E40AF',
+                lineHeight: 14
+              },
+              zhi: {
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: '#1E293B',
+                lineHeight: 16
+              },
+              en: {
+                fontSize: 8,
+                color: '#64748B',
+                lineHeight: 12
+              }
+            }
+          }
+        },
+
+        // HQ连接线 - 蓝色流光
+        {
+          type: 'lines',
+          coordinateSystem: 'geo',
+          geoIndex: 1,
+          z: 4,
+          effect: {
+            show: true,
+            period: 4,
+            trailLength: 0.4,
+            symbol: 'circle',
+            symbolSize: 5,
+            color: '#3B82F6',
+            shadowColor: 'rgba(59, 130, 246, 0.8)',
+            shadowBlur: 15
+          },
+          lineStyle: {
+            color: '#3B82F6',
+            width: 3,
+            opacity: 0.9,
+            curveness: 0.3,
+            shadowColor: 'rgba(59, 130, 246, 0.5)',
+            shadowBlur: 10
+          },
+          data: HQ_CONNECTIONS.map(c => ({
+            coords: [c.from, c.to]
+          }))
+        },
+
+        // 国内业务辐射线 - 橙色
+        {
+          type: 'lines',
+          coordinateSystem: 'geo',
+          geoIndex: 1,
+          z: 3,
+          effect: {
+            show: true,
+            period: 6,
+            trailLength: 0.3,
+            symbol: 'circle',
+            symbolSize: 3,
+            color: '#F97316',
+            shadowColor: 'rgba(249, 115, 22, 0.6)',
+            shadowBlur: 10
+          },
+          lineStyle: {
+            color: '#F97316',
+            width: 1.5,
+            opacity: 0.6,
+            curveness: 0.2,
+            type: 'dashed'
+          },
+          data: DOMESTIC_RADIATION.map(c => ({
+            coords: [c.from, c.to]
+          }))
+        },
+
+        // 海外业务辐射线 - 橙色弧线
+        {
+          type: 'lines',
+          coordinateSystem: 'geo',
+          z: 3,
+          effect: {
+            show: true,
+            period: 8,
+            trailLength: 0.5,
+            symbol: 'circle',
+            symbolSize: 4,
+            color: '#FB923C',
+            shadowColor: 'rgba(251, 146, 60, 0.6)',
+            shadowBlur: 12
+          },
+          lineStyle: {
+            color: '#F97316',
+            width: 2,
+            opacity: 0.8,
+            curveness: 0.5,
+            shadowColor: 'rgba(249, 115, 22, 0.4)',
+            shadowBlur: 8
+          },
+          data: OVERSEAS_RADIATION.map(c => ({
+            coords: [c.from, c.to]
+          }))
+        }
+      ],
+
+      // 提示框
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        borderColor: '#E2E8F0',
+        borderWidth: 1,
+        padding: [12, 16],
+        textStyle: {
+          color: '#1E293B',
+          fontSize: 13
+        },
+        formatter: (params) => {
+          if (params.seriesType === 'effectScatter') {
+            const data = params.data;
+            let html = `<div style="font-weight: 600; margin-bottom: 4px;">${data.name}</div>`;
+            if (data.type === 'hq') {
+              html += `<div style="color: #3B82F6; font-size: 11px;">总部 | HQ</div>`;
+              html += `<div style="color: #64748B; font-size: 10px; margin-top: 4px;">战略决策 / 研发统筹 / 全球运营</div>`;
+            } else if (data.type === 'bc') {
+              html += `<div style="color: #60A5FA; font-size: 11px;">业务中心 | Business Center</div>`;
+              html += `<div style="color: #64748B; font-size: 10px; margin-top: 4px;">市场拓展 / 客户服务</div>`;
+            } else if (data.type === 'tb') {
+              html += `<div style="color: #93C5FD; font-size: 11px;">智造基地 | Manufacturing</div>`;
+              html += `<div style="color: #64748B; font-size: 10px; margin-top: 4px;">智能制造 / 规模化生产</div>`;
+            } else if (data.region) {
+              html += `<div style="color: #F97316; font-size: 11px;">${data.region} | Market Region</div>`;
+            }
+            return html;
+          } else if (params.seriesType === 'lines') {
+            const coords = params.data.coords;
+            if (params.lineStyle.curveness > 0.4) {
+              return `<div style="color: #F97316; font-weight: 500;">业务辐射线</div>
+                      <div style="color: #64748B; font-size: 10px; margin-top: 2px;">覆盖全球主要市场</div>`;
+            } else {
+              return `<div style="color: #3B82F6; font-weight: 500;">直属管理</div>
+                      <div style="color: #64748B; font-size: 10px; margin-top: 2px;">总部统一调度</div>`;
+            }
+          }
+          return '';
+        }
+      ]
+    };
+
+    // 设置图表配置
+    chart.setOption(option);
+
+    // 响应式调整
+    window.addEventListener('resize', () => {
+      chart.resize();
+    });
+
+    // 定时重置动画效果
+    setInterval(() => {
+      chart.setOption(option);
+    }, 15000);
+
+    console.log('深安锂能全球业务布局地图已加载');
+  </script>
+</body>
+</html>

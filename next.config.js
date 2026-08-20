@@ -1,8 +1,4 @@
 /** @type {import('next').NextConfig} */
-const createNextIntlPlugin = require('next-intl/plugin');
-
-const withNextIntl = createNextIntlPlugin('./i18n.ts');
-
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -15,13 +11,12 @@ const nextConfig = {
         hostname: 'picsum.photos',
       },
     ],
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
+    // 用于小容器/卡片组件（配合 sizes 计算）
+    imageSizes: [16, 32, 64, 96, 128, 256, 384, 512, 640],
+    // 用于全屏/大 Banner
+    deviceSizes: [750, 828, 1080, 1200, 1920, 2048, 3840],
+    formats: ['image/avif', 'image/webp'],
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+module.exports = nextConfig;

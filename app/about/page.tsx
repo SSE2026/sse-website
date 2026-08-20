@@ -1,327 +1,202 @@
 "use client";
 
 import { useState } from "react";
-import { NextIntlClientProvider } from "next-intl";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { FadeIn } from "@/components/animated/fade-in";
-import { ScaleIn } from "@/components/animated/scale-in";
-import { ScrollProgress } from "@/components/ui/scroll-progress";
-import { CursorFollower } from "@/components/ui/animations";
-import { Calendar, Users, Award, Globe, ArrowRight, Building2, Target, Eye, Lightbulb, Heart } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import GlobalBusinessMap from "@/components/about/GlobalBusinessMap/GlobalBusinessMap";
+import MilestonesSection from "@/components/about/MilestonesSection";
+
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
 
 const messages = { en, zh };
 
-const teamMembers = [
-  {
-    name: "Chief Scientist",
-    role: "Academician, Battery Expert",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
-    bio: "30+ years in battery research"
-  },
-  {
-    name: "CEO",
-    role: "Technology Entrepreneur",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80",
-    bio: "Former CTO at leading battery company"
-  },
-  {
-    name: "VP of R&D",
-    role: "Materials Science PhD",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80",
-    bio: "MIT alumnus, 50+ publications"
-  },
-  {
-    name: "Chief Engineer",
-    role: "Battery Systems",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80",
-    bio: "15+ years in battery system design"
-  },
-];
+const ENGLISH_INTRO = `Swift Safe Energy (Shenzhen) Technology Co., Ltd. is a tech innovation enterprise dedicated to the R&D and industrialization of high-specific-energy and high-safety advanced batteries. The company was jointly founded by an academician-led university research team and seasoned industry experts.
 
-const milestones = [
-  { year: "2020", title: "Company Founded", desc: "Established in Shenzhen with vision to revolutionize energy storage" },
-  { year: "2021", title: "First Prototype", desc: "Successfully developed our first solid-state battery prototype with 400Wh/kg" },
-  { year: "2022", title: "Major Breakthrough", desc: "Achieved 500Wh/kg energy density in laboratory conditions" },
-  { year: "2023", title: "Mass Production Ready", desc: "Completed pilot production line with 100MWh capacity" },
-  { year: "2024", title: "Global Expansion", desc: "Strategic partnerships with leading OEMs worldwide" },
-];
+Targeting emerging application scenarios—including the low-altitude economy, embodied intelligence, deep space and deep sea exploration, construction machinery, and specialized equipment—the company conducts full-chain technical innovation across material systems, cell design, advanced manufacturing, and intelligent battery systems for next-generation power batteries. It is committed to continuously pushing the performance and application boundaries of high-end equipment electrification with battery technologies featuring higher energy density, superior safety, and enhanced environmental adaptability.
 
-const values = [
-  { icon: Lightbulb, title: "Innovation", titleZh: "创新", desc: "Pushing the boundaries of what's possible in energy storage technology", color: "#2F80FF" },
-  { icon: Target, title: "Excellence", titleZh: "卓越", desc: "Relentless pursuit of quality in every product we develop", color: "#4FD1FF" },
-  { icon: Heart, title: "Sustainability", titleZh: "可持续", desc: "Committed to reducing environmental impact through clean technology", color: "#10B981" },
-  { icon: Globe, title: "Collaboration", titleZh: "合作", desc: "Working with partners worldwide to accelerate the energy transition", color: "#A855F7" },
-];
+The company has built a core technology architecture centered on high-silicon/all-silicon/self-generating anodes, high-safety solid-state electrolytes, advanced cell structures and manufacturing processes, physics-AI-driven battery design and smart manufacturing, and intelligent battery systems. This establishes comprehensive in-house R&D and engineering capabilities spanning key materials, cells, and full systems.
 
-const stats = [
-  { value: "29+", label: "Patents" },
-  { value: "50+", label: "Research Papers" },
-  { value: "2000+", label: "m² R&D Center" },
-  { value: "500MWh", label: "Capacity" },
-];
+Swift Safe Energy has established a strategic product portfolio featuring the "Aeroride" series tailored for high-energy-density demands and the "Panshi" series designed for ultra-safe scenarios. Its products have completed multiple rounds of client testing and real-world operational validation in drones, eVTOLs, robotics, and construction machinery, with several projects advancing into mass delivery and industrial onboarding phases.
+
+Looking to the future, Swift Safe Energy will remain focused on the performance boundary requirements of high-end applications. Guided by the core technical pillars of high energy density, high safety, and intelligence, the company will accelerate the transition of advanced battery technologies from laboratory innovations to large-scale products. It aims to progressively build an integrated "Advanced Cell – Intelligent System – Scenario-based Energy" technology and product platform, striving to become a leading provider of advanced energy solutions for next-generation aircraft, intelligent robotics, and high-end equipment.`;
+
+const CHINESE_INTRO = `深安锂能（深圳）科技有限公司是一家专注于高比能、高安全先进电池研发与产业化的科技创新企业，由高校院士团队与资深产业化团队共同组建。公司面向低空经济、具身智能、深空深海、工程机械及特种装备等新兴应用场景，围绕下一代动力电池的材料体系、电芯设计、先进制造与智能电池系统开展全链条技术创新，致力于以更高能量密度、更高安全性和更强环境适应性的电池技术，持续拓展高端装备电动化的性能与应用边界。
+
+公司围绕高硅/全硅/自生成负极、高安全固态电解质、先进电芯结构与制造工艺、物理AI驱动的电池设计与智能制造、智能电池系统等方向构建核心技术体系，形成从关键材料、电芯到系统的自主研发与工程化能力。公司已形成面向高比能需求的"云驰"系列和面向高安全场景的"磐石"系列产品布局，产品已在无人机、eVTOL、机器人及工程机械等领域完成多轮客户测试与真实工况验证，多个项目已进入批量交付与产业化导入阶段。
+
+未来，深安锂能将持续聚焦高端应用对电池性能边界的需求，以高比能、高安全、智能化为技术主线，加速先进电池技术从实验室创新向规模化产品转化，逐步构建"先进电芯—智能系统—场景能源"一体化技术与产品平台，致力于成为面向下一代航空器、智能机器人及高端装备的先进能源解决方案提供商。`;
 
 export default function AboutPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [locale, setLocale] = useState<"en" | "zh">("zh");
   const currentMessages = messages[locale];
+  const isZh = locale === "zh";
 
   return (
     <>
-      <ScrollProgress color="accent" height="sm" />
-      <CursorFollower color="rgba(47, 128, 255, 0.08)" size={500} />
+      <Header
+        translations={currentMessages}
+        locale={locale}
+        onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
+        forceLightText={true}
+      />
 
-      <NextIntlClientProvider messages={currentMessages} locale={locale}>
-        <Header
-          translations={currentMessages}
-          locale={locale}
-          onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
-        />
+      <main>
+        {/* Hero - Full Screen Map */}
+        <section className="relative h-screen bg-[#09090B] overflow-hidden">
+          {/* Background glow effects */}
+          <div className="absolute inset-0 z-0">
+            <div className="absolute top-0 left-1/4 w-[500px] h-[400px] bg-[#2563EB]/10 rounded-full blur-[120px]" />
+            <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#3B82F6]/8 rounded-full blur-[100px]" />
+          </div>
 
-        <main className="pt-20">
-          {/* Hero Section */}
-          <section className="section-padding bg-primary relative overflow-hidden">
-            <div className="absolute inset-0 hero-gradient" />
-            <div className="absolute inset-0 grid-pattern-strong opacity-30" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/15 rounded-full blur-[150px]" />
+          {/* Map - 上移以避免被底部文字遮挡 */}
+          <div className="absolute inset-0 z-10" style={{ transform: 'translateY(-10%)' }}>
+            <GlobalBusinessMap locale={locale} />
+          </div>
 
-            <div className="container-padding mx-auto relative">
-              <FadeIn className="text-center max-w-4xl mx-auto">
-                <motion.span
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/60 mb-6"
-                >
-                  <Building2 className="w-4 h-4 text-accent" />
-                  {locale === "zh" ? "关于我们" : "About Us"}
-                </motion.span>
+          {/* Text - 左边中间，无背景 */}
+          <div className="absolute left-8 top-1/2 -translate-y-1/2 z-20">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="relative"
+            >
+              {/* Animated heading */}
+              <motion.h1
+                className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-2"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.3 }}
+              >
+                {isZh ? (
+                  <>
+                    <span className="text-shimmer-light">好产品，</span>
+                    <span className="text-shimmer-light">要让世界知道</span>
+                  </>
+                ) : (
+                  <span className="text-shimmer-light">Great products. Global impact.</span>
+                )}
+              </motion.h1>
 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-6">
-                  {locale === "zh" ? "深安锂能" : "Swift Safe Energy"}
-                </h1>
-                <p className="text-lg md:text-xl text-white/60 max-w-3xl mx-auto leading-relaxed">
-                  {locale === "zh"
-                    ? "我们是一家专注于高比能、高安全先进电池技术研发与产业化的新能源科技企业，致力于突破高能量密度电池在安全性、可靠性及工程化应用中的关键瓶颈。"
-                    : "A new energy technology enterprise dedicated to R&D and industrialization of high energy density, high safety advanced battery technology."}
-                </p>
-              </FadeIn>
-            </div>
-          </section>
+              {/* Subtitle */}
+              <motion.p
+                className="text-sm md:text-base"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 0.8 }}
+                style={{ color: 'rgba(143, 155, 175, 0.85)' }}
+              >
+                {isZh ? "深安锂能 · 全球研发与产业布局" : "SHENAN ENERGY · GLOBAL R&D AND INDUSTRIAL NETWORK"}
+              </motion.p>
 
-          {/* Stats Banner */}
-          <section className="py-12 bg-primary border-y border-white/5">
-            <div className="container-padding mx-auto">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <div className="text-3xl md:text-4xl font-heading font-bold text-accent mb-1">
-                      {stat.value}
-                    </div>
-                    <div className="text-sm text-white/50">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </section>
+              {/* Auxiliary text */}
+              <motion.p
+                className="text-xs md:text-sm mt-1"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.3, duration: 0.8 }}
+                style={{ color: 'rgba(100, 113, 135, 0.75)' }}
+              >
+                {isZh ? "固态电池技术专家" : "Solid-State Battery Expert"}
+              </motion.p>
+            </motion.div>
+          </div>
+        </section>
 
-          {/* Mission & Vision */}
-          <section className="section-padding bg-secondary/[0.02]">
-            <div className="container-padding mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8">
-                <FadeIn direction="right">
-                  <motion.div
-                    whileHover={{ y: -4 }}
-                    className="p-8 md:p-10 rounded-3xl glass-card-hover h-full"
-                  >
-                    <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
-                      <Target className="w-7 h-7 text-accent" />
-                    </div>
-                    <h3 className="text-2xl font-heading font-bold text-white mb-4">
-                      {locale === "zh" ? "我们的使命" : "Our Mission"}
-                    </h3>
-                    <p className="text-white/60 leading-relaxed">
-                      {locale === "zh"
-                        ? "通过革命性的电池技术，加速世界向可持续能源的转型。我们致力于开发更安全、更高能量密度、更长寿命的固态电池，为清洁能源未来贡献力量。"
-                        : "To accelerate the world's transition to sustainable energy through revolutionary battery technology."}
-                    </p>
-                  </motion.div>
-                </FadeIn>
-                <FadeIn direction="left" delay={0.1}>
-                  <motion.div
-                    whileHover={{ y: -4 }}
-                    className="p-8 md:p-10 rounded-3xl glass-card-hover h-full"
-                  >
-                    <div className="w-14 h-14 rounded-xl bg-cyan/10 flex items-center justify-center mb-6">
-                      <Eye className="w-7 h-7 text-cyan" />
-                    </div>
-                    <h3 className="text-2xl font-heading font-bold text-white mb-4">
-                      {locale === "zh" ? "我们的愿景" : "Our Vision"}
-                    </h3>
-                    <p className="text-white/60 leading-relaxed">
-                      {locale === "zh"
-                        ? "一个由安全、高性能储能驱动的世界，释放无限可能。我们相信，先进的电池技术将改变人类利用能源的方式。"
-                        : "A world powered by safe, high-performance energy storage that enables infinite possibilities."}
-                    </p>
-                  </motion.div>
-                </FadeIn>
-              </div>
-            </div>
-          </section>
+        {/* Company Introduction */}
+        <section className="py-12 md:py-16 bg-white text-[#18181B] relative">
+          <div className="absolute inset-0 opacity-5" style={{
+            backgroundImage: `linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px'
+          }} />
 
-          {/* Timeline */}
-          <section className="section-padding bg-primary">
-            <div className="container-padding mx-auto">
-              <FadeIn className="text-center max-w-2xl mx-auto mb-16">
-                <span className="inline-flex items-center gap-2 text-sm font-medium text-accent mb-4 tracking-wider uppercase">
-                  <Calendar className="w-4 h-4" />
-                  {locale === "zh" ? "发展历程" : "Journey"}
+          <div className="container-padding mx-auto relative max-w-4xl">
+            {/* Section Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="mb-8"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-px bg-[#2563EB]" />
+                <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-widest">
+                  {isZh ? "关于我们" : "About Us"}
                 </span>
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-white">
-                  {locale === "zh" ? "里程碑" : "Milestones"}
-                </h2>
-              </FadeIn>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0A0A0A]">
+                {isZh ? "深安锂能" : "Swift Safe Energy"}
+              </h2>
+            </motion.div>
 
-              <div className="relative">
-                <div className="absolute top-6 left-0 right-0 h-[2px] bg-white/10" />
-
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
-                  {milestones.map((milestone, index) => (
-                    <FadeIn key={milestone.year} delay={index * 0.1}>
-                      <div className="relative text-center">
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          whileInView={{ scale: 1 }}
-                          viewport={{ once: true }}
-                          className="relative z-10 w-3 h-3 mx-auto mb-4 rounded-full bg-accent shadow-lg shadow-accent/50"
-                        />
-                        <h4 className="text-lg font-heading font-bold text-accent mb-1">{milestone.year}</h4>
-                        <h5 className="text-white font-medium mb-2 text-sm">{milestone.title}</h5>
-                        <p className="text-xs text-white/50 hidden md:block">{milestone.desc}</p>
-                      </div>
-                    </FadeIn>
+            {/* Introduction Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="prose prose-lg prose-invert max-w-none"
+            >
+              {isZh ? (
+                <div className="space-y-4 text-[#71717A] leading-relaxed text-sm md:text-base">
+                  {CHINESE_INTRO.split('\n\n').map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
                   ))}
                 </div>
-              </div>
-            </div>
-          </section>
+              ) : (
+                <div className="space-y-4 text-[#71717A] leading-relaxed text-sm md:text-base">
+                  {ENGLISH_INTRO.split('\n\n').map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </div>
+        </section>
 
-          {/* Values */}
-          <section className="section-padding bg-secondary/[0.02]">
-            <div className="container-padding mx-auto">
-              <FadeIn className="text-center max-w-2xl mx-auto mb-16">
-                <span className="inline-flex items-center gap-2 text-sm font-medium text-accent mb-4 tracking-wider uppercase">
-                  <Award className="w-4 h-4" />
-                  {locale === "zh" ? "企业文化" : "Values"}
-                </span>
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-white">
-                  {locale === "zh" ? "核心价值观" : "Core Values"}
-                </h2>
-              </FadeIn>
+        {/* Milestones Section */}
+        <MilestonesSection lang={locale === 'en' ? 'en' : 'zh'} />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {values.map((value, index) => (
-                  <FadeIn key={value.title} delay={index * 0.1}>
-                    <motion.div
-                      whileHover={{ y: -6, scale: 1.02 }}
-                      className="p-6 rounded-2xl glass-card-hover text-center group"
-                    >
-                      <div
-                        className="w-14 h-14 rounded-xl mx-auto mb-4 flex items-center justify-center"
-                        style={{ backgroundColor: `${value.color}15` }}
-                      >
-                        <value.icon className="w-7 h-7" style={{ color: value.color }} />
-                      </div>
-                      <h3 className="text-lg font-heading font-semibold text-white mb-1">
-                        {locale === "zh" ? value.titleZh : value.title}
-                      </h3>
-                      <p className="text-sm text-white/50">{value.desc}</p>
-                    </motion.div>
-                  </FadeIn>
-                ))}
-              </div>
-            </div>
-          </section>
+        {/* CTA Section - Explore Products */}
+        <section className="py-12 bg-gradient-to-b from-[#09090B] to-[#050505] relative">
+          <div className="absolute inset-0">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#2563EB]/10 rounded-full blur-[150px]" />
+          </div>
 
-          {/* Team */}
-          <section className="section-padding bg-primary">
-            <div className="container-padding mx-auto">
-              <FadeIn className="text-center max-w-2xl mx-auto mb-16">
-                <span className="inline-flex items-center gap-2 text-sm font-medium text-accent mb-4 tracking-wider uppercase">
-                  <Users className="w-4 h-4" />
-                  {locale === "zh" ? "研发团队" : "Team"}
-                </span>
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-white">
-                  {locale === "zh" ? "专家团队" : "Expert Team"}
-                </h2>
-              </FadeIn>
+          <div className="container-padding mx-auto relative text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                {isZh ? "探索我们的产品" : "Explore Our Products"}
+              </h2>
+              <p className="text-white/50 mb-8 max-w-xl mx-auto">
+                {isZh
+                  ? "了解深安锂能如何通过创新电池技术改变世界"
+                  : "Discover how Swift Safe Energy is transforming the world with innovative battery technology"}
+              </p>
+              <Link
+                href="/products/cloudchi-360-p"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-[#2563EB] text-white font-semibold rounded-xl hover:bg-[#1D4ED8] transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
+              >
+                {isZh ? "查看产品中心" : "View Products"}
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      </main>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {teamMembers.map((member, index) => (
-                  <FadeIn key={member.name} delay={index * 0.1}>
-                    <ScaleIn>
-                      <motion.div
-                        whileHover={{ y: -8 }}
-                        className="group relative"
-                      >
-                        <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-4">
-                          <Image
-                            src={member.image}
-                            alt={member.name}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent" />
-                        </div>
-                        <h3 className="text-lg font-heading font-semibold text-white">{member.name}</h3>
-                        <p className="text-sm text-accent mb-1">{member.role}</p>
-                        <p className="text-xs text-white/40">{member.bio}</p>
-                      </motion.div>
-                    </ScaleIn>
-                  </FadeIn>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* CTA */}
-          <section className="py-24 bg-gradient-to-br from-accent/10 via-primary to-cyan/10 relative overflow-hidden">
-            <div className="absolute inset-0 grid-pattern opacity-20" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/20 rounded-full blur-[150px]" />
-
-            <div className="container-padding mx-auto relative text-center">
-              <FadeIn>
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
-                  {locale === "zh" ? "与我们合作" : "Partner With Us"}
-                </h2>
-                <p className="text-white/60 mb-8 max-w-xl mx-auto">
-                  {locale === "zh"
-                    ? "如果您对我们的技术或合作机会感兴趣，欢迎联系我们。"
-                    : "If you're interested in our technology or partnership opportunities, we'd love to hear from you."}
-                </p>
-                <Link href={`/${locale}/contact`}>
-                  <Button size="lg" className="group">
-                    {locale === "zh" ? "联系我们" : "Contact Us"}
-                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              </FadeIn>
-            </div>
-          </section>
-        </main>
-
-        <Footer translations={currentMessages} locale={locale} />
-      </NextIntlClientProvider>
+      <Footer translations={currentMessages} locale={locale} />
     </>
   );
 }

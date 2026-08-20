@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Shield, Zap, Battery, RefreshCw, Sparkles, Lock, Timer, Leaf } from "lucide-react";
+import { Shield, Zap, Battery, RefreshCw, Sparkles, Thermometer, Bolt, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CoreAdvantagesProps {
@@ -15,97 +15,120 @@ interface CoreAdvantagesProps {
       charging: { title: string; desc: string };
       lifecycle: { title: string; desc: string };
     };
+    hero?: {
+      stats?: {
+        energyDensity?: string;
+        cycleLife?: string;
+        patents?: string;
+      };
+    };
   };
+  locale?: string;
 }
 
 const advantages = [
   {
     key: "safety",
     icon: Shield,
-    gradient: "from-emerald-500/20 via-emerald-500/5 to-transparent",
-    iconBg: "bg-emerald-500/10",
-    iconColor: "text-emerald-400",
-    borderColor: "hover:border-emerald-500/40",
-    glowColor: "shadow-emerald-500/20",
-    accentColor: "#10B981",
+    iconName: "安全",
+    gradient: "from-[#2563EB]/10",
+    iconBg: "bg-[#2563EB]/10",
+    iconColor: "text-[#2563EB]",
+    borderColor: "hover:border-[#2563EB]/30",
     stat: "0",
     statLabel: "热失控事件",
+    statEnLabel: "Thermal Events",
   },
   {
     key: "energy",
     icon: Zap,
-    gradient: "from-accent/20 via-accent/5 to-transparent",
-    iconBg: "bg-accent/10",
-    iconColor: "text-accent",
-    borderColor: "hover:border-accent/40",
-    glowColor: "shadow-accent/20",
-    accentColor: "#2F80FF",
-    stat: "570+",
+    iconName: "能量",
+    gradient: "from-[#2563EB]/10",
+    iconBg: "bg-[#2563EB]/10",
+    iconColor: "text-[#2563EB]",
+    borderColor: "hover:border-[#2563EB]/30",
+    stat: "500+",
     statLabel: "Wh/kg",
+    statEnLabel: "Energy Density",
   },
   {
     key: "charging",
-    icon: Timer,
-    gradient: "from-cyan/20 via-cyan/5 to-transparent",
-    iconBg: "bg-cyan/10",
-    iconColor: "text-cyan",
-    borderColor: "hover:border-cyan/40",
-    glowColor: "shadow-cyan/20",
-    accentColor: "#4FD1FF",
+    icon: Bolt,
+    iconName: "快充",
+    gradient: "from-[#2563EB]/10",
+    iconBg: "bg-[#2563EB]/10",
+    iconColor: "text-[#2563EB]",
+    borderColor: "hover:border-[#2563EB]/30",
     stat: "10C",
     statLabel: "峰值放电",
+    statEnLabel: "Peak Discharge",
   },
   {
     key: "lifecycle",
     icon: RefreshCw,
-    gradient: "from-purple-500/20 via-purple-500/5 to-transparent",
-    iconBg: "bg-purple-500/10",
-    iconColor: "text-purple-400",
-    borderColor: "hover:border-purple-500/40",
-    glowColor: "shadow-purple-500/20",
-    accentColor: "#A855F7",
+    iconName: "寿命",
+    gradient: "from-[#2563EB]/10",
+    iconBg: "bg-[#2563EB]/10",
+    iconColor: "text-[#2563EB]",
+    borderColor: "hover:border-[#2563EB]/30",
     stat: "500+",
     statLabel: "循环寿命",
+    statEnLabel: "Cycle Life",
   },
 ];
 
-export function CoreAdvantages({ translations }: CoreAdvantagesProps) {
+export function CoreAdvantages({ translations, locale = "en" }: CoreAdvantagesProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isZh = locale === "zh";
 
   return (
-    <section ref={ref} className="section-padding bg-primary relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-accent/5 rounded-full blur-[150px]" />
+    <section ref={ref} className="relative py-20 md:py-32 bg-white overflow-hidden">
+      {/* Section transition gradient - top */}
+      <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#FAFAFA] to-transparent pointer-events-none z-10" />
+      {/* Section transition gradient - bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#FAFAFA] to-transparent pointer-events-none z-10" />
+      {/* Background decorations */}
+      <div className="absolute inset-0">
+        {/* Subtle gradient orbs - breathing animation */}
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-gradient-to-br from-[#2563EB]/5 to-transparent rounded-full blur-3xl bg-breathe-slow" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-gradient-to-tr from-[#2563EB]/5 to-transparent rounded-full blur-3xl bg-breathe" />
+        {/* Grid pattern */}
+        <div className="absolute inset-0 grid-pattern opacity-20" />
+      </div>
 
       <div className="container-padding mx-auto relative">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-2xl mx-auto mb-16"
         >
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="inline-flex items-center gap-2 text-sm font-medium text-accent mb-4 tracking-wider uppercase"
+            transition={{ delay: 0.1 }}
+            className="inline-flex items-center gap-3 mb-6"
           >
-            <Sparkles className="w-4 h-4" />
-            {translations.advantages.title}
-          </motion.span>
+            <div className="w-12 h-px bg-[#2563EB]" />
+            <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-wider">
+              {translations.advantages.title}
+            </span>
+            <div className="w-12 h-px bg-[#2563EB]" />
+          </motion.div>
+
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-4"
+            transition={{ delay: 0.2 }}
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#0A0A0A] mb-4"
           >
             {translations.advantages.subtitle}
           </motion.h2>
         </motion.div>
 
-        {/* Advantages Grid */}
+        {/* Advantages Grid - Bento Style */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {advantages.map((advantage, index) => {
             const data = (translations.advantages as Record<string, {title?: string; desc?: string}>)[advantage.key];
@@ -114,101 +137,121 @@ export function CoreAdvantages({ translations }: CoreAdvantagesProps) {
             return (
               <motion.div
                 key={advantage.key}
-                initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-                animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                initial={{ opacity: 0, y: 50 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{
                   delay: 0.3 + index * 0.1,
                   duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.16, 1, 0.3, 1],
                 }}
-                className="group relative"
+                className="group"
               >
-                <motion.div
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                <div
                   className={cn(
-                    "relative h-full rounded-2xl overflow-hidden",
-                    "bg-gradient-to-br",
-                    advantage.gradient,
-                    "border border-white/[0.06]",
+                    "relative h-full rounded-3xl overflow-hidden",
+                    "bg-gradient-to-br from-white to-[#FAFAFA]",
+                    "border border-[#E4E4E7]",
                     "transition-all duration-400",
                     advantage.borderColor,
-                    "hover:shadow-2xl",
-                    advantage.glowColor,
-                    "p-7"
+                    "hover:shadow-2xl hover:border-[#D4D4D8]",
+                    "p-8"
                   )}
                 >
-                  {/* Animated glow on hover */}
+                  {/* Background gradient on hover */}
                   <div
                     className={cn(
                       "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-                      "bg-gradient-to-br from-white/[0.03] to-transparent"
+                      "bg-gradient-to-br",
+                      advantage.gradient,
+                      "to-transparent"
                     )}
                   />
 
-                  {/* Corner accents */}
-                  <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-white/5 rounded-tr-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-white/5 rounded-bl-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  {/* Icon */}
-                  <div className="relative mb-6">
-                    <div
-                      className={cn(
-                        "w-14 h-14 rounded-xl flex items-center justify-center",
-                        advantage.iconBg,
-                        "group-hover:scale-110 transition-transform duration-300"
-                      )}
-                    >
-                      <Icon className={cn("w-7 h-7", advantage.iconColor)} />
-                    </div>
-                    {/* Icon glow */}
-                    <div
-                      className={cn(
-                        "absolute inset-0 rounded-xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500",
-                        advantage.iconBg
-                      )}
-                      style={{ transform: "scale(1.5)", zIndex: -1 }}
-                    />
-                  </div>
-
                   {/* Content */}
                   <div className="relative">
-                    <h3 className="text-xl font-heading font-semibold text-white mb-3 group-hover:text-white/90 transition-colors">
+                    {/* Icon */}
+                    <div className="mb-6">
+                      <div
+                        className={cn(
+                          "w-16 h-16 rounded-2xl flex items-center justify-center mb-4",
+                          advantage.iconBg,
+                          "group-hover:scale-110 transition-transform duration-300"
+                        )}
+                      >
+                        <Icon className={cn("w-8 h-8", advantage.iconColor)} />
+                      </div>
+                      <span className={cn("text-sm font-medium", advantage.iconColor)}>
+                        {isZh ? advantage.iconName : advantage.key}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-[#0A0A0A] mb-3 group-hover:text-[#0A0A0A]">
                       {data.title}
                     </h3>
-                    <p className="text-sm text-white/50 leading-relaxed mb-6">
+
+                    {/* Description */}
+                    <p className="text-sm text-[#52525B] leading-relaxed mb-6">
                       {data.desc}
                     </p>
+
+                    {/* Stat */}
+                    <div className="flex items-baseline gap-2 pt-4 border-t border-[#E4E4E7]">
+                      <span className={cn("text-3xl font-bold font-mono", advantage.iconColor)}>
+                        {advantage.stat}
+                      </span>
+                      <span className="text-sm text-[#A1A1AA]">
+                        {isZh ? advantage.statLabel : advantage.statEnLabel}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Stat highlight */}
-                  <div className="relative flex items-baseline gap-2">
-                    <span
-                      className={cn("text-3xl font-heading font-bold", advantage.iconColor)}
-                      style={{ textShadow: `0 0 30px ${advantage.accentColor}40` }}
-                    >
-                      {advantage.stat}
-                    </span>
-                    <span className="text-sm text-white/30">{advantage.statLabel}</span>
+                  {/* Decorative corner */}
+                  <div className="absolute top-0 right-0 w-24 h-24 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <div className={cn("absolute top-4 right-4 w-8 h-8 rounded-full", advantage.iconBg)} />
+                    <div className={cn("absolute top-8 right-8 w-6 h-6 rounded-full", advantage.iconBg)} />
                   </div>
-
-                  {/* Animated border gradient on hover */}
-                  <div
-                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                    style={{
-                      padding: "1px",
-                      background: `linear-gradient(135deg, ${advantage.accentColor}40, transparent, ${advantage.accentColor}40)`,
-                      mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                      maskComposite: "exclude",
-                      WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                      WebkitMaskComposite: "destination-out",
-                    }}
-                  />
-                </motion.div>
+                </div>
               </motion.div>
             );
           })}
         </div>
+
+        {/* Bottom feature highlight */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.8 }}
+          className="mt-12 p-6 md:p-8 rounded-3xl bg-gradient-to-r from-[#0A0A0A] to-[#18181B] text-white"
+        >
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#2563EB] flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold">{isZh ? "为什么选择深安锂能？" : "Why Choose Shenan Lithium?"}</h4>
+                <p className="text-sm text-white/60">{isZh ? "专业团队 · 创新技术 · 卓越品质" : "Professional Team · Innovative Technology · Excellent Quality"}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold font-mono">99.9%</div>
+                <div className="text-xs text-white/40">{isZh ? "产品合格率" : "Quality Rate"}</div>
+              </div>
+              <div className="w-px h-12 bg-white/20" />
+              <div className="text-center">
+                <div className="text-2xl font-bold font-mono">24/7</div>
+                <div className="text-xs text-white/40">{isZh ? "技术支持" : "Tech Support"}</div>
+              </div>
+              <div className="w-px h-12 bg-white/20" />
+              <div className="text-center">
+                <div className="text-2xl font-bold font-mono">5年</div>
+                <div className="text-xs text-white/40">{isZh ? "质保服务" : "Warranty"}</div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
