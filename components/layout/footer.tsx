@@ -74,7 +74,7 @@ export function Footer({ translations, locale }: FooterProps) {
               />
               <div>
                 <p className="font-semibold text-white text-sm leading-tight">
-                  {locale === "zh" ? "深安锂能" : "Shenan Lithium"}
+                  {locale === "zh" ? "深安锂能" : "Swift Safe Energy"}
                 </p>
                 <p className="text-[10px] text-[#71717A]">
                   {locale === "zh" ? "高比能电池专家" : "High Energy Density Battery Expert"}
