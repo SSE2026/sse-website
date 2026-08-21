@@ -1,9 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import HeroCarousel, { HeroSlide } from "@/components/ui/hero-carousel/HeroCarousel";
 
-// Hero slides - Video 1 + Images 2, 3
-const HERO_SLIDES_EN: HeroSlide[] = [
+// Default hero slides - Video 1 + Images 2, 3 (fallback when API fails)
+const DEFAULT_SLIDES_EN: HeroSlide[] = [
   {
     id: 1,
     video: "/1.mp4",
@@ -51,7 +52,7 @@ const HERO_SLIDES_EN: HeroSlide[] = [
   },
 ];
 
-const HERO_SLIDES_ZH: HeroSlide[] = [
+const DEFAULT_SLIDES_ZH: HeroSlide[] = [
   {
     id: 1,
     video: "/1.mp4",
@@ -99,13 +100,88 @@ const HERO_SLIDES_ZH: HeroSlide[] = [
   },
 ];
 
+// Transform banner data to HeroSlide format
+interface Banner {
+  id: string;
+  title?: string;
+  titleZh?: string;
+  subtitle?: string;
+  subtitleZh?: string;
+  image: string;
+  mobileImage?: string;
+  link?: string;
+  ctaText?: string;
+  ctaTextZh?: string;
+  sortOrder: number;
+}
+
+function transformBannersToSlides(banners: Banner[], locale: string): HeroSlide[] {
+  return banners
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((banner, index) => ({
+      id: index + 1,
+      image: banner.image,
+      imageAlt: locale === "zh" ? (banner.titleZh || banner.title || "") : (banner.title || ""),
+      eyebrow: locale === "zh" ? "固态电池技术" : "Solid-State Battery Tech",
+      title: locale === "zh"
+        ? (banner.titleZh || banner.title || "Untitled")
+        : (banner.title || "Untitled"),
+      description: locale === "zh"
+        ? (banner.subtitleZh || banner.subtitle || "")
+        : (banner.subtitle || ""),
+      ctaText: locale === "zh"
+        ? (banner.ctaTextZh || banner.ctaText || "了解更多")
+        : (banner.ctaText || "Learn More"),
+      ctaLink: banner.link || "/",
+      stats: DEFAULT_SLIDES_EN[0].stats, // Use default stats for now
+    }));
+}
+
 interface HeroProps {
-  translations: any;
+  translations?: unknown;
   locale: string;
 }
 
 export function Hero({ locale }: HeroProps) {
-  const slides = locale === "zh" ? HERO_SLIDES_ZH : HERO_SLIDES_EN;
+  const [slides, setSlides] = useState<HeroSlide[]>(locale === "zh" ? DEFAULT_SLIDES_ZH : DEFAULT_SLIDES_EN);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBanners() {
+      try {
+        const response = await fetch("/api/banners", {
+          next: { revalidate: 60 }, // Cache for 60 seconds
+        });
+
+        if (!response.ok) {
+          console.error("Failed to fetch banners, using defaults");
+          return;
+        }
+
+        const data = await response.json();
+        const banners: Banner[] = data.items || [];
+
+        // Only use banners if there are any active ones
+        if (banners.length > 0) {
+          const transformedSlides = transformBannersToSlides(banners, locale);
+          setSlides(transformedSlides);
+        }
+      } catch (error) {
+        console.error("Error fetching banners:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchBanners();
+  }, [locale]);
+
+  // Update slides when locale changes (without refetching if we already have data)
+  useEffect(() => {
+    if (!loading) {
+      setSlides(locale === "zh" ? DEFAULT_SLIDES_ZH : DEFAULT_SLIDES_EN);
+    }
+  }, [locale, loading]);
 
   return <HeroCarousel slides={slides} autoPlayInterval={3000} />;
 }

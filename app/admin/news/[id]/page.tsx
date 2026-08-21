@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft,
   Save,
-  Upload,
   X,
   Eye,
   Trash2,
-  Plus,
-  ImageIcon,
   Bold,
   Italic,
   Link as LinkIcon,
   List,
+  Loader2,
+  AlertCircle,
+  CheckCircle,
 } from "lucide-react";
 import { useAdmin } from "@/app/admin/layout";
 import { Button } from "@/components/ui/button";
@@ -33,28 +33,33 @@ const newsTranslations = {
     excerpt: "Excerpt",
     excerptZh: "Excerpt (Chinese)",
     category: "Category",
+    selectCategory: "Select category",
     content: "Content",
     contentZh: "Content (Chinese)",
     featuredImage: "Featured Image",
     uploadImage: "Upload Image",
+    removeImage: "Remove",
     settings: "Settings",
     status: "Status",
     published: "Published",
     draft: "Draft",
     author: "Author",
     publishDate: "Publish Date",
+    slug: "URL Slug",
+    slugHelp: "Auto-generated from title if empty",
     save: "Save Changes",
     saving: "Saving...",
     cancel: "Cancel",
     viewArticle: "View Article",
     deleteArticle: "Delete Article",
-    addContent: "Add Content Block",
-    categories: {
-      Technology: "Technology",
-      Business: "Business",
-      Report: "Report",
-      News: "News",
-    },
+    deleteConfirm: "Are you sure you want to delete this article?",
+    deleteSuccess: "Article deleted successfully",
+    deleteError: "Failed to delete article",
+    loadError: "Failed to load article",
+    saveSuccess: "Article saved successfully",
+    saveError: "Failed to save article",
+    loading: "Loading...",
+    noCategory: "No Category",
   },
   zh: {
     title: "编辑文章",
@@ -65,89 +70,80 @@ const newsTranslations = {
     excerpt: "摘要",
     excerptZh: "摘要（中文）",
     category: "分类",
+    selectCategory: "选择分类",
     content: "正文",
     contentZh: "正文（中文）",
     featuredImage: "封面图片",
     uploadImage: "上传图片",
+    removeImage: "移除",
     settings: "设置",
     status: "状态",
     published: "已发布",
     draft: "草稿",
     author: "作者",
     publishDate: "发布日期",
+    slug: "URL别名",
+    slugHelp: "留空则自动从标题生成",
     save: "保存更改",
     saving: "保存中...",
     cancel: "取消",
     viewArticle: "预览文章",
     deleteArticle: "删除文章",
-    addContent: "添加内容块",
-    categories: {
-      Technology: "技术",
-      Business: "业务",
-      Report: "报告",
-      News: "新闻",
-    },
+    deleteConfirm: "确定要删除这篇文章吗？",
+    deleteSuccess: "文章删除成功",
+    deleteError: "删除文章失败",
+    loadError: "加载文章失败",
+    saveSuccess: "文章保存成功",
+    saveError: "保存文章失败",
+    loading: "加载中...",
+    noCategory: "无分类",
   },
 };
 
-// Mock news data
-const mockNews: Record<string, any> = {
-  "1": {
-    id: "1",
-    title: "Solid-State Battery Breakthrough Achieved",
-    titleZh: "固态电池技术取得重大突破",
-    excerpt: "Our R&D team has achieved a major breakthrough in solid-state battery technology.",
-    excerptZh: "我们的研发团队在固态电池技术上取得了重大突破。",
-    category: "Technology",
-    content: "Full article content here...",
-    contentZh: "文章完整内容...",
-    featuredImage: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=80",
-    status: "published",
-    author: "Admin",
-    publishDate: "2024-07-15",
-  },
-  "2": {
-    id: "2",
-    title: "New Partnership with European Drone Manufacturer",
-    titleZh: "与欧洲无人机厂商建立合作",
-    excerpt: "Strategic partnership announced with leading European UAV manufacturer.",
-    excerptZh: "与欧洲领先的无人机制造商建立战略合作伙伴关系。",
-    category: "Business",
-    content: "Full article content here...",
-    contentZh: "文章完整内容...",
-    featuredImage: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80",
-    status: "published",
-    author: "Admin",
-    publishDate: "2024-07-10",
-  },
-  "3": {
-    id: "3",
-    title: "Industry Report: UAV Battery Market 2024",
-    titleZh: "行业报告：2024年无人机电池市场",
-    excerpt: "Comprehensive analysis of the UAV battery market trends and opportunities.",
-    excerptZh: "无人机电池市场趋势与机遇综合分析。",
-    category: "Report",
-    content: "Full article content here...",
-    contentZh: "文章完整内容...",
-    featuredImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-    status: "draft",
-    author: "Admin",
-    publishDate: "2024-07-05",
-  },
-};
+// Types
+interface Category {
+  id: string;
+  slug: string;
+  name: string;
+  postCount: number;
+}
 
 interface NewsFormData {
   title: string;
   titleZh: string;
   excerpt: string;
   excerptZh: string;
-  category: string;
   content: string;
   contentZh: string;
-  featuredImage: string;
-  status: "published" | "draft";
-  author: string;
-  publishDate: string;
+  slug: string;
+  coverImage: string;
+  published: boolean;
+  authorName: string;
+  publishedAt: string;
+  categoryId: string;
+}
+
+interface NewsDetailResponse {
+  success: boolean;
+  data?: {
+    id: string;
+    slug: string;
+    title: string;
+    excerpt: string | null;
+    content: string | null;
+    coverImage: string | null;
+    authorName: string | null;
+    categoryId: string | null;
+    published: boolean;
+    publishedAt: string | null;
+    translations: Array<{
+      locale: string;
+      title: string;
+      excerpt: string | null;
+      content: string | null;
+    }>;
+  };
+  error?: string;
 }
 
 export default function EditNewsPage() {
@@ -158,46 +154,215 @@ export default function EditNewsPage() {
   const newsId = params.id as string;
 
   const isNew = newsId === "new";
-  const mockData = isNew ? {
+
+  // State
+  const [loading, setLoading] = useState(!isNew);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const [formData, setFormData] = useState<NewsFormData>({
     title: "",
     titleZh: "",
     excerpt: "",
     excerptZh: "",
-    category: "News",
     content: "",
     contentZh: "",
-    featuredImage: "",
-    status: "draft" as const,
-    author: "Admin",
-    publishDate: new Date().toISOString().split("T")[0],
-  } : (mockNews[newsId] || mockNews["1"]);
-
-  const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<NewsFormData>({
-    title: mockData.title,
-    titleZh: mockData.titleZh,
-    excerpt: mockData.excerpt,
-    excerptZh: mockData.excerptZh,
-    category: mockData.category,
-    content: mockData.content,
-    contentZh: mockData.contentZh,
-    featuredImage: mockData.featuredImage,
-    status: mockData.status,
-    author: mockData.author,
-    publishDate: mockData.publishDate,
+    slug: "",
+    coverImage: "",
+    published: false,
+    authorName: "",
+    publishedAt: new Date().toISOString().split("T")[0],
+    categoryId: "",
   });
 
-  const categoryOptions = Object.entries(t.categories).map(([value, label]) => ({
-    value,
-    label,
-  }));
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/admin/news/categories");
+        if (response.ok) {
+          const data = await response.json();
+          setCategories(data.data || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
-  const handleSave = async () => {
-    setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    router.push("/admin/news");
+  // Fetch existing article
+  const fetchArticle = useCallback(async () => {
+    if (isNew) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/admin/news/${newsId}`);
+      const data: NewsDetailResponse = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push("/auth/login");
+          return;
+        }
+        if (response.status === 403) {
+          router.push("/403");
+          return;
+        }
+        if (response.status === 404) {
+          setError("Article not found");
+          return;
+        }
+        throw new Error(data.error || "Failed to load article");
+      }
+
+      const article = data.data;
+
+      if (!article) {
+        throw new Error(data.error || "Article not found");
+      }
+
+      // Find translations
+      const enTrans = article.translations?.find((t) => t.locale === "en");
+      const zhTrans = article.translations?.find((t) => t.locale === "zh-CN");
+
+      setFormData({
+        title: enTrans?.title || article.title || "",
+        titleZh: zhTrans?.title || "",
+        excerpt: enTrans?.excerpt || article.excerpt || "",
+        excerptZh: zhTrans?.excerpt || "",
+        content: enTrans?.content || article.content || "",
+        contentZh: zhTrans?.content || "",
+        slug: article.slug || "",
+        coverImage: article.coverImage || "",
+        published: article.published || false,
+        authorName: article.authorName || "",
+        publishedAt: article.publishedAt
+          ? new Date(article.publishedAt).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0],
+        categoryId: article.categoryId || "",
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load article");
+    } finally {
+      setLoading(false);
+    }
+  }, [isNew, newsId, router]);
+
+  useEffect(() => {
+    fetchArticle();
+  }, [fetchArticle]);
+
+  // Generate slug from title
+  const generateSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9一-龥]+/g, "-")
+      .replace(/^-|-$/g, "");
   };
+
+  // Handle save
+  const handleSave = async () => {
+    if (!formData.title.trim()) {
+      setError("Title is required");
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+
+    try {
+      // Generate slug if empty
+      const slug = formData.slug.trim() || generateSlug(formData.title);
+
+      const payload = {
+        slug,
+        title: formData.title,
+        titleZh: formData.titleZh,
+        excerpt: formData.excerpt,
+        excerptZh: formData.excerptZh,
+        content: formData.content,
+        contentZh: formData.contentZh,
+        coverImage: formData.coverImage,
+        published: formData.published,
+        authorName: formData.authorName,
+        categoryId: formData.categoryId || null,
+        publishedAt: formData.publishedAt || null,
+      };
+
+      const url = isNew
+        ? "/api/admin/news"
+        : `/api/admin/news/${newsId}`;
+      const method = isNew ? "POST" : "PATCH";
+
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to save");
+      }
+
+      setSaveSuccess(true);
+
+      // Redirect after short delay
+      setTimeout(() => {
+        router.push("/admin/news");
+      }, 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save article");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Handle delete
+  const handleDelete = async () => {
+    setDeleting(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/admin/news/${newsId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to delete");
+      }
+
+      setDeleteSuccess(true);
+      setTimeout(() => {
+        router.push("/admin/news");
+      }, 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete article");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // Get current slug for view link
+  const viewSlug = formData.slug || (formData.title ? generateSlug(formData.title) : newsId);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 text-[#3B82F6] animate-spin" />
+        <span className="ml-3 text-white/60">{t.loading}</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -218,7 +383,7 @@ export default function EditNewsPage() {
         </div>
         <div className="flex items-center gap-3">
           {!isNew && (
-            <Link href={`/news/${newsId}`} target="_blank">
+            <Link href={`/news/${viewSlug}`} target="_blank">
               <Button variant="ghost">
                 <Eye className="w-4 h-4 mr-2" />
                 {t.viewArticle}
@@ -228,12 +393,32 @@ export default function EditNewsPage() {
           <Link href="/admin/news">
             <Button variant="ghost">{t.cancel}</Button>
           </Link>
-          <Button onClick={handleSave} loading={isSaving}>
+          <Button onClick={handleSave} loading={saving}>
             <Save className="w-4 h-4 mr-2" />
-            {isSaving ? t.saving : t.save}
+            {saving ? t.saving : t.save}
           </Button>
         </div>
       </div>
+
+      {/* Success/Error Messages */}
+      {saveSuccess && (
+        <div className="flex items-center gap-2 p-4 rounded-lg bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981]">
+          <CheckCircle className="w-5 h-5" />
+          <span>{t.saveSuccess}</span>
+        </div>
+      )}
+      {deleteSuccess && (
+        <div className="flex items-center gap-2 p-4 rounded-lg bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981]">
+          <CheckCircle className="w-5 h-5" />
+          <span>{t.deleteSuccess}</span>
+        </div>
+      )}
+      {error && (
+        <div className="flex items-center gap-2 p-4 rounded-lg bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444]">
+          <AlertCircle className="w-5 h-5" />
+          <span>{error}</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
@@ -247,6 +432,7 @@ export default function EditNewsPage() {
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="Enter article title..."
+                required
               />
               <Input
                 label={t.titleFieldZh}
@@ -308,7 +494,7 @@ export default function EditNewsPage() {
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                   rows={12}
                   className="w-full px-4 py-3 rounded-lg bg-[#0F172A] border border-[#334155] text-white placeholder-[#64748B] focus:outline-none focus:border-[#3B82F6] resize-none font-mono text-sm"
-                  placeholder="Article content in English..."
+                  placeholder="Article content in English (supports Markdown)..."
                 />
               </div>
               <div>
@@ -318,7 +504,7 @@ export default function EditNewsPage() {
                   onChange={(e) => setFormData({ ...formData, contentZh: e.target.value })}
                   rows={12}
                   className="w-full px-4 py-3 rounded-lg bg-[#0F172A] border border-[#334155] text-white placeholder-[#64748B] focus:outline-none focus:border-[#3B82F6] resize-none font-mono text-sm"
-                  placeholder="中文文章内容..."
+                  placeholder="中文文章内容（支持 Markdown）..."
                 />
               </div>
             </div>
@@ -335,9 +521,9 @@ export default function EditNewsPage() {
                 <label className="block text-sm text-white/60 mb-2">{t.status}</label>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setFormData({ ...formData, status: "published" })}
+                    onClick={() => setFormData({ ...formData, published: true })}
                     className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      formData.status === "published"
+                      formData.published
                         ? "bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30"
                         : "bg-white/[0.03] text-white/60 border border-white/[0.10] hover:border-white/[0.20]"
                     }`}
@@ -345,9 +531,9 @@ export default function EditNewsPage() {
                     {t.published}
                   </button>
                   <button
-                    onClick={() => setFormData({ ...formData, status: "draft" })}
+                    onClick={() => setFormData({ ...formData, published: false })}
                     className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      formData.status === "draft"
+                      !formData.published
                         ? "bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/30"
                         : "bg-white/[0.03] text-white/60 border border-white/[0.10] hover:border-white/[0.20]"
                     }`}
@@ -360,13 +546,14 @@ export default function EditNewsPage() {
               <div>
                 <label className="block text-sm text-white/60 mb-2">{t.category}</label>
                 <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  value={formData.categoryId}
+                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                   className="w-full h-10 px-4 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#3B82F6]"
                 >
-                  {categoryOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
+                  <option value="">{t.selectCategory}</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name} ({cat.postCount})
                     </option>
                   ))}
                 </select>
@@ -375,8 +562,9 @@ export default function EditNewsPage() {
               <div>
                 <label className="block text-sm text-white/60 mb-2">{t.author}</label>
                 <Input
-                  value={formData.author}
-                  onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                  value={formData.authorName}
+                  onChange={(e) => setFormData({ ...formData, authorName: e.target.value })}
+                  placeholder="Author name"
                 />
               </div>
 
@@ -384,15 +572,28 @@ export default function EditNewsPage() {
                 <label className="block text-sm text-white/60 mb-2">{t.publishDate}</label>
                 <input
                   type="date"
-                  value={formData.publishDate}
-                  onChange={(e) => setFormData({ ...formData, publishDate: e.target.value })}
+                  value={formData.publishedAt}
+                  onChange={(e) => setFormData({ ...formData, publishedAt: e.target.value })}
                   className="w-full h-10 px-4 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#3B82F6]"
                 />
               </div>
 
+              <div>
+                <label className="block text-sm text-white/60 mb-2">{t.slug}</label>
+                <Input
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  placeholder="auto-generated-from-title"
+                />
+                <p className="text-xs text-white/40 mt-1">{t.slugHelp}</p>
+              </div>
+
               {!isNew && (
                 <div className="pt-4 border-t border-white/[0.06]">
-                  <button className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-[#EF4444] bg-[#EF4444]/10 hover:bg-[#EF4444]/20 transition-colors">
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-[#EF4444] bg-[#EF4444]/10 hover:bg-[#EF4444]/20 transition-colors"
+                  >
                     <Trash2 className="w-4 h-4" />
                     {t.deleteArticle}
                   </button>
@@ -404,30 +605,66 @@ export default function EditNewsPage() {
           {/* Featured Image */}
           <div className="p-6 rounded-xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06]">
             <h2 className="text-lg font-semibold text-white mb-4">{t.featuredImage}</h2>
-            {formData.featuredImage ? (
+            {formData.coverImage ? (
               <div className="relative aspect-video rounded-lg overflow-hidden">
                 <Image
-                  src={formData.featuredImage}
+                  src={formData.coverImage}
                   alt="Featured image"
                   fill
                   className="object-cover"
                 />
                 <button
-                  onClick={() => setFormData({ ...formData, featuredImage: "" })}
+                  onClick={() => setFormData({ ...formData, coverImage: "" })}
                   className="absolute top-2 right-2 p-2 rounded-lg bg-black/50 text-white/60 hover:text-white transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <button className="w-full aspect-video rounded-lg border-2 border-dashed border-white/[0.10] hover:border-[#3B82F6]/50 flex flex-col items-center justify-center gap-2 text-white/40 hover:text-[#3B82F6] transition-colors">
-                <Upload className="w-8 h-8" />
-                <span className="text-sm">{t.uploadImage}</span>
-              </button>
+              <div>
+                <Input
+                  placeholder="https://example.com/image.jpg"
+                  value={formData.coverImage}
+                  onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                />
+                <p className="text-xs text-white/40 mt-2">{t.uploadImage} (URL)</p>
+              </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-[#111827] border border-white/10 rounded-2xl p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-white mb-4">{t.deleteArticle}</h3>
+            <p className="text-white/70 mb-6">{t.deleteConfirm}</p>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowDeleteConfirm(false)}
+              >
+                {t.cancel}
+              </Button>
+              <Button
+                variant="danger"
+                className="flex-1"
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <Trash2 className="w-4 h-4 mr-2" />
+                )}
+                {t.deleteArticle}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

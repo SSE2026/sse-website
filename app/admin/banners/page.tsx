@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Image as ImageIcon,
   Plus,
@@ -17,50 +16,12 @@ import {
   ArrowDown,
   Monitor,
   Smartphone,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { useAdmin } from "@/app/admin/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-// Mock banner data
-const mockBanners: Banner[] = [
-  {
-    id: "1",
-    title: "CloudChi 360-P Series",
-    titleZh: "云驰 360-P 系列",
-    subtitle: "High power solid-state battery for drones and robots",
-    subtitleZh: "高功率固态电池，适用于无人机和机器人",
-    image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=1200&q=80",
-    link: "/products/cloudchi-360-p",
-    order: 1,
-    status: "active",
-    devices: ["desktop", "mobile"],
-  },
-  {
-    id: "2",
-    title: "Technology Breakthrough",
-    titleZh: "技术突破",
-    subtitle: "570+ Wh/kg energy density achieved",
-    subtitleZh: "成功实现 570+ Wh/kg 能量密度",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
-    link: "/technology",
-    order: 2,
-    status: "active",
-    devices: ["desktop", "mobile"],
-  },
-  {
-    id: "3",
-    title: "Contact Us",
-    titleZh: "联系我们",
-    subtitle: "Partner with us for next-generation battery solutions",
-    subtitleZh: "与我们合作，开发下一代电池解决方案",
-    image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1200&q=80",
-    link: "/contact",
-    order: 3,
-    status: "draft",
-    devices: ["desktop"],
-  },
-];
 
 // Banner translations
 const bannerTranslations = {
@@ -74,7 +35,10 @@ const bannerTranslations = {
     subtitleField: "Subtitle",
     subtitleFieldZh: "Subtitle (Chinese)",
     image: "Background Image",
+    mobileImage: "Mobile Image (Optional)",
     link: "Link URL",
+    ctaText: "CTA Button Text",
+    ctaTextZh: "CTA Button Text (Chinese)",
     devices: "Display Devices",
     desktop: "Desktop",
     mobile: "Mobile",
@@ -89,10 +53,16 @@ const bannerTranslations = {
     preview: "Preview",
     save: "Save",
     cancel: "Cancel",
-    dragToReorder: "Drag to reorder slides",
     uploadImage: "Upload Image",
     noBanners: "No banners yet",
     addFirst: "Add your first banner",
+    loading: "Loading banners...",
+    error: "Failed to load banners",
+    retry: "Retry",
+    deleteConfirm: "Are you sure you want to delete this banner?",
+    deleteSuccess: "Banner deleted successfully",
+    saveSuccess: "Banner saved successfully",
+    saveError: "Failed to save banner",
   },
   zh: {
     title: "横幅管理",
@@ -104,7 +74,10 @@ const bannerTranslations = {
     subtitleField: "副标题",
     subtitleFieldZh: "副标题（中文）",
     image: "背景图片",
+    mobileImage: "移动端图片（可选）",
     link: "链接地址",
+    ctaText: "按钮文字",
+    ctaTextZh: "按钮文字（中文）",
     devices: "显示设备",
     desktop: "桌面端",
     mobile: "移动端",
@@ -119,24 +92,50 @@ const bannerTranslations = {
     preview: "预览",
     save: "保存",
     cancel: "取消",
-    dragToReorder: "拖动以重新排序",
     uploadImage: "上传图片",
     noBanners: "暂无横幅",
     addFirst: "添加您的第一个横幅",
+    loading: "加载横幅中...",
+    error: "加载横幅失败",
+    retry: "重试",
+    deleteConfirm: "确定要删除此横幅吗？",
+    deleteSuccess: "横幅删除成功",
+    saveSuccess: "横幅保存成功",
+    saveError: "保存横幅失败",
   },
 };
 
+// Banner interface matching API response
 interface Banner {
   id: string;
+  title?: string;
+  titleZh?: string;
+  subtitle?: string;
+  subtitleZh?: string;
+  image: string;
+  mobileImage?: string;
+  link?: string;
+  ctaText?: string;
+  ctaTextZh?: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Form data for editing
+interface BannerFormData {
   title: string;
   titleZh: string;
   subtitle: string;
   subtitleZh: string;
   image: string;
+  mobileImage: string;
   link: string;
-  order: number;
-  status: "active" | "draft";
-  devices: ("desktop" | "mobile")[];
+  ctaText: string;
+  ctaTextZh: string;
+  isActive: boolean;
+  sortOrder: number;
 }
 
 export default function BannersAdminPage() {
@@ -144,74 +143,239 @@ export default function BannersAdminPage() {
   const isLocale = locale;
   const t = bannerTranslations[isLocale];
 
-  const [banners, setBanners] = useState<Banner[]>(mockBanners);
-  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
+  const [banners, setBanners] = useState<Banner[]>([]);
+  const [editingBanner, setEditingBanner] = useState<BannerFormData | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  // Fetch banners from API
+  const fetchBanners = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch("/api/admin/banners");
+      if (!response.ok) {
+        throw new Error("Failed to fetch banners");
+      }
+      const data = await response.json();
+      setBanners(data.items || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBanners();
+  }, [fetchBanners]);
+
+  // Show toast message
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  // Convert Banner to form data
+  const bannerToFormData = (banner?: Banner): BannerFormData => ({
+    title: banner?.title || "",
+    titleZh: banner?.titleZh || "",
+    subtitle: banner?.subtitle || "",
+    subtitleZh: banner?.subtitleZh || "",
+    image: banner?.image || "",
+    mobileImage: banner?.mobileImage || "",
+    link: banner?.link || "",
+    ctaText: banner?.ctaText || "",
+    ctaTextZh: banner?.ctaTextZh || "",
+    isActive: banner?.isActive ?? true,
+    sortOrder: banner?.sortOrder ?? banners.length,
+  });
 
   const handleEdit = (banner: Banner) => {
-    setEditingBanner({ ...banner });
+    setEditingBanner(bannerToFormData(banner));
+    setEditingId(banner.id);
     setIsEditing(true);
   };
 
   const handleAdd = () => {
-    const newBanner: Banner = {
-      id: `new-${Date.now()}`,
-      title: "",
-      titleZh: "",
-      subtitle: "",
-      subtitleZh: "",
-      image: "",
-      link: "",
-      order: banners.length + 1,
-      status: "draft",
-      devices: ["desktop", "mobile"],
-    };
-    setEditingBanner(newBanner);
+    setEditingBanner(bannerToFormData());
+    setEditingId(null);
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editingBanner) return;
 
-    if (banners.find((b) => b.id === editingBanner.id)) {
-      setBanners(banners.map((b) => (b.id === editingBanner.id ? editingBanner : b)));
-    } else {
-      setBanners([...banners, editingBanner]);
+    setSaving(true);
+    try {
+      const payload = {
+        title: editingBanner.title || undefined,
+        titleZh: editingBanner.titleZh || undefined,
+        subtitle: editingBanner.subtitle || undefined,
+        subtitleZh: editingBanner.subtitleZh || undefined,
+        image: editingBanner.image,
+        mobileImage: editingBanner.mobileImage || undefined,
+        link: editingBanner.link || undefined,
+        ctaText: editingBanner.ctaText || undefined,
+        ctaTextZh: editingBanner.ctaTextZh || undefined,
+        isActive: editingBanner.isActive,
+        sortOrder: editingBanner.sortOrder,
+      };
+
+      let response: Response;
+
+      if (editingId) {
+        // Update existing banner
+        response = await fetch(`/api/admin/banners/${editingId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        // Create new banner
+        response = await fetch("/api/admin/banners", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to save banner");
+      }
+
+      showToast(t.saveSuccess, 'success');
+      setIsEditing(false);
+      setEditingBanner(null);
+      setEditingId(null);
+      fetchBanners();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t.saveError, 'error');
+    } finally {
+      setSaving(false);
     }
-    setIsEditing(false);
-    setEditingBanner(null);
   };
 
-  const handleDelete = (id: string) => {
-    setBanners(banners.filter((b) => b.id !== id));
+  const handleDelete = async (id: string) => {
+    if (!confirm(t.deleteConfirm)) return;
+
+    try {
+      const response = await fetch(`/api/admin/banners/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete banner");
+      }
+
+      showToast(t.deleteSuccess, 'success');
+      fetchBanners();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Failed to delete banner", 'error');
+    }
   };
 
-  const handleMoveUp = (index: number) => {
+  const handleToggleStatus = async (id: string, currentStatus: boolean) => {
+    try {
+      const response = await fetch(`/api/admin/banners/${id}/status`, {
+        method: "PATCH",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update status");
+      }
+
+      fetchBanners();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Failed to update status", 'error');
+    }
+  };
+
+  const handleMoveUp = async (index: number) => {
     if (index === 0) return;
     const newBanners = [...banners];
+    const temp = newBanners[index].sortOrder;
+    newBanners[index].sortOrder = newBanners[index - 1].sortOrder;
+    newBanners[index - 1].sortOrder = temp;
     [newBanners[index - 1], newBanners[index]] = [newBanners[index], newBanners[index - 1]];
-    newBanners.forEach((b, i) => (b.order = i + 1));
     setBanners(newBanners);
+
+    // Save new order to API
+    try {
+      await fetch("/api/admin/banners/reorder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: newBanners.map((b) => b.id) }),
+      });
+    } catch (err) {
+      showToast("Failed to reorder banners", 'error');
+      fetchBanners(); // Revert on error
+    }
   };
 
-  const handleMoveDown = (index: number) => {
+  const handleMoveDown = async (index: number) => {
     if (index === banners.length - 1) return;
     const newBanners = [...banners];
+    const temp = newBanners[index].sortOrder;
+    newBanners[index].sortOrder = newBanners[index + 1].sortOrder;
+    newBanners[index + 1].sortOrder = temp;
     [newBanners[index], newBanners[index + 1]] = [newBanners[index + 1], newBanners[index]];
-    newBanners.forEach((b, i) => (b.order = i + 1));
     setBanners(newBanners);
+
+    // Save new order to API
+    try {
+      await fetch("/api/admin/banners/reorder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: newBanners.map((b) => b.id) }),
+      });
+    } catch (err) {
+      showToast("Failed to reorder banners", 'error');
+      fetchBanners(); // Revert on error
+    }
   };
 
-  const toggleDevice = (device: "desktop" | "mobile") => {
-    if (!editingBanner) return;
-    const devices = editingBanner.devices.includes(device)
-      ? editingBanner.devices.filter((d) => d !== device)
-      : [...editingBanner.devices, device];
-    setEditingBanner({ ...editingBanner, devices });
-  };
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 text-white/50 animate-spin" />
+        <span className="ml-3 text-white/50">{t.loading}</span>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <AlertCircle className="w-12 h-12 text-red-400 mb-4" />
+        <p className="text-white/70 mb-4">{t.error}</p>
+        <Button onClick={fetchBanners}>{t.retry}</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {/* Toast notification */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg ${
+            toast.type === 'success'
+              ? 'bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30'
+              : 'bg-red-500/20 text-red-400 border border-red-500/30'
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -243,7 +407,7 @@ export default function BannersAdminPage() {
 
               {/* Order Number */}
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.05] text-white/60 text-sm font-medium">
-                {banner.order}
+                {index + 1}
               </div>
 
               {/* Thumbnail */}
@@ -251,7 +415,7 @@ export default function BannersAdminPage() {
                 {banner.image ? (
                   <Image
                     src={banner.image}
-                    alt={banner.title}
+                    alt={banner.title || "Banner"}
                     fill
                     className="object-cover"
                   />
@@ -266,27 +430,25 @@ export default function BannersAdminPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-1">
                   <h3 className="text-white font-medium truncate">
-                    {isLocale === "en" ? banner.title : banner.titleZh}
+                    {isLocale === "en" ? banner.title || "Untitled" : banner.titleZh || "无标题"}
                   </h3>
                   <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium shrink-0 ${
-                      banner.status === "active"
-                        ? "bg-[#10B981]/20 text-[#10B981]"
-                        : "bg-white/10 text-white/50"
+                    className={`px-2 py-0.5 rounded-full text-xs font-medium shrink-0 cursor-pointer ${
+                      banner.isActive
+                        ? "bg-[#10B981]/20 text-[#10B981] hover:bg-[#10B981]/30"
+                        : "bg-white/10 text-white/50 hover:bg-white/15"
                     }`}
+                    onClick={() => handleToggleStatus(banner.id, banner.isActive)}
+                    title="Click to toggle status"
                   >
-                    {banner.status === "active" ? t.active : t.draft}
+                    {banner.isActive ? t.active : t.draft}
                   </span>
                 </div>
                 <p className="text-sm text-white/40 truncate">
-                  {isLocale === "en" ? banner.subtitle : banner.subtitleZh}
+                  {isLocale === "en" ? banner.subtitle || "No subtitle" : banner.subtitleZh || "无副标题"}
                 </p>
                 <div className="flex items-center gap-3 mt-2">
-                  <div className="flex items-center gap-1 text-xs text-white/30">
-                    {banner.devices.includes("desktop") && <Monitor className="w-3 h-3" />}
-                    {banner.devices.includes("mobile") && <Smartphone className="w-3 h-3" />}
-                  </div>
-                  <span className="text-xs text-white/30">{banner.link}</span>
+                  <span className="text-xs text-white/30">{banner.link || "/"}</span>
                 </div>
               </div>
 
@@ -296,6 +458,7 @@ export default function BannersAdminPage() {
                   onClick={() => handleMoveUp(index)}
                   disabled={index === 0}
                   className="p-2 text-white/40 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  title={t.moveUp}
                 >
                   <ArrowUp className="w-4 h-4" />
                 </button>
@@ -303,18 +466,21 @@ export default function BannersAdminPage() {
                   onClick={() => handleMoveDown(index)}
                   disabled={index === banners.length - 1}
                   className="p-2 text-white/40 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  title={t.moveDown}
                 >
                   <ArrowDown className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleEdit(banner)}
                   className="p-2 text-white/40 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors"
+                  title={t.edit}
                 >
                   <Edit className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(banner.id)}
                   className="p-2 text-white/40 hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
+                  title={t.delete}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -341,16 +507,17 @@ export default function BannersAdminPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/60"
-            onClick={() => setIsEditing(false)}
+            onClick={() => !saving && setIsEditing(false)}
           />
           <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#0F172A] border border-white/[0.08] shadow-2xl">
             <div className="sticky top-0 flex items-center justify-between p-6 border-b border-white/[0.06] bg-[#0F172A]">
               <h2 className="text-xl font-semibold text-white">
-                {t.edit} {t.slide} #{editingBanner.order}
+                {editingId ? `${t.edit} ${t.slide}` : t.addBanner}
               </h2>
               <button
-                onClick={() => setIsEditing(false)}
+                onClick={() => !saving && setIsEditing(false)}
                 className="p-2 text-white/60 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors"
+                disabled={saving}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -376,11 +543,38 @@ export default function BannersAdminPage() {
                     </button>
                   </div>
                 ) : (
-                  <button className="w-full aspect-video rounded-lg border-2 border-dashed border-white/[0.10] hover:border-[#3B82F6]/50 flex flex-col items-center justify-center gap-2 text-white/40 hover:text-[#3B82F6] transition-colors">
+                  <div className="flex flex-col items-center justify-center gap-2 p-8 rounded-lg border-2 border-dashed border-white/[0.10] text-white/40">
                     <Upload className="w-8 h-8" />
                     <span>{t.uploadImage}</span>
-                  </button>
+                    <input
+                      type="text"
+                      value={editingBanner.image}
+                      onChange={(e) => setEditingBanner({ ...editingBanner, image: e.target.value })}
+                      placeholder="Enter image URL..."
+                      className="mt-2 w-full max-w-sm px-3 py-2 rounded-lg bg-white/[0.05] border border-white/[0.10] text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#3B82F6]/50"
+                    />
+                  </div>
                 )}
+              </div>
+
+              {/* Image URL Input */}
+              <div>
+                <Input
+                  label={`${t.image} URL`}
+                  value={editingBanner.image}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, image: e.target.value })}
+                  placeholder="https://images.unsplash.com/..."
+                />
+              </div>
+
+              {/* Mobile Image URL */}
+              <div>
+                <Input
+                  label={t.mobileImage}
+                  value={editingBanner.mobileImage}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, mobileImage: e.target.value })}
+                  placeholder="https://images.unsplash.com/... (optional)"
+                />
               </div>
 
               {/* Title */}
@@ -415,6 +609,22 @@ export default function BannersAdminPage() {
                 />
               </div>
 
+              {/* CTA Text */}
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  label={t.ctaText}
+                  value={editingBanner.ctaText}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, ctaText: e.target.value })}
+                  placeholder="Customize Now"
+                />
+                <Input
+                  label={t.ctaTextZh}
+                  value={editingBanner.ctaTextZh}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, ctaTextZh: e.target.value })}
+                  placeholder="即刻定制"
+                />
+              </div>
+
               {/* Link */}
               <Input
                 label={t.link}
@@ -423,43 +633,14 @@ export default function BannersAdminPage() {
                 placeholder="/products/cloudchi-360-p"
               />
 
-              {/* Devices */}
-              <div>
-                <label className="block text-sm font-medium text-[#E2E8F0] mb-2">{t.devices}</label>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => toggleDevice("desktop")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      editingBanner.devices.includes("desktop")
-                        ? "bg-[#3B82F6]/20 text-[#60A5FA] border border-[#3B82F6]/30"
-                        : "bg-white/[0.03] text-white/60 border border-white/[0.10]"
-                    }`}
-                  >
-                    <Monitor className="w-4 h-4" />
-                    {t.desktop}
-                  </button>
-                  <button
-                    onClick={() => toggleDevice("mobile")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      editingBanner.devices.includes("mobile")
-                        ? "bg-[#3B82F6]/20 text-[#60A5FA] border border-[#3B82F6]/30"
-                        : "bg-white/[0.03] text-white/60 border border-white/[0.10]"
-                    }`}
-                  >
-                    <Smartphone className="w-4 h-4" />
-                    {t.mobile}
-                  </button>
-                </div>
-              </div>
-
               {/* Status */}
               <div>
                 <label className="block text-sm font-medium text-[#E2E8F0] mb-2">{t.status}</label>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setEditingBanner({ ...editingBanner, status: "active" })}
+                    onClick={() => setEditingBanner({ ...editingBanner, isActive: true })}
                     className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      editingBanner.status === "active"
+                      editingBanner.isActive
                         ? "bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30"
                         : "bg-white/[0.03] text-white/60 border border-white/[0.10]"
                     }`}
@@ -467,9 +648,9 @@ export default function BannersAdminPage() {
                     {t.active}
                   </button>
                   <button
-                    onClick={() => setEditingBanner({ ...editingBanner, status: "draft" })}
+                    onClick={() => setEditingBanner({ ...editingBanner, isActive: false })}
                     className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      editingBanner.status === "draft"
+                      !editingBanner.isActive
                         ? "bg-[#F59E0B]/20 text-[#FBBF24] border border-[#F59E0B]/30"
                         : "bg-white/[0.03] text-white/60 border border-white/[0.10]"
                     }`}
@@ -482,11 +663,15 @@ export default function BannersAdminPage() {
 
             {/* Footer */}
             <div className="sticky bottom-0 flex items-center justify-end gap-3 p-6 border-t border-white/[0.06] bg-[#0F172A]">
-              <Button variant="ghost" onClick={() => setIsEditing(false)}>
+              <Button variant="ghost" onClick={() => setIsEditing(false)} disabled={saving}>
                 {t.cancel}
               </Button>
-              <Button onClick={handleSave}>
-                <Save className="w-4 h-4 mr-2" />
+              <Button onClick={handleSave} disabled={saving}>
+                {saving ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 mr-2" />
+                )}
                 {t.save}
               </Button>
             </div>

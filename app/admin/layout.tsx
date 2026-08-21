@@ -2,8 +2,8 @@
 
 import { useState, createContext, useContext, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   Image as ImageIcon,
@@ -12,28 +12,37 @@ import {
   Settings,
   Users,
   Package,
-  Globe,
   LogOut,
   Menu,
   X,
   ChevronDown,
   User,
-  LogIn,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-// Admin Context for language
+// Role types
+type UserRole = "ADMIN" | "ANALYST" | "USER";
+
+// Admin Context for language and user
 interface AdminContextType {
   locale: "en" | "zh";
   setLocale: (locale: "en" | "zh") => void;
   t: (key: string) => string;
+  userRole: UserRole | null;
+  isAdmin: boolean;
+  isAnalyst: boolean;
+  isAuthenticated: boolean;
 }
 
 const AdminContext = createContext<AdminContextType>({
   locale: "en",
   setLocale: () => {},
   t: (key: string) => key,
+  userRole: null,
+  isAdmin: false,
+  isAnalyst: false,
+  isAuthenticated: false,
 });
 
 export const useAdmin = () => useContext(AdminContext);
@@ -72,22 +81,24 @@ const translations = {
   },
 };
 
+// Define role-based menu access
+const adminMenuItems = [
+  { href: "/admin", icon: LayoutDashboard, labelKey: "dashboard", roles: ["ADMIN", "ANALYST"] as UserRole[] },
+  { href: "/admin/banners", icon: ImageIcon, labelKey: "banners", roles: ["ADMIN"] as UserRole[] },
+  { href: "/admin/partners", icon: Package, labelKey: "partners", roles: ["ADMIN"] as UserRole[] },
+  { href: "/admin/news", icon: FileText, labelKey: "news", roles: ["ADMIN"] as UserRole[] },
+  { href: "/admin/products", icon: Package, labelKey: "products", roles: ["ADMIN"] as UserRole[] },
+  { href: "/admin/downloads", icon: Download, labelKey: "downloads", roles: ["ADMIN"] as UserRole[] },
+  { href: "/admin/users", icon: Users, labelKey: "users", roles: ["ADMIN"] as UserRole[] },
+  { href: "/admin/settings", icon: Settings, labelKey: "settings", roles: ["ADMIN"] as UserRole[] },
+];
+
 interface AdminNavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   labelKey: keyof typeof translations.en;
+  roles: UserRole[];
 }
-
-const navItems: AdminNavItem[] = [
-  { href: "/admin", icon: LayoutDashboard, labelKey: "dashboard" },
-  { href: "/admin/banners", icon: ImageIcon, labelKey: "banners" },
-  { href: "/admin/partners", icon: Package, labelKey: "partners" },
-  { href: "/admin/news", icon: FileText, labelKey: "news" },
-  { href: "/admin/products", icon: Package, labelKey: "products" },
-  { href: "/admin/downloads", icon: Download, labelKey: "downloads" },
-  { href: "/admin/users", icon: Users, labelKey: "users" },
-  { href: "/admin/settings", icon: Settings, labelKey: "settings" },
-];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -95,6 +106,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [locale, setLocale] = useState<"en" | "zh">("en");
   const pathname = usePathname();
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // Get user info from session
+  const user = session?.user;
+  const userRole = (user?.role as UserRole) || null;
+  const isAdmin = userRole === "ADMIN";
+  const isAnalyst = userRole === "ANALYST";
+  const isAuthenticated = status === "authenticated";
 
   // Translation helper
   const t = (key: string) => {
@@ -106,12 +125,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return result || key;
   };
 
-  // Get user from session (mock for now)
-  const user = { name: "Admin", email: "admin@shensafu.com" };
-  const isLoggedIn = true;
+  // Filter menu items based on user role
+  const visibleMenuItems = adminMenuItems.filter(
+    (item) => !item.roles || item.roles.includes(userRole as UserRole)
+  );
+
+  // Provide context value
+  const contextValue: AdminContextType = {
+    locale,
+    setLocale,
+    t,
+    userRole,
+    isAdmin,
+    isAnalyst,
+    isAuthenticated,
+  };
+
+  // Handle logout
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/auth/login" });
+  };
 
   return (
-    <AdminContext.Provider value={{ locale, setLocale, t }}>
+    <AdminContext.Provider value={contextValue}>
       <div className="min-h-screen bg-[#030712]">
         {/* Top Navigation */}
         <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#0F172A] border-b border-white/[0.06]">
@@ -127,7 +163,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Logo (desktop) */}
             <Link href="/admin" className="hidden lg:flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#3B82F6] to-[#06B6D4] flex items-center justify-center">
-                <Globe className="w-4 h-4 text-white" />
+                <Package className="w-4 h-4 text-white" />
               </div>
               <span className="font-semibold text-white" style={{ fontFamily: "var(--font-space-grotesk)" }}>
                 Swift Safe Energy Admin
@@ -151,9 +187,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   className="flex items-center gap-2 px-3 py-1.5 text-sm text-white/60 hover:text-white rounded-lg hover:bg-white/[0.05] transition-colors"
                 >
                   <div className="w-8 h-8 rounded-full bg-[#3B82F6] flex items-center justify-center text-white text-sm font-medium">
-                    {user.name.charAt(0)}
+                    {user?.name?.charAt(0) || "U"}
                   </div>
-                  <span className="hidden sm:inline">{user.name}</span>
+                  <span className="hidden sm:inline">{user?.name || "User"}</span>
                   <ChevronDown className={cn("w-4 h-4 transition-transform", isUserMenuOpen && "rotate-180")} />
                 </button>
 
@@ -166,8 +202,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     />
                     <div className="absolute right-0 mt-2 w-48 py-2 rounded-xl bg-[#1E293B] border border-white/[0.08] shadow-xl z-50">
                       <div className="px-4 py-2 border-b border-white/[0.06]">
-                        <div className="text-sm font-medium text-white">{user.name}</div>
-                        <div className="text-xs text-white/40">{user.email}</div>
+                        <div className="text-sm font-medium text-white">{user?.name || "User"}</div>
+                        <div className="text-xs text-white/40">{user?.email || ""}</div>
+                        {userRole && (
+                          <div className="text-xs text-[#3B82F6] mt-1">
+                            {userRole === "ADMIN" ? "Administrator" : userRole === "ANALYST" ? "Analyst" : "User"}
+                          </div>
+                        )}
                       </div>
                       <Link
                         href="/admin/profile"
@@ -187,6 +228,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       </Link>
                       <div className="border-t border-white/[0.06] mt-2 pt-2">
                         <button
+                          onClick={handleSignOut}
                           className="flex items-center gap-3 w-full px-4 py-2 text-sm text-white/60 hover:text-white hover:bg-white/[0.05] transition-colors"
                         >
                           <LogOut className="w-4 h-4" />
@@ -209,7 +251,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           )}
         >
           <nav className="p-4 space-y-1">
-            {navItems.map((item) => {
+            {visibleMenuItems.map((item) => {
               const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
               return (
                 <Link

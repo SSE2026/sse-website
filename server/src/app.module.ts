@@ -22,6 +22,9 @@ import { StorageModule } from './modules/storage/storage.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { BlogModule } from './modules/blog/blog.module';
 
+// Phase 4.2 - Banner Module
+import { BannerModule } from './modules/banners/banner.module';
+
 @Module({
   imports: [
     // Configuration
@@ -65,6 +68,9 @@ import { BlogModule } from './modules/blog/blog.module';
     // Phase 3.4 - Document & Blog System
     DocumentsModule,
     BlogModule,
+
+    // Phase 4.2 - Banner System
+    BannerModule,
   ],
   providers: [
     // Global Throttler Guard

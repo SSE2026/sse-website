@@ -932,3 +932,44 @@ model PortalInvitation {
   @@index([status])
   @@map("portal_invitations")
 }
+
+// ============================================
+// Banner System (Homepage Hero Carousel)
+// ============================================
+
+model Banner {
+  id        String   @id @default(cuid())
+
+  // Content - English
+  title       String?
+  subtitle    String?
+  ctaText     String?
+
+  // Content - Chinese
+  titleZh     String?
+  subtitleZh   String?
+  ctaTextZh   String?
+
+  // Images
+  image       String   // Desktop image URL
+  mobileImage String?  // Mobile image URL (optional)
+
+  // Navigation
+  link        String?  // CTA link URL
+
+  // Display Settings
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+
+  // SEO
+  seoTitle       String?
+  seoDescription String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("banners")
+}
