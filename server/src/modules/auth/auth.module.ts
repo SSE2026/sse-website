@@ -12,6 +12,7 @@ import { PrismaModule } from '../../prisma/prisma.module';
 import { OwnershipService } from './services/ownership.service';
 import { InvitationService } from './services/invitation.service';
 import { AccountLinkingService } from './services/account-linking.service';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AccountLinkingService } from './services/account-linking.service';
       secret: process.env.JWT_SECRET || 'dev-secret-key-not-for-production',
       signOptions: { expiresIn: '7d' },
     }),
+    EmailModule,
   ],
   controllers: [
     AuthController,

@@ -4,6 +4,7 @@ import {
   ConflictException,
   BadRequestException,
   NotFoundException,
+  Inject,
 } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import {
@@ -15,7 +16,7 @@ import {
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { EmailService, InvitationEmailData } from '../../email/interfaces/email-service.interface';
+import { EmailService, InvitationEmailData, EMAIL_SERVICE } from '../../email/interfaces/email-service.interface';
 
 /**
  * DTOs for Invitation Service
@@ -68,7 +69,7 @@ export class InvitationService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly emailService: EmailService,
+    @Inject(EMAIL_SERVICE) private readonly emailService: EmailService,
     private readonly jwtService: JwtService,
   ) {}
 
