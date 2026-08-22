@@ -1,7 +1,7 @@
 /**
- * Simple Vercel Serverless Handler
+ * Simple Vercel Serverless Handler - JavaScript
  */
-export default function handler(req: any, res: any) {
+module.exports = (req, res) => {
   console.log('Request:', req.method, req.url);
 
   if (req.url === '/api/v1/health' || req.url === '/v1/health') {
@@ -38,4 +38,4 @@ export default function handler(req: any, res: any) {
     message: 'Not Found',
     path: req.url,
   });
-}
+};

@@ -1,7 +1,7 @@
 {
-  "buildCommand": "rm -rf dist && npx webpack --config webpack.vercel.js",
-  "outputDirectory": "dist",
+  "buildCommand": "echo 'No build needed for JS file'",
+  "outputDirectory": "api",
   "installCommand": "npm install",
   "framework": null,
-  "regions": ["hkg1"]
+  "regions": ["iad1"]
 }
