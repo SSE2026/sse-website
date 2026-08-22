@@ -12,6 +12,7 @@ export interface HeroSlide {
   id: number;
   image?: string;
   video?: string;
+  loop?: boolean;
   imageAlt: string;
   eyebrow: string;
   title: string;
@@ -128,7 +129,8 @@ function HeroSlideVideo({
           className="w-[75%] h-[80%] object-contain translate-x-[25%]"
           muted
           playsInline
-          onEnded={onVideoEnd}
+          loop={slide.loop}
+          onEnded={slide.loop ? undefined : onVideoEnd}
         />
       </div>
     </div>
