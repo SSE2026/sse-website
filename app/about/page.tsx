@@ -91,7 +91,7 @@ export default function AboutPage() {
                 transition={{ delay: 1, duration: 0.8 }}
                 style={{ color: 'rgba(143, 155, 175, 0.85)' }}
               >
-                {isZh ? "深安锂能 · 全球研发与产业布局" : "SHENAN ENERGY · GLOBAL R&D AND INDUSTRIAL NETWORK"}
+                {isZh ? "深安锂能 · 全球研发与产业布局" : "SSE · GLOBAL R&D AND INDUSTRIAL NETWORK"}
               </motion.p>
 
               {/* Auxiliary text */}
