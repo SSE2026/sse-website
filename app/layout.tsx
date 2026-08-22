@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans_SC } from "next/font/google";
 import "@/styles/globals.css";
 import { Providers } from "@/components/providers";
+import ClientOnly from "@/components/ui/client-only";
+
+// Force dynamic rendering to avoid static generation issues
+export const dynamic = 'force-dynamic';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -47,7 +51,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${notoSansSC.variable}`}>
       <body className="min-h-screen bg-primary font-sans antialiased">
-        <Providers>{children}</Providers>
+        <ClientOnly fallback={<>{children}</>}>
+          <Providers>{children}</Providers>
+        </ClientOnly>
       </body>
     </html>
   );
