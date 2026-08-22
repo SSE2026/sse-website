@@ -17,7 +17,8 @@ async function getApp(): Promise<INestApplication> {
   const adapter = new ExpressAdapter();
   cachedApp = await NestFactory.create(AppModule, adapter);
 
-  cachedApp.setGlobalPrefix('v1');
+  // Use api/v1 prefix to match frontend calls
+  cachedApp.setGlobalPrefix('api/v1');
 
   const corsOrigin =
     process.env.CORS_ORIGIN ||
