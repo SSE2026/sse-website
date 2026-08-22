@@ -107,8 +107,7 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState("360p");
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
-  const videoRef2 = useRef<HTMLVideoElement>(null);
-  const videoRef3 = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
 
@@ -138,39 +137,12 @@ export default function ProductDetailPage() {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Video switch logic
+  // Video autoplay on mount
   useEffect(() => {
-    const video2 = videoRef2.current;
-    const video3 = videoRef3.current;
-    if (!video2 || !video3) return;
-
-    video2.playbackRate = 0.6;
-    video3.playbackRate = 0.6;
-
-    video2.style.opacity = "1";
-    video3.style.opacity = "0";
-    video2.play().catch(() => {});
-
-    let current = 2;
-    const checkVideo = setInterval(() => {
-      if (!video2 || !video3) return;
-
-      if (current === 2 && video2.currentTime >= video2.duration - 0.2) {
-        current = 3;
-        video2.style.opacity = "0";
-        video3.style.opacity = "1";
-        video3.currentTime = 0;
-        video3.play().catch(() => {});
-      } else if (current === 3 && video3.currentTime >= video3.duration - 0.2) {
-        current = 2;
-        video3.style.opacity = "0";
-        video2.style.opacity = "1";
-        video2.currentTime = 0;
-        video2.play().catch(() => {});
-      }
-    }, 100);
-
-    return () => clearInterval(checkVideo);
+    const video = videoRef.current;
+    if (!video) return;
+    video.playbackRate = 0.6;
+    video.play().catch(() => {});
   }, []);
 
   // Scroll spy for tabs
@@ -350,22 +322,13 @@ export default function ProductDetailPage() {
                     }}
                   >
                     <video
-                      ref={videoRef2}
-                      src="/videos/product-center-1.webm"
+                      ref={videoRef}
+                      src="/videos/product-carousel.mp4"
                       muted
                       playsInline
                       loop
                       className="absolute inset-0 w-full h-full object-cover"
                       style={{ opacity: 1 }}
-                    />
-                    <video
-                      ref={videoRef3}
-                      src="/videos/product-center-2.webm"
-                      muted
-                      playsInline
-                      loop
-                      className="absolute inset-0 w-full h-full object-cover"
-                      style={{ opacity: 0 }}
                     />
                   </div>
                 </div>
