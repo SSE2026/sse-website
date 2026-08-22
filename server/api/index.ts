@@ -17,8 +17,8 @@ async function getApp(): Promise<INestApplication> {
   const adapter = new ExpressAdapter();
   cachedApp = await NestFactory.create(AppModule, adapter);
 
-  // Use api/v1 prefix to match frontend calls
-  cachedApp.setGlobalPrefix('api/v1');
+  // Use v1 prefix (Vercel deploys to /api, so final path is /api/v1)
+  cachedApp.setGlobalPrefix('v1');
 
   const corsOrigin =
     process.env.CORS_ORIGIN ||

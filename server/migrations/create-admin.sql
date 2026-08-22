@@ -1,5 +1,5 @@
--- Create Admin User Only
--- Run this AFTER running full-schema.sql
+-- Create Admin User Only (Skip if tables exist)
+-- Run this in Neon SQL Editor
 
 -- Password: SSEadmin2026! (bcrypt hashed)
 INSERT INTO "users" ("id", "email", "password", "name", "role", "isActive", "portalStatus", "createdAt", "updatedAt")
@@ -15,3 +15,6 @@ VALUES (
     CURRENT_TIMESTAMP
 )
 ON CONFLICT (email) DO NOTHING;
+
+-- Verify admin was created
+SELECT "email", "name", "role" FROM "users" WHERE "email" = 'admin@ssebatt.com';
