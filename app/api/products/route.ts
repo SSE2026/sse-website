@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // GET /api/products - Public list
 export async function GET(request: NextRequest) {
@@ -11,6 +11,11 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search') || '';
   const category = searchParams.get('category') || '';
   const featured = searchParams.get('featured');
+
+  // Skip if no API URL configured (e.g., during build)
+  if (!API_BASE_URL) {
+    return NextResponse.json({ success: true, items: [] });
+  }
 
   try {
     const params = new URLSearchParams({

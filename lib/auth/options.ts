@@ -1,6 +1,13 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
+// Use a valid URL format to prevent build-time URL validation errors
+const getApiUrl = (): string => {
+  const url = process.env.NEXT_PUBLIC_API_URL;
+  if (!url) return 'http://localhost:3001';
+  return url;
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -14,8 +21,13 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // Skip if no real API URL configured (e.g., during build)
+        if (!process.env.NEXT_PUBLIC_API_URL) {
+          return null;
+        }
+
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, {
+          const res = await fetch(`${getApiUrl()}/api/v1/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -69,5 +81,5 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 7 * 24 * 60 * 60, // 7 days
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || 'dev-secret-for-build-time',
 };

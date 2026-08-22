@@ -48,3 +48,6 @@ logs
 # Temp files
 temp_pdf_images/
 *.tmp
+
+.vercel
+.env*

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(
   request: NextRequest,
@@ -9,6 +9,11 @@ export async function GET(
   const { slug } = await params;
   const searchParams = request.nextUrl.searchParams;
   const locale = searchParams.get('locale') || 'en';
+
+  // Skip if no API URL configured (e.g., during build)
+  if (!API_BASE_URL) {
+    return NextResponse.json({ success: false, error: 'API not configured' }, { status: 503 });
+  }
 
   try {
     const response = await fetch(

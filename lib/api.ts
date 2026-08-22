@@ -1,4 +1,12 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// Simple API client with fallback URL handling for build-time safety
+const getApiUrl = (): string => {
+  const url = process.env.NEXT_PUBLIC_API_URL;
+  // Return a valid localhost URL as fallback to prevent "Invalid URL" errors during build
+  if (!url || url.trim() === '') {
+    return 'http://localhost:3001';
+  }
+  return url;
+};
 
 interface FetchOptions extends RequestInit {
   token?: string;
@@ -19,7 +27,7 @@ export async function apiClient<T = any>(
     (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE_URL}/api/v1${endpoint}`, {
+  const res = await fetch(`${getApiUrl()}/api/v1${endpoint}`, {
     ...fetchOptions,
     headers,
   });

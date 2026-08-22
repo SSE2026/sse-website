@@ -1,7 +1,14 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+// Use a valid localhost URL as fallback to prevent "Invalid URL" errors during build
+const getApiUrl = (): string => {
+  const url = process.env.NEXT_PUBLIC_API_URL;
+  if (!url || url.trim() === '') {
+    return 'http://localhost:3001';
+  }
+  return url;
+};
 
 interface ApiError {
   statusCode: number;
@@ -18,7 +25,7 @@ interface ApiResponse<T> {
 class ApiClient {
   private baseUrl: string;
 
-  constructor(baseUrl: string = API_BASE_URL) {
+  constructor(baseUrl: string = getApiUrl()) {
     this.baseUrl = baseUrl;
   }
 

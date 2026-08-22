@@ -57,4 +57,18 @@ export class AuthController {
   async getProfile(@CurrentUser() user: any) {
     return this.authService.validateUser(user.id);
   }
+
+  @Post('bootstrap-admin')
+  @ApiOperation({ summary: '创建管理员账户（仅在管理员不存在时创建）' })
+  @ApiResponse({
+    status: 201,
+    description: '管理员创建成功',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '管理员已存在',
+  })
+  async bootstrapAdmin(@Body() dto: { email?: string; password?: string }) {
+    return this.authService.bootstrapAdmin(dto.email, dto.password);
+  }
 }

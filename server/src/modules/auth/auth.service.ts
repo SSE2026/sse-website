@@ -103,4 +103,41 @@ export class AuthService {
       expiresIn: 604800, // 7 days in seconds
     };
   }
+
+  async bootstrapAdmin(email?: string, password?: string) {
+    const adminEmail = email || 'admin@ssebatt.com';
+    const adminPassword = password || 'SSEadmin2026!';
+
+    const existingAdmin = await this.prisma.user.findUnique({
+      where: { email: adminEmail },
+    });
+
+    if (existingAdmin) {
+      return {
+        success: false,
+        message: 'Admin already exists',
+        email: existingAdmin.email,
+        role: existingAdmin.role,
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+    const admin = await this.prisma.user.create({
+      data: {
+        email: adminEmail,
+        password: hashedPassword,
+        name: 'Admin',
+        role: UserRole.ADMIN,
+        isActive: true,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Admin created successfully',
+      email: admin.email,
+      password: adminPassword, // Return plain password only on creation
+    };
+  }
 }

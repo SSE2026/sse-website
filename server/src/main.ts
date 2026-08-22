@@ -6,10 +6,12 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
-async function bootstrap() {
-  const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+const logger = new Logger('Bootstrap');
 
+/**
+ * Configure NestJS application - shared by both serverless and traditional modes
+ */
+async function configureApp(app: any): Promise<void> {
   // API Prefix
   app.setGlobalPrefix('api/v1');
 
@@ -55,13 +57,56 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
-  // Start server
+  logger.log(`🔒 CORS enabled for: ${corsOrigin}`);
+}
+
+/**
+ * Traditional server mode (for local development and Railway/Render/Koyeb)
+ */
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule);
+
+  await configureApp(app);
+
   const port = process.env.PORT || '3001';
   await app.listen(port);
 
   logger.log(`🚀 Server running on http://localhost:${port}`);
   logger.log(`📚 API Docs available at http://localhost:${port}/api/docs`);
-  logger.log(`🔒 CORS enabled for: ${corsOrigin}`);
 }
 
-bootstrap();
+// Vercel Serverless Handler
+let cachedApp: any = null;
+
+async function getApp(): Promise<any> {
+  if (cachedApp) {
+    return cachedApp;
+  }
+
+  cachedApp = await NestFactory.create(AppModule);
+  await configureApp(cachedApp);
+  await cachedApp.init();
+
+  return cachedApp;
+}
+
+// Vercel Serverless Export
+const vercelHandler = async (
+  req: any,
+  res: any
+): Promise<void> => {
+  const app = await getApp();
+  const instance = app.getHttpAdapter().getInstance();
+  instance(req, res);
+};
+
+// Export for Vercel
+export default vercelHandler;
+
+// Export for traditional usage
+export { bootstrap };
+
+// Run traditional server if executed directly
+if (require.main === module) {
+  bootstrap();
+}

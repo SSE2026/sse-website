@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/options';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // GET /api/admin/banners - List all banners (admin)
 export async function GET(request: NextRequest) {
+  // Skip if no API URL configured (e.g., during build)
+  if (!API_BASE_URL) {
+    return NextResponse.json(
+      { success: false, error: 'API not configured' },
+      { status: 503 }
+    );
+  }
+
   const session = await getServerSession(authOptions);
   const accessToken = session?.user?.accessToken;
 
@@ -58,6 +66,14 @@ export async function GET(request: NextRequest) {
 
 // POST /api/admin/banners - Create banner
 export async function POST(request: NextRequest) {
+  // Skip if no API URL configured (e.g., during build)
+  if (!API_BASE_URL) {
+    return NextResponse.json(
+      { success: false, error: 'API not configured' },
+      { status: 503 }
+    );
+  }
+
   const session = await getServerSession(authOptions);
   const accessToken = session?.user?.accessToken;
 

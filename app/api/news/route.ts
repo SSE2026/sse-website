@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -23,6 +23,11 @@ export async function GET(request: NextRequest) {
   if (category) params.set('category', category);
   if (search) params.set('search', search);
   if (featured) params.set('featured', featured);
+
+  // Skip if no API URL configured (e.g., during build)
+  if (!API_BASE_URL) {
+    return NextResponse.json({ success: true, items: [] });
+  }
 
   try {
     const response = await fetch(

@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/options';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // GET - List all news posts (Admin)
 export async function GET(request: NextRequest) {
+  if (!API_BASE_URL) {
+    return NextResponse.json(
+      { success: false, error: 'API not configured' },
+      { status: 503 }
+    );
+  }
+  
   const session = await getServerSession(authOptions);
   const accessToken = session?.user?.accessToken;
 
@@ -80,6 +87,13 @@ export async function GET(request: NextRequest) {
 
 // POST - Create new news post
 export async function POST(request: NextRequest) {
+  if (!API_BASE_URL) {
+    return NextResponse.json(
+      { success: false, error: 'API not configured' },
+      { status: 503 }
+    );
+  }
+  
   const session = await getServerSession(authOptions);
   const accessToken = session?.user?.accessToken;
 

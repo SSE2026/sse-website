@@ -1,0 +1,37 @@
+# Dependencies - installed by vercel
+node_modules
+
+# Development files
+src/**/*.spec.ts
+src/**/*.test.ts
+*.dev.ts
+.env
+.env.*
+!.env.example
+
+# Scripts
+scripts/
+server/
+
+# Docs
+*.md
+!README.md
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Build artifacts (will be regenerated)
+dist/
+.next/
+.turbo/
+
+# Misc
+.DS_Store
+Thumbs.db

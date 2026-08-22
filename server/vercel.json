@@ -1,0 +1,7 @@
+{
+  "buildCommand": "rm -rf dist && npx webpack --config webpack.vercel.js",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": null,
+  "regions": ["hkg1"]
+}
