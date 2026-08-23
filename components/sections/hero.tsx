@@ -45,12 +45,16 @@ const DEFAULT_SLIDES_ZH: HeroSlide[] = [
 // Transform banner data to HeroSlide format
 interface Banner {
   id: string;
+  mediaType?: 'IMAGE' | 'VIDEO';
   title?: string;
   titleZh?: string;
   subtitle?: string;
   subtitleZh?: string;
-  image: string;
+  image?: string;
   mobileImage?: string;
+  videoUrl?: string;
+  posterUrl?: string;
+  mobileVideoUrl?: string;
   link?: string;
   ctaText?: string;
   ctaTextZh?: string;
@@ -60,23 +64,34 @@ interface Banner {
 function transformBannersToSlides(banners: Banner[], locale: string): HeroSlide[] {
   return banners
     .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map((banner, index) => ({
-      id: index + 1,
-      image: banner.image,
-      imageAlt: locale === "zh" ? (banner.titleZh || banner.title || "") : (banner.title || ""),
-      eyebrow: locale === "zh" ? "固态电池技术" : "Solid-State Battery Tech",
-      title: locale === "zh"
-        ? (banner.titleZh || banner.title || "Untitled")
-        : (banner.title || "Untitled"),
-      description: locale === "zh"
-        ? (banner.subtitleZh || banner.subtitle || "")
-        : (banner.subtitle || ""),
-      ctaText: locale === "zh"
-        ? (banner.ctaTextZh || banner.ctaText || "了解更多")
-        : (banner.ctaText || "Learn More"),
-      ctaLink: banner.link || "/",
-      stats: DEFAULT_SLIDES_EN[0].stats, // Use default stats for now
-    }));
+    .map((banner, index) => {
+      const isVideo = banner.mediaType === 'VIDEO' || !!banner.videoUrl;
+
+      return {
+        id: index + 1,
+        mediaType: banner.mediaType || (isVideo ? 'VIDEO' : 'IMAGE'),
+        image: banner.image,
+        videoUrl: banner.videoUrl,
+        posterUrl: banner.posterUrl,
+        mobileImage: banner.mobileImage,
+        mobileVideoUrl: banner.mobileVideoUrl,
+        // If it's a video type, enable loop
+        loop: banner.mediaType === 'VIDEO' ? true : undefined,
+        imageAlt: locale === "zh" ? (banner.titleZh || banner.title || "") : (banner.title || ""),
+        eyebrow: locale === "zh" ? "固态电池技术" : "Solid-State Battery Tech",
+        title: locale === "zh"
+          ? (banner.titleZh || banner.title || "Untitled")
+          : (banner.title || "Untitled"),
+        description: locale === "zh"
+          ? (banner.subtitleZh || banner.subtitle || "")
+          : (banner.subtitle || ""),
+        ctaText: locale === "zh"
+          ? (banner.ctaTextZh || banner.ctaText || "了解更多")
+          : (banner.ctaText || "Learn More"),
+        ctaLink: banner.link || "/",
+        stats: DEFAULT_SLIDES_EN[0].stats,
+      };
+    });
 }
 
 interface HeroProps {

@@ -5,7 +5,7 @@ import { InquiryService } from '../services/inquiry.service';
 import { InquiryNumberService } from '../services/inquiry-number.service';
 import { SnapshotService } from '../services/snapshot.service';
 import { LeadActivityService } from '../services/lead-activity.service';
-import { LocalStorageService, StorageService } from '../../storage/services/local-storage.service';
+import { LocalStorageService } from '../../storage/services/local-storage.service';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { InquiryType, InquiryStatus, ActivityType, LeadSource } from '@prisma/client';
 import { StatusTransitionValidator } from '../validators/status-transition.validator';

@@ -8,10 +8,17 @@ import { ArrowRight } from "lucide-react";
 // ============================================
 // Types
 // ============================================
+export type MediaType = 'IMAGE' | 'VIDEO';
+
 export interface HeroSlide {
   id: number;
+  mediaType?: MediaType;
   image?: string;
   video?: string;
+  videoUrl?: string;     // For IMAGE type, videoUrl is the video to play
+  posterUrl?: string;    // Video poster/thumbnail
+  mobileImage?: string;
+  mobileVideoUrl?: string;
   loop?: boolean;
   imageAlt: string;
   eyebrow: string;
@@ -91,7 +98,7 @@ function HeroSlideImage({
 }
 
 // ============================================
-// Hero Slide Component (Videos - plays once)
+// Hero Slide Component (Videos)
 // ============================================
 function HeroSlideVideo({
   slide,
@@ -103,6 +110,8 @@ function HeroSlideVideo({
   onVideoEnd?: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  // Use videoUrl if provided, otherwise fall back to video
+  const videoSrc = slide.videoUrl || slide.video;
 
   useEffect(() => {
     if (videoRef.current) {
@@ -125,7 +134,8 @@ function HeroSlideVideo({
       <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]">
         <video
           ref={videoRef}
-          src={slide.video}
+          src={videoSrc}
+          poster={slide.posterUrl}
           className="w-[75%] h-[80%] object-contain translate-x-[25%]"
           muted
           playsInline
