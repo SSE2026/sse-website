@@ -1,12 +1,12 @@
 /**
  * Webpack configuration for Vercel Serverless
- * Uses ts-loader with transpileOnly for out-of-rootDir support (required for api/index.ts at repo root)
+ * Uses ts-loader with transpileOnly for out-of-rootDir support (required for api/index.ts at src/api/)
  */
 const path = require('path');
 
 module.exports = {
   mode: 'production',
-  entry: './api/index.ts',
+  entry: './src/api/index.ts',
   target: 'node',
   output: {
     path: path.resolve(__dirname, 'dist', 'api'),
