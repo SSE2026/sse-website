@@ -4,6 +4,7 @@
   },
   "scripts": {
     "build": "nest build",
+    "build:vercel": "webpack --config webpack.vercel.js",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
