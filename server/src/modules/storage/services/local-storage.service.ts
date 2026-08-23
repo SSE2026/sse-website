@@ -4,42 +4,14 @@ import { existsSync } from 'fs';
 import { join, extname } from 'path';
 import * as crypto from 'crypto';
 import { FileValidationService } from './file-validation.service';
-
-/**
- * File interface for uploads
- */
-export interface UploadedFileInput {
-  fieldname?: string;
-  originalname: string;
-  encoding?: string;
-  mimetype: string;
-  size: number;
-  buffer: Buffer;
-}
-
-/**
- * Storage Service Interface
- */
-export interface StorageService {
-  upload(file: UploadedFileInput, folder?: string): Promise<UploadedFile>;
-  delete(path: string): Promise<void>;
-  exists(path: string): Promise<boolean>;
-  getUrl(path: string): string;
-}
-
-export interface UploadedFile {
-  path: string;
-  url: string;
-  originalName: string;
-  mimeType: string;
-  size: number;
-}
+import { IStorageService, UploadedFileInput, UploadedFile } from '../interfaces/storage-service.interface';
 
 /**
  * Local Storage Service Implementation
+ * For development and small-scale deployments
  */
 @Injectable()
-export class LocalStorageService implements StorageService {
+export class LocalStorageService implements IStorageService {
   private readonly logger = new Logger(LocalStorageService.name);
   private readonly uploadDir: string;
   private readonly baseUrl: string;
@@ -51,7 +23,7 @@ export class LocalStorageService implements StorageService {
     this.fileValidation = new FileValidationService();
   }
 
-  async upload(file: UploadedFileInput, folder: string = 'inquiries'): Promise<UploadedFile> {
+  async upload(file: UploadedFileInput, folder: string = 'general'): Promise<UploadedFile> {
     // Validate file
     this.fileValidation.validate({
       originalname: file.originalname,
@@ -116,3 +88,6 @@ export class LocalStorageService implements StorageService {
     return `${random}${ext}`;
   }
 }
+
+// Re-export types for convenience
+export { UploadedFileInput, UploadedFile } from '../interfaces/storage-service.interface';

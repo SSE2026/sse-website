@@ -4,6 +4,28 @@ import { authOptions } from '@/lib/auth/options';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+// Banner type matching backend
+interface Banner {
+  id: string;
+  mediaType?: 'IMAGE' | 'VIDEO';
+  title?: string;
+  titleZh?: string;
+  subtitle?: string;
+  subtitleZh?: string;
+  image?: string;
+  mobileImage?: string;
+  videoUrl?: string;
+  posterUrl?: string;
+  mobileVideoUrl?: string;
+  link?: string;
+  ctaText?: string;
+  ctaTextZh?: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 // GET /api/admin/banners - List all banners (admin)
 export async function GET(request: NextRequest) {
   // Skip if no API URL configured (e.g., during build)
@@ -53,7 +75,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const data = await response.json();
+    const data: Banner[] = await response.json();
     return NextResponse.json({ items: data });
   } catch (error) {
     console.error('Admin Banners API error:', error);

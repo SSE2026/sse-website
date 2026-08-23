@@ -937,8 +937,17 @@ model PortalInvitation {
 // Banner System (Homepage Hero Carousel)
 // ============================================
 
+// Media type enum
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
 model Banner {
   id        String   @id @default(cuid())
+
+  // Media Type
+  mediaType MediaType @default(IMAGE)
 
   // Content - English
   title       String?
@@ -950,9 +959,14 @@ model Banner {
   subtitleZh   String?
   ctaTextZh   String?
 
-  // Images
-  image       String   // Desktop image URL
-  mobileImage String?  // Mobile image URL (optional)
+  // Desktop Media
+  image       String?  // Image URL (for IMAGE type)
+  videoUrl    String?  // Video URL (for VIDEO type)
+  posterUrl   String?  // Video poster/thumbnail URL
+
+  // Mobile Media
+  mobileImage    String?  // Mobile image URL
+  mobileVideoUrl String?  // Mobile video URL
 
   // Navigation
   link        String?  // CTA link URL

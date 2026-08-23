@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import {
   Image as ImageIcon,
+  Video,
   Plus,
   Edit,
   Trash2,
@@ -14,10 +15,12 @@ import {
   Save,
   ArrowUp,
   ArrowDown,
-  Monitor,
-  Smartphone,
   Loader2,
   AlertCircle,
+  Play,
+  Check,
+  FileIcon,
+  RefreshCw,
 } from "lucide-react";
 import { useAdmin } from "@/app/admin/layout";
 import { Button } from "@/components/ui/button";
@@ -30,12 +33,14 @@ const bannerTranslations = {
     subtitle: "Manage homepage carousel slides",
     addBanner: "Add Banner",
     slide: "Slide",
-    titleField: "Title",
-    titleFieldZh: "Title (Chinese)",
-    subtitleField: "Subtitle",
-    subtitleFieldZh: "Subtitle (Chinese)",
+    mediaType: "Media Type",
     image: "Background Image",
-    mobileImage: "Mobile Image (Optional)",
+    video: "Video",
+    videoUrl: "Video URL",
+    posterUrl: "Video Poster (Optional)",
+    mobileImage: "Mobile Image",
+    mobileVideo: "Mobile Video",
+    mobileVideoUrl: "Mobile Video URL",
     link: "Link URL",
     ctaText: "CTA Button Text",
     ctaTextZh: "CTA Button Text (Chinese)",
@@ -54,6 +59,9 @@ const bannerTranslations = {
     save: "Save",
     cancel: "Cancel",
     uploadImage: "Upload Image",
+    uploadVideo: "Upload Video",
+    uploadPoster: "Upload Poster",
+    uploadMobileVideo: "Upload Mobile Video",
     noBanners: "No banners yet",
     addFirst: "Add your first banner",
     loading: "Loading banners...",
@@ -63,18 +71,34 @@ const bannerTranslations = {
     deleteSuccess: "Banner deleted successfully",
     saveSuccess: "Banner saved successfully",
     saveError: "Failed to save banner",
+    imageType: "Image",
+    videoType: "Video",
+    titleField: "Title (English)",
+    titleFieldZh: "Title (Chinese)",
+    subtitleField: "Subtitle (English)",
+    subtitleFieldZh: "Subtitle (Chinese)",
+    uploading: "Uploading...",
+    uploadSuccess: "Upload successful",
+    uploadFailed: "Upload failed",
+    uploadProgress: "Uploading:",
+    replace: "Replace",
+    dragOrClick: "Drag & drop or click to upload",
+    fileSize: "Size",
+    supportedFormats: "Supported formats",
   },
   zh: {
     title: "横幅管理",
     subtitle: "管理首页轮播图",
     addBanner: "添加横幅",
     slide: "幻灯片",
-    titleField: "标题",
-    titleFieldZh: "标题（中文）",
-    subtitleField: "副标题",
-    subtitleFieldZh: "副标题（中文）",
+    mediaType: "媒体类型",
     image: "背景图片",
-    mobileImage: "移动端图片（可选）",
+    video: "视频",
+    videoUrl: "视频链接",
+    posterUrl: "视频封面（可选）",
+    mobileImage: "移动端图片",
+    mobileVideo: "移动端视频",
+    mobileVideoUrl: "移动端视频链接",
     link: "链接地址",
     ctaText: "按钮文字",
     ctaTextZh: "按钮文字（中文）",
@@ -93,6 +117,9 @@ const bannerTranslations = {
     save: "保存",
     cancel: "取消",
     uploadImage: "上传图片",
+    uploadVideo: "上传视频",
+    uploadPoster: "上传封面",
+    uploadMobileVideo: "上传移动端视频",
     noBanners: "暂无横幅",
     addFirst: "添加您的第一个横幅",
     loading: "加载横幅中...",
@@ -102,18 +129,36 @@ const bannerTranslations = {
     deleteSuccess: "横幅删除成功",
     saveSuccess: "横幅保存成功",
     saveError: "保存横幅失败",
+    imageType: "图片",
+    videoType: "视频",
+    titleField: "标题（英文）",
+    titleFieldZh: "标题（中文）",
+    subtitleField: "副标题（英文）",
+    subtitleFieldZh: "副标题（中文）",
+    uploading: "上传中...",
+    uploadSuccess: "上传成功",
+    uploadFailed: "上传失败",
+    uploadProgress: "上传进度:",
+    replace: "替换",
+    dragOrClick: "拖拽或点击上传",
+    fileSize: "大小",
+    supportedFormats: "支持格式",
   },
 };
 
 // Banner interface matching API response
 interface Banner {
   id: string;
+  mediaType?: 'IMAGE' | 'VIDEO';
   title?: string;
   titleZh?: string;
   subtitle?: string;
   subtitleZh?: string;
-  image: string;
+  image?: string;
   mobileImage?: string;
+  videoUrl?: string;
+  posterUrl?: string;
+  mobileVideoUrl?: string;
   link?: string;
   ctaText?: string;
   ctaTextZh?: string;
@@ -125,17 +170,254 @@ interface Banner {
 
 // Form data for editing
 interface BannerFormData {
+  mediaType: 'IMAGE' | 'VIDEO';
   title: string;
   titleZh: string;
   subtitle: string;
   subtitleZh: string;
   image: string;
   mobileImage: string;
+  videoUrl: string;
+  posterUrl: string;
+  mobileVideoUrl: string;
   link: string;
   ctaText: string;
   ctaTextZh: string;
   isActive: boolean;
   sortOrder: number;
+}
+
+// Upload state
+interface UploadState {
+  isUploading: boolean;
+  progress: number;
+  error: string | null;
+  success: boolean;
+}
+
+// Upload button component
+function UploadButton({
+  label,
+  accept,
+  onUpload,
+  uploading,
+  disabled,
+  isLocale,
+}: {
+  label: string;
+  accept: string;
+  onUpload: (file: File) => void;
+  uploading: boolean;
+  disabled?: boolean;
+  isLocale: "en" | "zh";
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onUpload(file);
+    }
+    // Reset input
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
+  return (
+    <div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        onChange={handleChange}
+        className="hidden"
+        disabled={disabled || uploading}
+      />
+      <Button
+        type="button"
+        variant="outline"
+        onClick={handleClick}
+        disabled={disabled || uploading}
+        className="w-full border-dashed"
+      >
+        {uploading ? (
+          <>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            {isLocale === 'en' ? 'Uploading...' : '上传中...'}
+          </>
+        ) : (
+          <>
+            <Upload className="w-4 h-4 mr-2" />
+            {label}
+          </>
+        )}
+      </Button>
+    </div>
+  );
+}
+
+// Media preview component
+function MediaPreview({
+  type,
+  src,
+  poster,
+  onRemove,
+}: {
+  type: 'image' | 'video';
+  src: string;
+  poster?: string;
+  onRemove: () => void;
+}) {
+  return (
+    <div className="relative aspect-video rounded-lg overflow-hidden bg-white/[0.05]">
+      {type === 'video' ? (
+        <video
+          src={src}
+          poster={poster}
+          controls
+          className="w-full h-full object-contain"
+        />
+      ) : (
+        <Image
+          src={src}
+          alt="Preview"
+          fill
+          className="object-cover"
+        />
+      )}
+      <button
+        onClick={onRemove}
+        className="absolute top-3 right-3 p-2 rounded-lg bg-black/50 text-white/60 hover:text-white transition-colors"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
+
+// Upload zone component
+function UploadZone({
+  type,
+  onUpload,
+  uploading,
+  progress,
+  error,
+  success,
+  t,
+}: {
+  type: 'image' | 'video';
+  onUpload: (file: File) => void;
+  uploading: boolean;
+  progress: number;
+  error: string | null;
+  success: boolean;
+  t: typeof bannerTranslations.zh;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const accept = type === 'image' ? 'image/jpeg,image/png,image/webp' : 'video/mp4,video/webm';
+  const formats = type === 'image' ? 'JPG, PNG, WebP' : 'MP4, WebM';
+  const icon = type === 'image' ? <ImageIcon className="w-8 h-8" /> : <Video className="w-8 h-8" />;
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      onUpload(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragOver(false);
+  };
+
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onUpload(file);
+    }
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
+  return (
+    <div
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onClick={!uploading ? handleClick : undefined}
+      className={`
+        relative aspect-video rounded-lg border-2 border-dashed cursor-pointer transition-colors
+        ${dragOver
+          ? 'border-[#3B82F6] bg-[#3B82F6]/10'
+          : 'border-white/[0.10] hover:border-white/[0.20]'
+        }
+        ${uploading ? 'cursor-not-allowed opacity-70' : ''}
+      `}
+    >
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        onChange={handleChange}
+        className="hidden"
+        disabled={uploading}
+      />
+
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/40">
+        {icon}
+        <span className="text-sm">{t.dragOrClick}</span>
+        <span className="text-xs text-white/30">{t.supportedFormats}: {formats}</span>
+      </div>
+
+      {/* Upload progress overlay */}
+      {uploading && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-lg">
+          <Loader2 className="w-8 h-8 text-white animate-spin mb-2" />
+          <span className="text-sm text-white">{t.uploading}</span>
+          <div className="w-32 h-1 bg-white/20 rounded-full mt-2 overflow-hidden">
+            <div
+              className="h-full bg-[#3B82F6] transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Success overlay */}
+      {success && !uploading && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#10B981]/20 rounded-lg">
+          <Check className="w-8 h-8 text-[#10B981] mb-2" />
+          <span className="text-sm text-[#10B981]">{t.uploadSuccess}</span>
+        </div>
+      )}
+
+      {/* Error overlay */}
+      {error && !uploading && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-500/20 rounded-lg">
+          <AlertCircle className="w-8 h-8 text-red-400 mb-2" />
+          <span className="text-sm text-red-400 text-center px-4">{error}</span>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function BannersAdminPage() {
@@ -151,6 +433,12 @@ export default function BannersAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  // Upload states for different media types
+  const [imageUpload, setImageUpload] = useState<UploadState>({ isUploading: false, progress: 0, error: null, success: false });
+  const [videoUpload, setVideoUpload] = useState<UploadState>({ isUploading: false, progress: 0, error: null, success: false });
+  const [posterUpload, setPosterUpload] = useState<UploadState>({ isUploading: false, progress: 0, error: null, success: false });
+  const [mobileVideoUpload, setMobileVideoUpload] = useState<UploadState>({ isUploading: false, progress: 0, error: null, success: false });
 
   // Fetch banners from API
   const fetchBanners = useCallback(async () => {
@@ -180,14 +468,104 @@ export default function BannersAdminPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // Upload file to Cloudinary via backend
+  const uploadFile = async (
+    file: File,
+    type: 'image' | 'video' | 'poster' | 'mobileVideo',
+    setState: React.Dispatch<React.SetStateAction<UploadState>>
+  ) => {
+    setState({ isUploading: true, progress: 0, error: null, success: false });
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Use XMLHttpRequest for progress tracking
+      const result = await new Promise<{ url: string; publicId: string }>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            const progress = Math.round((e.loaded / e.total) * 100);
+            setState(prev => ({ ...prev, progress }));
+          }
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              if (data.success) {
+                resolve({ url: data.url, publicId: data.path });
+              } else {
+                reject(new Error(data.error || 'Upload failed'));
+              }
+            } catch {
+              reject(new Error('Invalid response'));
+            }
+          } else {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              reject(new Error(data.error || 'Upload failed'));
+            } catch {
+              reject(new Error('Upload failed'));
+            }
+          }
+        });
+
+        xhr.addEventListener('error', () => {
+          reject(new Error('Network error'));
+        });
+
+        xhr.open('POST', '/api/admin/banners/upload');
+        xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('accessToken') || ''}`);
+        xhr.send(formData);
+      });
+
+      // Update the appropriate field
+      if (editingBanner) {
+        if (type === 'image') {
+          setEditingBanner(prev => prev ? { ...prev, image: result.url } : null);
+        } else if (type === 'video') {
+          setEditingBanner(prev => prev ? { ...prev, videoUrl: result.url } : null);
+        } else if (type === 'poster') {
+          setEditingBanner(prev => prev ? { ...prev, posterUrl: result.url } : null);
+        } else if (type === 'mobileVideo') {
+          setEditingBanner(prev => prev ? { ...prev, mobileVideoUrl: result.url } : null);
+        }
+      }
+
+      setState({ isUploading: false, progress: 100, error: null, success: true });
+      setTimeout(() => {
+        setState(prev => ({ ...prev, success: false }));
+      }, 2000);
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Upload failed';
+      setState({ isUploading: false, progress: 0, error: errorMessage, success: false });
+    }
+  };
+
+  // Reset upload state when media type changes
+  const resetUploadStates = () => {
+    setImageUpload({ isUploading: false, progress: 0, error: null, success: false });
+    setVideoUpload({ isUploading: false, progress: 0, error: null, success: false });
+    setPosterUpload({ isUploading: false, progress: 0, error: null, success: false });
+    setMobileVideoUpload({ isUploading: false, progress: 0, error: null, success: false });
+  };
+
   // Convert Banner to form data
   const bannerToFormData = (banner?: Banner): BannerFormData => ({
+    mediaType: banner?.mediaType || 'IMAGE',
     title: banner?.title || "",
     titleZh: banner?.titleZh || "",
     subtitle: banner?.subtitle || "",
     subtitleZh: banner?.subtitleZh || "",
     image: banner?.image || "",
     mobileImage: banner?.mobileImage || "",
+    videoUrl: banner?.videoUrl || "",
+    posterUrl: banner?.posterUrl || "",
+    mobileVideoUrl: banner?.mobileVideoUrl || "",
     link: banner?.link || "",
     ctaText: banner?.ctaText || "",
     ctaTextZh: banner?.ctaTextZh || "",
@@ -199,12 +577,14 @@ export default function BannersAdminPage() {
     setEditingBanner(bannerToFormData(banner));
     setEditingId(banner.id);
     setIsEditing(true);
+    resetUploadStates();
   };
 
   const handleAdd = () => {
     setEditingBanner(bannerToFormData());
     setEditingId(null);
     setIsEditing(true);
+    resetUploadStates();
   };
 
   const handleSave = async () => {
@@ -213,12 +593,16 @@ export default function BannersAdminPage() {
     setSaving(true);
     try {
       const payload = {
+        mediaType: editingBanner.mediaType,
         title: editingBanner.title || undefined,
         titleZh: editingBanner.titleZh || undefined,
         subtitle: editingBanner.subtitle || undefined,
         subtitleZh: editingBanner.subtitleZh || undefined,
-        image: editingBanner.image,
+        image: editingBanner.image || undefined,
         mobileImage: editingBanner.mobileImage || undefined,
+        videoUrl: editingBanner.videoUrl || undefined,
+        posterUrl: editingBanner.posterUrl || undefined,
+        mobileVideoUrl: editingBanner.mobileVideoUrl || undefined,
         link: editingBanner.link || undefined,
         ctaText: editingBanner.ctaText || undefined,
         ctaTextZh: editingBanner.ctaTextZh || undefined,
@@ -305,7 +689,6 @@ export default function BannersAdminPage() {
     [newBanners[index - 1], newBanners[index]] = [newBanners[index], newBanners[index - 1]];
     setBanners(newBanners);
 
-    // Save new order to API
     try {
       await fetch("/api/admin/banners/reorder", {
         method: "POST",
@@ -314,7 +697,7 @@ export default function BannersAdminPage() {
       });
     } catch (err) {
       showToast("Failed to reorder banners", 'error');
-      fetchBanners(); // Revert on error
+      fetchBanners();
     }
   };
 
@@ -327,7 +710,6 @@ export default function BannersAdminPage() {
     [newBanners[index], newBanners[index + 1]] = [newBanners[index + 1], newBanners[index]];
     setBanners(newBanners);
 
-    // Save new order to API
     try {
       await fetch("/api/admin/banners/reorder", {
         method: "POST",
@@ -336,7 +718,7 @@ export default function BannersAdminPage() {
       });
     } catch (err) {
       showToast("Failed to reorder banners", 'error');
-      fetchBanners(); // Revert on error
+      fetchBanners();
     }
   };
 
@@ -412,7 +794,29 @@ export default function BannersAdminPage() {
 
               {/* Thumbnail */}
               <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-white/[0.05] shrink-0">
-                {banner.image ? (
+                {banner.mediaType === 'VIDEO' ? (
+                  banner.videoUrl ? (
+                    <div className="relative w-full h-full">
+                      {banner.posterUrl && (
+                        <Image
+                          src={banner.posterUrl}
+                          alt={banner.title || "Banner"}
+                          fill
+                          className="object-cover"
+                        />
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <div className="w-10 h-10 rounded-full bg-white/80 flex items-center justify-center">
+                          <Play className="w-5 h-5 text-black ml-0.5" fill="currentColor" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white/30">
+                      <Video className="w-6 h-6" />
+                    </div>
+                  )
+                ) : banner.image ? (
                   <Image
                     src={banner.image}
                     alt={banner.title || "Banner"}
@@ -524,58 +928,148 @@ export default function BannersAdminPage() {
             </div>
 
             <div className="p-6 space-y-6">
-              {/* Image Preview */}
+              {/* Media Type Selector */}
               <div>
-                <label className="block text-sm font-medium text-[#E2E8F0] mb-2">{t.image}</label>
-                {editingBanner.image ? (
-                  <div className="relative aspect-video rounded-lg overflow-hidden bg-white/[0.05]">
-                    <Image
-                      src={editingBanner.image}
-                      alt="Banner preview"
-                      fill
-                      className="object-cover"
-                    />
-                    <button
-                      onClick={() => setEditingBanner({ ...editingBanner, image: "" })}
-                      className="absolute top-3 right-3 p-2 rounded-lg bg-black/50 text-white/60 hover:text-white transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center gap-2 p-8 rounded-lg border-2 border-dashed border-white/[0.10] text-white/40">
-                    <Upload className="w-8 h-8" />
-                    <span>{t.uploadImage}</span>
-                    <input
-                      type="text"
-                      value={editingBanner.image}
-                      onChange={(e) => setEditingBanner({ ...editingBanner, image: e.target.value })}
-                      placeholder="Enter image URL..."
-                      className="mt-2 w-full max-w-sm px-3 py-2 rounded-lg bg-white/[0.05] border border-white/[0.10] text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#3B82F6]/50"
-                    />
-                  </div>
-                )}
+                <label className="block text-sm font-medium text-[#E2E8F0] mb-2">{t.mediaType}</label>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingBanner({ ...editingBanner, mediaType: 'IMAGE' });
+                      resetUploadStates();
+                    }}
+                    className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                      editingBanner.mediaType === 'IMAGE'
+                        ? "bg-[#3B82F6]/20 text-[#3B82F6] border border-[#3B82F6]/30"
+                        : "bg-white/[0.03] text-white/60 border border-white/[0.10]"
+                    }`}
+                  >
+                    <ImageIcon className="w-4 h-4" />
+                    {t.imageType}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingBanner({ ...editingBanner, mediaType: 'VIDEO' });
+                      resetUploadStates();
+                    }}
+                    className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                      editingBanner.mediaType === 'VIDEO'
+                        ? "bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30"
+                        : "bg-white/[0.03] text-white/60 border border-white/[0.10]"
+                    }`}
+                  >
+                    <Video className="w-4 h-4" />
+                    {t.videoType}
+                  </button>
+                </div>
               </div>
 
-              {/* Image URL Input */}
-              <div>
-                <Input
-                  label={`${t.image} URL`}
-                  value={editingBanner.image}
-                  onChange={(e) => setEditingBanner({ ...editingBanner, image: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                />
-              </div>
+              {/* Image Upload Section */}
+              {editingBanner.mediaType === 'IMAGE' ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[#E2E8F0] mb-2">{t.image}</label>
+                    {editingBanner.image ? (
+                      <MediaPreview
+                        type="image"
+                        src={editingBanner.image}
+                        onRemove={() => setEditingBanner({ ...editingBanner, image: '' })}
+                      />
+                    ) : (
+                      <UploadZone
+                        type="image"
+                        onUpload={(file) => uploadFile(file, 'image', setImageUpload)}
+                        uploading={imageUpload.isUploading}
+                        progress={imageUpload.progress}
+                        error={imageUpload.error}
+                        success={imageUpload.success}
+                        t={t}
+                      />
+                    )}
+                    {editingBanner.image && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingBanner({ ...editingBanner, image: '' })}
+                        className="mt-2"
+                      >
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        {t.replace}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                /* Video Upload Section */
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[#E2E8F0] mb-2">{t.video}</label>
+                    {editingBanner.videoUrl ? (
+                      <MediaPreview
+                        type="video"
+                        src={editingBanner.videoUrl}
+                        poster={editingBanner.posterUrl}
+                        onRemove={() => setEditingBanner({ ...editingBanner, videoUrl: '' })}
+                      />
+                    ) : (
+                      <UploadZone
+                        type="video"
+                        onUpload={(file) => uploadFile(file, 'video', setVideoUpload)}
+                        uploading={videoUpload.isUploading}
+                        progress={videoUpload.progress}
+                        error={videoUpload.error}
+                        success={videoUpload.success}
+                        t={t}
+                      />
+                    )}
+                    {editingBanner.videoUrl && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingBanner({ ...editingBanner, videoUrl: '' })}
+                        className="mt-2"
+                      >
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        {t.replace}
+                      </Button>
+                    )}
+                  </div>
 
-              {/* Mobile Image URL */}
-              <div>
-                <Input
-                  label={t.mobileImage}
-                  value={editingBanner.mobileImage}
-                  onChange={(e) => setEditingBanner({ ...editingBanner, mobileImage: e.target.value })}
-                  placeholder="https://images.unsplash.com/... (optional)"
-                />
-              </div>
+                  {/* Poster Upload */}
+                  <div>
+                    <label className="block text-sm font-medium text-[#E2E8F0] mb-2">{t.posterUrl}</label>
+                    {editingBanner.posterUrl ? (
+                      <MediaPreview
+                        type="image"
+                        src={editingBanner.posterUrl}
+                        onRemove={() => setEditingBanner({ ...editingBanner, posterUrl: '' })}
+                      />
+                    ) : (
+                      <UploadZone
+                        type="image"
+                        onUpload={(file) => uploadFile(file, 'poster', setPosterUpload)}
+                        uploading={posterUpload.isUploading}
+                        progress={posterUpload.progress}
+                        error={posterUpload.error}
+                        success={posterUpload.success}
+                        t={t}
+                      />
+                    )}
+                    {editingBanner.posterUrl && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingBanner({ ...editingBanner, posterUrl: '' })}
+                        className="mt-2"
+                      >
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        {t.replace}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Title */}
               <div className="grid grid-cols-2 gap-4">

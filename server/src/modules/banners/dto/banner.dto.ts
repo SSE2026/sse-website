@@ -3,15 +3,21 @@ import {
   IsOptional,
   IsBoolean,
   IsNumber,
+  IsEnum,
   Min,
   Max,
-  IsUrl,
   MaxLength,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { MediaType } from '@prisma/client';
 
 export class CreateBannerDto {
+  @ApiPropertyOptional({ example: 'IMAGE', enum: MediaType })
+  @IsOptional()
+  @IsEnum(MediaType)
+  mediaType?: MediaType;
+
   @ApiPropertyOptional({ example: 'Breaking Energy Limits' })
   @IsOptional()
   @IsString()
@@ -36,17 +42,35 @@ export class CreateBannerDto {
   @MaxLength(500)
   subtitleZh?: string;
 
-  @ApiPropertyOptional({ example: '/1.mp4' })
+  @ApiPropertyOptional({ example: '/images/banner.jpg' })
   @IsOptional()
   @IsString()
   @MaxLength(500)
   image?: string;
 
-  @ApiPropertyOptional({ example: '/1-mobile.mp4' })
+  @ApiPropertyOptional({ example: '/images/banner-mobile.jpg' })
   @IsOptional()
   @IsString()
   @MaxLength(500)
   mobileImage?: string;
+
+  @ApiPropertyOptional({ example: '/videos/banner.mp4' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  videoUrl?: string;
+
+  @ApiPropertyOptional({ example: '/images/banner-poster.jpg' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  posterUrl?: string;
+
+  @ApiPropertyOptional({ example: '/videos/banner-mobile.mp4' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  mobileVideoUrl?: string;
 
   @ApiPropertyOptional({ example: '/contact' })
   @IsOptional()
@@ -81,6 +105,11 @@ export class CreateBannerDto {
 }
 
 export class UpdateBannerDto {
+  @ApiPropertyOptional({ enum: MediaType })
+  @IsOptional()
+  @IsEnum(MediaType)
+  mediaType?: MediaType;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
@@ -116,6 +145,24 @@ export class UpdateBannerDto {
   @IsString()
   @MaxLength(500)
   mobileImage?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  videoUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  posterUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  mobileVideoUrl?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

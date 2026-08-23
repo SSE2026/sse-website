@@ -75,12 +75,16 @@ export class BannerService {
 
     const banner = await this.prisma.banner.create({
       data: {
+        mediaType: dto.mediaType,
         title: dto.title,
         titleZh: dto.titleZh,
         subtitle: dto.subtitle,
         subtitleZh: dto.subtitleZh,
-        image: dto.image || '',
+        image: dto.image,
         mobileImage: dto.mobileImage,
+        videoUrl: dto.videoUrl,
+        posterUrl: dto.posterUrl,
+        mobileVideoUrl: dto.mobileVideoUrl,
         link: dto.link,
         ctaText: dto.ctaText,
         ctaTextZh: dto.ctaTextZh,
@@ -105,12 +109,16 @@ export class BannerService {
     const banner = await this.prisma.banner.update({
       where: { id },
       data: {
+        mediaType: dto.mediaType,
         title: dto.title,
         titleZh: dto.titleZh,
         subtitle: dto.subtitle,
         subtitleZh: dto.subtitleZh,
         image: dto.image,
         mobileImage: dto.mobileImage,
+        videoUrl: dto.videoUrl,
+        posterUrl: dto.posterUrl,
+        mobileVideoUrl: dto.mobileVideoUrl,
         link: dto.link,
         ctaText: dto.ctaText,
         ctaTextZh: dto.ctaTextZh,
