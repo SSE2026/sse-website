@@ -1,10 +1,9 @@
 {
-  "builds": [
-    {
-      "src": "dist/api/index.js",
-      "use": "@vercel/node"
+  "functions": {
+    "dist/api/index.js": {
+      "runtime": "nodejs22.x"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/api/v1/(.*)",
