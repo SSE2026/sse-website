@@ -1,47 +1,44 @@
 /**
- * Vercel Serverless Handler with Auth
+ * Vercel Serverless Function Entry Point
+ *
+ * Vercel 识别 server/api/index.js 为 api/index 函数
+ * 委托给编译后的 NestJS vercelHandler 处理请求
  */
-module.exports = (req, res) => {
-  console.log('Request:', req.method, req.url);
 
-  const url = req.url || '';
+const path = require('path');
 
-  // Health check
-  if (url === '/api/v1/health' || url === '/v1/health' || url === '/health') {
-    res.status(200).json({
-      status: 'ok',
-      message: 'Server working',
-      timestamp: new Date().toISOString(),
+// 获取编译后的 NestJS main.js 路径
+const mainPath = path.resolve(__dirname, '..', 'dist', 'main');
+
+// 加载 NestJS vercelHandler
+let vercelHandler;
+try {
+  const main = require(mainPath);
+  vercelHandler = main.default || main;
+
+  if (typeof vercelHandler !== 'function') {
+    throw new Error('vercelHandler is not a function');
+  }
+} catch (error) {
+  console.error('Failed to load NestJS handler:', error.message);
+  vercelHandler = (req, res) => {
+    res.status(500).json({
+      statusCode: 500,
+      message: 'Failed to initialize NestJS application',
+      error: error.message,
     });
-    return;
+  };
+}
+
+// Vercel Serverless Handler Export
+module.exports = async function handler(req, res) {
+  try {
+    await vercelHandler(req, res);
+  } catch (error) {
+    console.error('Handler error:', error);
+    res.status(500).json({
+      statusCode: 500,
+      message: 'Internal server error',
+    });
   }
-
-  // Auth login - handle multiple paths
-  if (url === '/api/v1/auth/login' || url === '/api/v1/login' || url === '/v1/auth/login' || url === '/v1/login') {
-    const { email, password } = req.body || {};
-    console.log('Login attempt:', email);
-
-    if (email === 'admin@ssebatt.com' && password === 'SSEadmin2026!') {
-      res.status(200).json({
-        user: {
-          id: '906f0e6e-0f4c-474d-96d2-e891c0445551',
-          email: 'admin@ssebatt.com',
-          name: 'Admin',
-          role: 'ADMIN',
-        },
-        accessToken: 'mock-token-for-testing',
-      });
-      return;
-    }
-
-    res.status(401).json({ message: 'Invalid credentials' });
-    return;
-  }
-
-  // 404 for everything else
-  res.status(404).json({
-    statusCode: 404,
-    message: 'Not Found',
-    path: url,
-  });
 };
