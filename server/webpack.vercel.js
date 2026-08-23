@@ -1,12 +1,13 @@
 /**
  * Webpack configuration for Vercel Serverless
- * Uses ts-loader with transpileOnly for out-of-rootDir support (required for api/index.ts at src/api/)
+ * Bundles the entire NestJS application for serverless deployment
  */
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'production',
-  entry: './src/api/index.ts',
+  entry: './src/main.ts',
   target: 'node',
   output: {
     path: path.resolve(__dirname, 'dist', 'api'),
@@ -17,8 +18,6 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
     fallback: {
-      // Redirect class-transformer/storage (used by @nestjs/mapped-types@2.1.1)
-      // to the actual file available in class-transformer@0.5.1
       'class-transformer/storage': path.resolve(
         __dirname,
         'node_modules',
@@ -49,7 +48,7 @@ module.exports = {
     '@nestjs/core': 'commonjs @nestjs/core',
     '@nestjs/common': 'commonjs @nestjs/common',
     '@nestjs/platform-express': 'commonjs @nestjs/platform-express',
-    express: 'commonjs express',
+    'express': 'commonjs express',
     'body-parser': 'commonjs body-parser',
     'reflect-metadata': 'commonjs reflect-metadata',
   },

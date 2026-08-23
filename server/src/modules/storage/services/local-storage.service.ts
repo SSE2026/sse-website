@@ -88,6 +88,3 @@ export class LocalStorageService implements IStorageService {
     return `${random}${ext}`;
   }
 }
-
-// Re-export types for convenience
-export { UploadedFileInput, UploadedFile } from '../interfaces/storage-service.interface';

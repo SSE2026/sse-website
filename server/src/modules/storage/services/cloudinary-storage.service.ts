@@ -217,6 +217,3 @@ export class CloudinaryStorageService implements IStorageService {
     return ['video/mp4', 'video/webm'].includes(mimeType);
   }
 }
-
-// Re-export types
-export { UploadedFileInput, UploadedFile } from '../interfaces/storage-service.interface';
