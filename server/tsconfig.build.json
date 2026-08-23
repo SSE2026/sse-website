@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "moduleResolution": "bundler",
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "test", "dist", "scripts", "**/*spec.ts"]
 }
