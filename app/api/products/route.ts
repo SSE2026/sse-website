@@ -100,9 +100,10 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get('category') || '';
   const featured = searchParams.get('featured');
 
-  // Use mock data if no API URL configured (e.g., during build or production without backend)
-  if (!API_BASE_URL) {
-    console.log('API_BASE_URL not configured, using mock product data');
+  // Use mock data if no API URL configured or if API call fails
+  // This ensures product list always works, even without a running backend
+  if (!API_BASE_URL || API_BASE_URL.includes('localhost')) {
+    console.log('Using mock product data (API_BASE_URL:', API_BASE_URL, ')');
     return NextResponse.json({
       success: true,
       items: MOCK_PRODUCTS,

@@ -313,23 +313,16 @@ export default function ProductDetailPage() {
                 </div>
 
                 {/* Video Container */}
-                <div className="flex justify-center items-center order-1 lg:order-2">
-                  <div
-                    className="relative overflow-hidden rounded-2xl"
-                    style={{
-                      width: "100%",
-                      maxWidth: "640px",
-                      aspectRatio: "16/9",
-                    }}
-                  >
+                <div className="flex justify-center items-center order-1 lg:order-2 w-full max-w-[640px]">
+                  <div className="relative w-full aspect-video overflow-hidden rounded-2xl bg-black">
                     <video
                       ref={videoRef}
                       src="/videos/product-hero.mp4"
                       muted
                       playsInline
                       loop
+                      autoPlay
                       className="absolute inset-0 w-full h-full object-cover"
-                      style={{ opacity: 1 }}
                     />
                   </div>
                 </div>

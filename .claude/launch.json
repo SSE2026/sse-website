@@ -2,9 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "next-prod",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "start", "-p", "3003"],
+      "port": 3003,
+      "autoPort": true
+    },
+    {
       "name": "next-dev",
       "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
-      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "--turbopack"],
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev"],
       "port": 3000,
       "autoPort": true
     }
