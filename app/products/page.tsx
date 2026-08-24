@@ -68,7 +68,7 @@ const products = [
   },
   {
     id: 4,
-    key: "consumer",
+    key: "system",
     model: "模组与系统",
     image: "https://images.unsplash.com/photo-1585776245991-cf89dd7fc73a?w=800&q=80",
     badge: "系统集成",
