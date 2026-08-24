@@ -315,10 +315,11 @@ export default function ProductDetailPage() {
                 {/* Video Container */}
                 <div className="flex justify-center items-center order-1 lg:order-2">
                   <div
-                    className="relative overflow-hidden"
+                    className="relative overflow-hidden rounded-2xl"
                     style={{
-                      width: "380px",
-                      aspectRatio: "9/16",
+                      width: "100%",
+                      maxWidth: "640px",
+                      aspectRatio: "16/9",
                     }}
                   >
                     <video
