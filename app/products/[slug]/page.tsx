@@ -323,7 +323,7 @@ export default function ProductDetailPage() {
                   >
                     <video
                       ref={videoRef}
-                      src="/videos/product-carousel.mp4"
+                      src="/videos/product-hero.mp4"
                       muted
                       playsInline
                       loop
