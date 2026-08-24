@@ -44,8 +44,6 @@ export default function ProductDetailPage() {
   const [locale, setLocale] = useState<"en" | "zh">("en");
   const [activeTab, setActiveTab] = useState("360p");
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoRef2 = useRef<HTMLVideoElement>(null);
-  const videoRef3 = useRef<HTMLVideoElement>(null);
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
 
@@ -54,34 +52,13 @@ export default function ProductDetailPage() {
     return products.filter((p) => p.series === seriesId);
   };
 
-  // Video loop: 2.mp4 → 3.mp4 → 2.mp4 cycle
+  // Single video - plays once on page load
   useEffect(() => {
-    const video2 = videoRef2.current;
-    const video3 = videoRef3.current;
-    if (!video2 || !video3) return;
-    video2.playbackRate = 0.6;
-    video3.playbackRate = 0.6;
-    video2.style.opacity = "1";
-    video3.style.opacity = "0";
-    video2.play().catch(() => {});
-    let current = 2;
-    const checkVideo = setInterval(() => {
-      if (!video2 || !video3) return;
-      if (current === 2 && video2.currentTime >= video2.duration - 0.2) {
-        current = 3;
-        video2.style.opacity = "0";
-        video3.style.opacity = "1";
-        video3.currentTime = 0;
-        video3.play().catch(() => {});
-      } else if (current === 3 && video3.currentTime >= video3.duration - 0.2) {
-        current = 2;
-        video3.style.opacity = "0";
-        video2.style.opacity = "1";
-        video2.currentTime = 0;
-        video2.play().catch(() => {});
-      }
-    }, 100);
-    return () => clearInterval(checkVideo);
+    const video = videoRef.current;
+    if (!video) return;
+    video.playbackRate = 1.25;
+    video.loop = false;
+    video.play().catch(() => {});
   }, []);
 
   // Scroll spy for tabs
@@ -256,14 +233,14 @@ export default function ProductDetailPage() {
               }}
             >
               <div
-                className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-16 w-full ${
-                  locale === "en" ? "max-w-6xl" : "max-w-4xl"
+                className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-12 w-full ${
+                  locale === "en" ? "max-w-7xl" : "max-w-5xl"
                 }`}
               >
                 {/* Text Content */}
                 <div
                   className={`text-left order-2 lg:order-1 flex-shrink-0 ${
-                    locale === "en" ? "lg:w-1/2" : "lg:w-auto"
+                    locale === "en" ? "lg:w-2/5" : "lg:w-2/5"
                   }`}
                 >
                   <h1
@@ -303,30 +280,22 @@ export default function ProductDetailPage() {
                   </motion.p>
                 </div>
 
-                {/* Video Container with 2.mp4 / 3.mp4 loop */}
-                <div className="flex justify-center items-center order-1 lg:order-2">
+                {/* Video Container - single video loop (16:9) */}
+                <div className="flex justify-center items-center order-1 lg:order-2 w-full lg:w-1/2">
                   <div
-                    className="relative overflow-hidden"
+                    className="relative overflow-hidden rounded-2xl shadow-2xl w-full"
                     style={{
-                      width: "380px",
-                      aspectRatio: "9/16",
+                      maxWidth: "720px",
+                      aspectRatio: "16/9",
                     }}
                   >
                     <video
-                      ref={videoRef2}
-                      src="/videos/product-center-1.webm"
+                      ref={videoRef}
+                      src="/videos/product-hero-new.mp4"
                       muted
                       playsInline
-                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-                      style={{ opacity: 1 }}
-                    />
-                    <video
-                      ref={videoRef3}
-                      src="/videos/product-center-2.webm"
-                      muted
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-                      style={{ opacity: 0 }}
+                      autoPlay
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   </div>
                 </div>
