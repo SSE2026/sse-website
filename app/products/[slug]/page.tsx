@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -9,74 +8,17 @@ import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
+import { products, productSeries, Product } from "@/data/products";
 
 const messages = { en, zh };
-
-// Types - matching backend API response
-interface ProductVariant {
-  id: string;
-  sku: string;
-  name: string;
-  nominalVoltage?: number;
-  nominalCapacity?: number;
-  energyDensity?: number;
-  length?: number;
-  width?: number;
-  height?: number;
-  weight?: number;
-  cycleLife?: number;
-}
-
-interface ProductImage {
-  id: string;
-  url: string;
-}
-
-interface Product {
-  id: string;
-  sku: string;
-  model: string;
-  slug: string;
-  categoryId?: string;
-  shortDescription?: string;
-  description?: string;
-  energyDensity?: number;
-  dischargeRate?: number;
-  peakDischargeRate?: number;
-  cycleLife?: number;
-  operatingTempMin?: number;
-  operatingTempMax?: number;
-  weight?: number;
-  length?: number;
-  width?: number;
-  height?: number;
-  nominalVoltage?: number;
-  nominalCapacity?: number;
-  images: ProductImage[];
-  variants: ProductVariant[];
-  published: boolean;
-}
-
-interface ProductsResponse {
-  items: Product[];
-  meta?: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
-  error?: string;
-}
 
 // Series configuration
 const SERIES_CONFIG = [
   {
     id: "360p",
-    slug: "cloudchi-360-p",
     label: { en: "Aeroride 360-P", zh: "云驰 360-P" },
     subLabel: { en: "High Energy + High Power Cell", zh: "高能量 + 高功率型电芯" },
     color: "#2563eb",
@@ -84,7 +26,6 @@ const SERIES_CONFIG = [
   },
   {
     id: "400e",
-    slug: "cloudchi-400-e",
     label: { en: "Aeroride 400-E", zh: "云驰 400-E" },
     subLabel: { en: "High Energy + Long Cycle Cell", zh: "高能量 + 长循环型电芯" },
     color: "#059669",
@@ -92,57 +33,55 @@ const SERIES_CONFIG = [
   },
   {
     id: "460x",
-    slug: "cloudchi-460-x",
     label: { en: "Aeroride 460-X", zh: "云驰 460-X" },
     subLabel: { en: "Ultra High Energy + High Rate Cell", zh: "超高能量 + 超高倍率型电芯" },
     color: "#7c3aed",
     borderColor: "#7c3aed",
   },
-];
+] as const;
 
 export default function ProductDetailPage() {
-  const params = useParams();
-  const slug = params.slug as string;
   const [locale, setLocale] = useState<"en" | "zh">("en");
   const [activeTab, setActiveTab] = useState("360p");
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<Product[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef2 = useRef<HTMLVideoElement>(null);
+  const videoRef3 = useRef<HTMLVideoElement>(null);
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
 
-  // Fetch products from API
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    try {
-      const targetLocale = locale === "zh" ? "zh-CN" : "en";
-      const response = await fetch(
-        `/api/products?locale=${targetLocale}&limit=100`,
-        { next: { revalidate: 60 } }
-      );
-      const data: ProductsResponse = await response.json();
+  // Group products by series from local data
+  const getProductsBySeries = (seriesId: "360p" | "400e" | "460x"): Product[] => {
+    return products.filter((p) => p.series === seriesId);
+  };
 
-      if (data.items) {
-        // Filter published products only
-        setProducts(data.items.filter((p) => p.published));
+  // Video loop: 2.mp4 → 3.mp4 → 2.mp4 cycle
+  useEffect(() => {
+    const video2 = videoRef2.current;
+    const video3 = videoRef3.current;
+    if (!video2 || !video3) return;
+    video2.playbackRate = 0.6;
+    video3.playbackRate = 0.6;
+    video2.style.opacity = "1";
+    video3.style.opacity = "0";
+    video2.play().catch(() => {});
+    let current = 2;
+    const checkVideo = setInterval(() => {
+      if (!video2 || !video3) return;
+      if (current === 2 && video2.currentTime >= video2.duration - 0.2) {
+        current = 3;
+        video2.style.opacity = "0";
+        video3.style.opacity = "1";
+        video3.currentTime = 0;
+        video3.play().catch(() => {});
+      } else if (current === 3 && video3.currentTime >= video3.duration - 0.2) {
+        current = 2;
+        video3.style.opacity = "0";
+        video2.style.opacity = "1";
+        video2.currentTime = 0;
+        video2.play().catch(() => {});
       }
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [locale]);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-
-  // Video autoplay on mount
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.playbackRate = 0.6;
-    video.play().catch(() => {});
+    }, 100);
+    return () => clearInterval(checkVideo);
   }, []);
 
   // Scroll spy for tabs
@@ -168,41 +107,93 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Group products by series
-  const getProductsBySeries = (seriesId: string) => {
-    // Map series ID to potential model patterns
-    const patterns: Record<string, RegExp> = {
-      "360p": /360/i,
-      "400e": /400/i,
-      "460x": /460/i,
-    };
-
-    const pattern = patterns[seriesId];
-    if (!pattern) return [];
-
-    // Also check category/slug
-    return products.filter((p) => {
-      const modelMatch = pattern.test(p.model || "");
-      const slugMatch = pattern.test(p.slug || "");
-      return modelMatch || slugMatch;
-    });
-  };
-
-  // Get primary image for product
-  const getProductImage = (product: Product) => {
-    return product.images?.[0]?.url || `/images/${slug}.png`;
-  };
-
-  // Format spec value
-  const formatSpec = (value: number | undefined, unit: string) => {
-    if (value === undefined || value === null) return "-";
-    return `${value} ${unit}`;
-  };
-
   // Get tab color based on active tab
   const getActiveColor = (tabId: string) => {
     const tab = SERIES_CONFIG.find((t) => t.id === tabId);
     return tab?.color || "#2563eb";
+  };
+
+  // Get product image from product data
+  const getProductImage = (product: Product) => {
+    return product.image || `/images/${product.series}.png`;
+  };
+
+  // Render spec row
+  const renderSpecRow = (product: Product) => {
+    const spec = product.spec;
+    const items: { label: string; value: string }[] = [
+      { label: isZh ? "标称电压：" : "Nominal Voltage: ", value: spec.voltage },
+      { label: isZh ? "额定容量：" : "Capacity: ", value: spec.capacity },
+      { label: isZh ? "外形尺寸：" : "Dimensions: ", value: spec.dimensions },
+      { label: isZh ? "参考重量：" : "Weight: ", value: spec.weight },
+    ];
+
+    // 460-X series uses Continuous + Peak, others use Charge/Discharge
+    if (product.series === "460x") {
+      return (
+        <div className="grid grid-cols-3 gap-2 text-sm">
+          {items.map((item, idx) => (
+            <p key={idx}>
+              <span style={{ color: "#64748b" }}>{item.label}</span>
+              <span className="font-semibold" style={{ color: "#0f172a" }}>
+                {item.value}
+              </span>
+            </p>
+          ))}
+          <div className="flex flex-col">
+            <p>
+              <span style={{ color: "#64748b" }}>
+                {isZh ? "持续放电：" : "Continuous: "}
+              </span>
+              <span className="font-semibold" style={{ color: "#0f172a" }}>
+                {spec.continuous || "-"}
+              </span>
+            </p>
+            <p>
+              <span style={{ color: "#64748b" }}>
+                {isZh ? "峰值放电：" : "Peak: "}
+              </span>
+              <span className="font-semibold" style={{ color: "#0f172a" }}>
+                {spec.peak || "-"}
+              </span>
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-3 gap-2 text-sm">
+        {items.map((item, idx) => (
+          <p key={idx}>
+            <span style={{ color: "#64748b" }}>{item.label}</span>
+            <span className="font-semibold" style={{ color: "#0f172a" }}>
+              {item.value}
+            </span>
+          </p>
+        ))}
+        <p>
+          <span style={{ color: "#64748b" }}>
+            {isZh ? "充放电倍率：" : "Charge/Discharge: "}
+          </span>
+          <span className="font-semibold" style={{ color: "#0f172a" }}>
+            {spec.chargeRate && spec.dischargeRate
+              ? `${spec.chargeRate} / ${spec.dischargeRate}`
+              : "-"}
+          </span>
+        </p>
+        {spec.cycleLife && (
+          <p>
+            <span style={{ color: "#64748b" }}>
+              {isZh ? "循环寿命：" : "Cycle Life: "}
+            </span>
+            <span className="font-semibold" style={{ color: "#0f172a" }}>
+              {spec.cycleLife}
+            </span>
+          </p>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -312,7 +303,7 @@ export default function ProductDetailPage() {
                   </motion.p>
                 </div>
 
-                {/* Video Container */}
+                {/* Video Container with 2.mp4 / 3.mp4 loop */}
                 <div className="flex justify-center items-center order-1 lg:order-2">
                   <div
                     className="relative overflow-hidden"
@@ -322,13 +313,20 @@ export default function ProductDetailPage() {
                     }}
                   >
                     <video
-                      ref={videoRef}
-                      src="/videos/product-hero.mp4"
+                      ref={videoRef2}
+                      src="/videos/product-center-1.webm"
                       muted
                       playsInline
-                      loop
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                       style={{ opacity: 1 }}
+                    />
+                    <video
+                      ref={videoRef3}
+                      src="/videos/product-center-2.webm"
+                      muted
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                      style={{ opacity: 0 }}
                     />
                   </div>
                 </div>
@@ -416,205 +414,122 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="max-w-[1140px] mx-auto px-6">
-              {loading ? (
-                <div className="flex items-center justify-center py-20">
-                  <Loader2 className="w-8 h-8 text-[#3B82F6] animate-spin" />
-                </div>
-              ) : (
-                SERIES_CONFIG.map((series) => {
-                  const seriesProducts = getProductsBySeries(series.id);
+              {SERIES_CONFIG.map((series) => {
+                const seriesProducts = getProductsBySeries(series.id as "360p" | "400e" | "460x");
 
-                  return (
+                return (
+                  <div
+                    key={series.id}
+                    id={`series-${series.id}`}
+                    className="pt-20"
+                  >
                     <div
-                      key={series.id}
-                      id={`series-${series.id}`}
-                      className="pt-20"
+                      className="mb-6 pl-4 border-l-4"
+                      style={{ borderColor: series.borderColor }}
                     >
-                      <div
-                        className="mb-6 pl-4 border-l-4"
-                        style={{ borderColor: series.borderColor }}
+                      <h2
+                        className="text-3xl font-extrabold mb-1"
+                        style={{ color: "#0f172a" }}
                       >
-                        <h2
-                          className="text-3xl font-extrabold mb-1"
-                          style={{ color: "#0f172a" }}
-                        >
-                          {series.label[isZh ? "zh" : "en"]}
-                        </h2>
-                        <p className="text-sm" style={{ color: "#64748b" }}>
-                          {series.subLabel[isZh ? "zh" : "en"]}
-                        </p>
-                      </div>
-
-                      {seriesProducts.length > 0 ? (
-                        <div className="flex flex-col gap-4">
-                          {seriesProducts.map((product) => (
-                            <motion.div
-                              key={product.id}
-                              whileHover={{ y: -3 }}
-                              className="bg-white rounded-xl border flex items-center p-5 gap-6"
-                              style={{
-                                borderColor: "#e2e8f0",
-                                boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
-                              }}
-                            >
-                              {/* Product Image */}
-                              <div
-                                className="w-32 h-56 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
-                                style={{ backgroundColor: "#f8fafc" }}
-                              >
-                                <img
-                                  src={getProductImage(product)}
-                                  alt={product.model}
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    e.currentTarget.style.display = "none";
-                                  }}
-                                />
-                              </div>
-
-                              {/* Product Info */}
-                              <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <h3
-                                    className="text-xl font-extrabold"
-                                    style={{ color: "#0f172a" }}
-                                  >
-                                    {product.sku || product.model}
-                                  </h3>
-                                  {product.energyDensity && (
-                                    <span
-                                      className="text-xs font-bold px-2 py-0.5 rounded-full"
-                                      style={{
-                                        color: series.color,
-                                        backgroundColor: `${series.color}10`,
-                                      }}
-                                    >
-                                      {product.energyDensity} Wh/kg
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="grid grid-cols-3 gap-2 text-sm">
-                                  <p>
-                                    <span style={{ color: "#64748b" }}>
-                                      {isZh ? "标称电压：" : "Nominal Voltage: "}
-                                    </span>
-                                    <span
-                                      className="font-semibold"
-                                      style={{ color: "#0f172a" }}
-                                    >
-                                      {formatSpec(product.nominalVoltage, "V")}
-                                    </span>
-                                  </p>
-                                  <p>
-                                    <span style={{ color: "#64748b" }}>
-                                      {isZh ? "额定容量：" : "Capacity: "}
-                                    </span>
-                                    <span
-                                      className="font-semibold"
-                                      style={{ color: "#0f172a" }}
-                                    >
-                                      {formatSpec(product.nominalCapacity, "Ah")}
-                                    </span>
-                                  </p>
-                                  <p>
-                                    <span style={{ color: "#64748b" }}>
-                                      {isZh ? "外形尺寸：" : "Dimensions: "}
-                                    </span>
-                                    <span
-                                      className="font-semibold"
-                                      style={{ color: "#0f172a" }}
-                                    >
-                                      {product.length && product.width && product.height
-                                        ? `${product.length}×${product.width}×${product.height} mm`
-                                        : "-"}
-                                    </span>
-                                  </p>
-                                  <p>
-                                    <span style={{ color: "#64748b" }}>
-                                      {isZh ? "参考重量：" : "Weight: "}
-                                    </span>
-                                    <span
-                                      className="font-semibold"
-                                      style={{ color: "#0f172a" }}
-                                    >
-                                      {product.weight
-                                        ? `${(product.weight * 1000).toFixed(0)} g`
-                                        : "-"}
-                                    </span>
-                                  </p>
-                                  <p>
-                                    <span style={{ color: "#64748b" }}>
-                                      {isZh ? "充放电倍率：" : "Charge/Discharge: "}
-                                    </span>
-                                    <span
-                                      className="font-semibold"
-                                      style={{ color: "#0f172a" }}
-                                    >
-                                      {product.dischargeRate
-                                        ? `1C / ${product.dischargeRate}C`
-                                        : "-"}
-                                    </span>
-                                  </p>
-                                  <p>
-                                    <span style={{ color: "#64748b" }}>
-                                      {isZh ? "循环寿命：" : "Cycle Life: "}
-                                    </span>
-                                    <span
-                                      className="font-semibold"
-                                      style={{ color: "#0f172a" }}
-                                    >
-                                      {product.cycleLife
-                                        ? `${product.cycleLife}+`
-                                        : "-"}
-                                    </span>
-                                  </p>
-                                </div>
-                              </div>
-
-                              {/* Action Buttons */}
-                              <div className="flex flex-col gap-2 w-36 flex-shrink-0">
-                                <Link href="/contact">
-                                  <motion.button
-                                    whileHover={{ scale: 1.02, y: -2 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="w-full py-2.5 rounded-md text-sm font-bold border"
-                                    style={{
-                                      borderColor: "#2563eb",
-                                      color: "#2563eb",
-                                      backgroundColor: "#ffffff",
-                                    }}
-                                  >
-                                    {isZh ? "获取样品" : "Get Sample"}
-                                  </motion.button>
-                                </Link>
-                                <Link href="/contact">
-                                  <motion.button
-                                    whileHover={{ scale: 1.02, y: -2 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="w-full py-2.5 rounded-md text-sm font-bold"
-                                    style={{
-                                      backgroundColor: "#2563eb",
-                                      color: "#ffffff",
-                                    }}
-                                  >
-                                    {isZh ? "即刻咨询" : "Inquire Now"}
-                                  </motion.button>
-                                </Link>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-8 text-gray-400">
-                          {isZh ? "暂无产品" : "No products available"}
-                        </div>
-                      )}
+                        {series.label[isZh ? "zh" : "en"]}
+                      </h2>
+                      <p className="text-sm" style={{ color: "#64748b" }}>
+                        {series.subLabel[isZh ? "zh" : "en"]}
+                      </p>
                     </div>
-                  );
-                })
-              )}
+
+                    {seriesProducts.length > 0 ? (
+                      <div className="flex flex-col gap-4">
+                        {seriesProducts.map((product) => (
+                          <motion.div
+                            key={product.id}
+                            whileHover={{ y: -3 }}
+                            className="bg-white rounded-xl border flex items-center p-5 gap-6"
+                            style={{
+                              borderColor: "#e2e8f0",
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+                            }}
+                          >
+                            {/* Product Image */}
+                            <div
+                              className="w-32 h-56 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
+                              style={{ backgroundColor: "#f8fafc" }}
+                            >
+                              <img
+                                src={getProductImage(product)}
+                                alt={product.sku}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = "none";
+                                }}
+                              />
+                            </div>
+
+                            {/* Product Info */}
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-3">
+                                <h3
+                                  className="text-xl font-extrabold"
+                                  style={{ color: "#0f172a" }}
+                                >
+                                  {product.sku}
+                                </h3>
+                                <span
+                                  className="text-xs font-bold px-2 py-0.5 rounded-full"
+                                  style={{
+                                    color: series.color,
+                                    backgroundColor: `${series.color}10`,
+                                  }}
+                                >
+                                  {product.energyDensity}
+                                </span>
+                              </div>
+                              {renderSpecRow(product)}
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex flex-col gap-2 w-36 flex-shrink-0">
+                              <Link href="/contact">
+                                <motion.button
+                                  whileHover={{ scale: 1.02, y: -2 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  transition={{ duration: 0.2 }}
+                                  className="w-full py-2.5 rounded-md text-sm font-bold border"
+                                  style={{
+                                    borderColor: "#2563eb",
+                                    color: "#2563eb",
+                                    backgroundColor: "#ffffff",
+                                  }}
+                                >
+                                  {isZh ? "获取样品" : "Get Sample"}
+                                </motion.button>
+                              </Link>
+                              <Link href="/contact">
+                                <motion.button
+                                  whileHover={{ scale: 1.02, y: -2 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  transition={{ duration: 0.2 }}
+                                  className="w-full py-2.5 rounded-md text-sm font-bold"
+                                  style={{
+                                    backgroundColor: "#2563eb",
+                                    color: "#ffffff",
+                                  }}
+                                >
+                                  {isZh ? "即刻咨询" : "Inquire Now"}
+                                </motion.button>
+                              </Link>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-400">
+                        {isZh ? "暂无产品" : "No products available"}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
 
               {/* Custom Block */}
               <div id="series-custom" className="pt-20">
