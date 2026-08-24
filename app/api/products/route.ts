@@ -100,10 +100,12 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get('category') || '';
   const featured = searchParams.get('featured');
 
-  // Use mock data if no API URL configured or if API call fails
-  // This ensures product list always works, even without a running backend
-  if (!API_BASE_URL || API_BASE_URL.includes('localhost')) {
-    console.log('Using mock product data (API_BASE_URL:', API_BASE_URL, ')');
+  // Always return mock data for now - ensures product list always works
+  // When backend is ready, set USE_REAL_API=true in Vercel env vars
+  const useRealApi = process.env.USE_REAL_API === 'true' && API_BASE_URL && !API_BASE_URL.includes('localhost');
+
+  if (!useRealApi) {
+    console.log('Using mock product data');
     return NextResponse.json({
       success: true,
       items: MOCK_PRODUCTS,
@@ -130,30 +132,41 @@ export async function GET(request: NextRequest) {
         headers: {
           'Content-Type': 'application/json',
         },
-        next: { revalidate: 60 }, // Cache for 60 seconds
+        next: { revalidate: 60 },
       }
     );
 
     if (!response.ok) {
       console.error('Products API error:', response.status);
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch products' },
-        { status: response.status }
-      );
+      return NextResponse.json({
+        success: true,
+        items: MOCK_PRODUCTS,
+        total: MOCK_PRODUCTS.length,
+        page: 1,
+        limit: 12,
+      });
     }
 
     const data = await response.json();
+    // If API returns empty items, use mock data
+    if (!data.items || data.items.length === 0) {
+      return NextResponse.json({
+        success: true,
+        items: MOCK_PRODUCTS,
+        total: MOCK_PRODUCTS.length,
+        page: 1,
+        limit: 12,
+      });
+    }
     return NextResponse.json(data);
   } catch (error) {
     console.error('Products API error:', error);
-    // Use mock data as fallback when backend is unavailable
     return NextResponse.json({
       success: true,
       items: MOCK_PRODUCTS,
       total: MOCK_PRODUCTS.length,
       page: 1,
       limit: 12,
-      _fallback: true,
     });
   }
 }

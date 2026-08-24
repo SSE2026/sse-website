@@ -219,122 +219,81 @@ export default function ProductDetailPage() {
         />
 
         <main className="pt-20">
-          {/* Video Hero */}
-          <section
-            className="relative overflow-hidden"
-            style={{ backgroundColor: "#F5F5F7", minHeight: "100vh" }}
-          >
-            <style>{`
-              @keyframes fadeInUp {
-                from { opacity: 0; transform: translateY(24px); filter: blur(8px); }
-                to { opacity: 1; transform: translateY(0); filter: blur(0); }
-              }
-              @keyframes shine {
-                0% { background-position: -200% center; }
-                100% { background-position: 200% center; }
-              }
-              .hero-title-animate {
-                opacity: 0;
-                animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
-              }
-              .gradient-text-animated {
-                background: linear-gradient(110deg, #475569 0%, #64748B 15%, #94A3B8 30%, #CBD5E1 45%, #94A3B8 60%, #64748B 75%, #475569 100%);
-                background-size: 200% auto;
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                animation: shine 5s linear infinite;
-              }
-            `}</style>
+          {/* Fullscreen Video Hero */}
+          <section className="relative w-full h-[100vh] overflow-hidden bg-black">
+            {/* Background Video - Fullscreen */}
+            <div className="absolute inset-0 z-0">
+              <video
+                ref={videoRef}
+                src="/videos/product-hero.mp4"
+                muted
+                playsInline
+                loop
+                autoPlay
+                className="w-full h-full object-cover"
+                style={{ opacity: 0.9 }}
+              />
+              {/* Dark overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            </div>
 
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(ellipse 80% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.03) 100%)",
-              }}
-            />
+            {/* Hero Content */}
+            <div className="relative z-10 h-full flex items-center">
+              <div className="max-w-7xl mx-auto px-6 w-full">
+                <div className="max-w-2xl">
+                  {/* Eyebrow */}
+                  <span className="text-xs font-mono tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-full inline-block mb-6">
+                    {isZh ? "固态电池技术" : "Solid-State Battery Tech"}
+                  </span>
 
-            <div
-              className="max-w-7xl mx-auto px-6"
-              style={{
-                height: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-16 w-full ${
-                  locale === "en" ? "max-w-6xl" : "max-w-4xl"
-                }`}
-              >
-                {/* Text Content */}
-                <div
-                  className={`text-left order-2 lg:order-1 flex-shrink-0 ${
-                    locale === "en" ? "lg:w-1/2" : "lg:w-auto"
-                  }`}
-                >
+                  {/* Title */}
                   <h1
-                    className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 leading-tight hero-title-animate"
-                    style={{
-                      fontFamily: "var(--font-space-grotesk)",
-                      color: "#0F172A",
-                    }}
+                    className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 leading-tight"
+                    style={{ fontFamily: "var(--font-space-grotesk)" }}
                   >
-                    {locale === "zh" ? (
+                    {isZh ? (
                       <>
-                        突破能量极限
+                        <span className="text-white">突破能量极限</span>
                         <br />
-                        <span className="gradient-text-animated">重塑电动边界</span>
+                        <span className="text-shimmer">重塑电动边界</span>
                       </>
                     ) : (
                       <>
-                        Breaking Energy Limits
+                        <span className="text-white">Breaking Energy Limits</span>
                         <br />
-                        <span className="gradient-text-animated">
-                          Reshaping Electric Future
-                        </span>
+                        <span className="text-shimmer">Reshaping Electric Future</span>
                       </>
                     )}
                   </h1>
 
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    className="text-sm md:text-base leading-relaxed"
-                    style={{ color: "#64748b" }}
-                  >
-                    {locale === "zh"
-                      ? `专为无人机、具身智能、深海探测设备打造边界动力方案`
-                      : `Boundary power solutions for UAVs, embodied AI, and deep-sea exploration devices`}
-                  </motion.p>
-                </div>
+                  {/* Description */}
+                  <p className="text-base md:text-lg text-gray-300 leading-relaxed mb-8 max-w-lg">
+                    {isZh
+                      ? "专为无人机、具身智能、深海探测设备打造边界动力方案"
+                      : "Boundary power solutions for UAVs, embodied AI, and deep-sea exploration devices"}
+                  </p>
 
-                {/* Video Container */}
-                <div className="flex justify-center items-center order-1 lg:order-2 w-full max-w-[640px]">
-                  <div className="relative w-full aspect-video overflow-hidden rounded-2xl bg-black">
-                    <video
-                      ref={videoRef}
-                      src="/videos/product-hero.mp4"
-                      muted
-                      playsInline
-                      loop
-                      autoPlay
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </div>
+                  {/* CTA */}
+                  <Link href="/contact">
+                    <button className="inline-flex items-center gap-2 px-6 md:px-8 py-3 bg-white text-black font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all">
+                      {isZh ? "即刻定制" : "Customize Now"}
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
 
-            <div
-              className="absolute bottom-0 left-0 right-0 h-16"
-              style={{
-                background: "linear-gradient(to bottom, transparent, #F5F5F7 100%)",
-              }}
-            />
+            {/* Scroll indicator */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+              <div className="flex flex-col items-center gap-2 text-white/60">
+                <span className="text-xs font-mono tracking-widest uppercase">Scroll</span>
+                <div className="w-px h-12 bg-gradient-to-b from-white/40 to-transparent" />
+              </div>
+            </div>
           </section>
 
           {/* Product Series Section */}
