@@ -411,7 +411,7 @@ export default function HeroCarousel({
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[580px] sm:h-[620px] md:h-[720px] lg:h-[760px] overflow-hidden bg-[#0a0a0a]"
+      className="relative w-full h-[calc(100vh-80px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] lg:h-[calc(100vh-80px)] overflow-hidden bg-[#0a0a0a]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}

@@ -186,11 +186,11 @@ export default function ProductDetailPage() {
           forceLightText={false}
         />
 
-        <main className="pt-20">
-          {/* Video Hero */}
+        <main>
+          {/* Video Hero - Full screen with video as background */}
           <section
             className="relative overflow-hidden"
-            style={{ backgroundColor: "#F5F5F7", minHeight: "100vh" }}
+            style={{ backgroundColor: "#F5F5F7", minHeight: "100vh", marginTop: "-80px", paddingTop: "80px" }}
           >
             <style>{`
               @keyframes fadeInUp {
@@ -223,28 +223,51 @@ export default function ProductDetailPage() {
               }}
             />
 
-            <div
-              className="max-w-7xl mx-auto px-6"
+            {/* Full-screen background video */}
+            <video
+              ref={videoRef}
+              src="/videos/product-hero-new.mp4"
+              muted
+              playsInline
+              autoPlay
+              className="absolute inset-0 w-full h-full object-cover"
               style={{
-                height: "100vh",
+                maskImage: "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)",
+              }}
+            />
+
+            {/* Soft overlay for text readability */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "radial-gradient(ellipse 80% 70% at 50% 50%, rgba(245,245,247,0.95) 0%, rgba(245,245,247,0.7) 50%, rgba(245,245,247,0.2) 100%)",
+              }}
+            />
+
+            <div
+              className="relative max-w-7xl mx-auto px-6 z-10"
+              style={{
+                minHeight: "calc(100vh - 80px)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                paddingTop: "80px",
+                paddingBottom: "60px",
               }}
             >
               <div
-                className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-12 w-full ${
-                  locale === "en" ? "max-w-7xl" : "max-w-5xl"
+                className={`flex flex-col gap-8 w-full ${
+                  locale === "en" ? "max-w-5xl" : "max-w-4xl"
                 }`}
               >
-                {/* Text Content */}
+                {/* Text Content - centered, vertical layout */}
                 <div
-                  className={`text-left order-2 lg:order-1 flex-shrink-0 ${
-                    locale === "en" ? "lg:w-2/5" : "lg:w-2/5"
-                  }`}
+                  className="text-center mx-auto"
+                  style={{ maxWidth: "900px" }}
                 >
                   <h1
-                    className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 leading-tight hero-title-animate"
+                    className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight hero-title-animate"
                     style={{
                       fontFamily: "var(--font-space-grotesk)",
                       color: "#0F172A",
@@ -271,39 +294,19 @@ export default function ProductDetailPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
-                    className="text-sm md:text-base leading-relaxed"
-                    style={{ color: "#64748b" }}
+                    className="text-base md:text-lg leading-relaxed"
+                    style={{ color: "#475569" }}
                   >
                     {locale === "zh"
                       ? `专为无人机、具身智能、深海探测设备打造边界动力方案`
                       : `Boundary power solutions for UAVs, embodied AI, and deep-sea exploration devices`}
                   </motion.p>
                 </div>
-
-                {/* Video Container - single video loop (16:9) */}
-                <div className="flex justify-center items-center order-1 lg:order-2 w-full lg:w-1/2">
-                  <div
-                    className="relative overflow-hidden rounded-2xl shadow-2xl w-full"
-                    style={{
-                      maxWidth: "720px",
-                      aspectRatio: "16/9",
-                    }}
-                  >
-                    <video
-                      ref={videoRef}
-                      src="/videos/product-hero-new.mp4"
-                      muted
-                      playsInline
-                      autoPlay
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
               </div>
             </div>
 
             <div
-              className="absolute bottom-0 left-0 right-0 h-16"
+              className="absolute bottom-0 left-0 right-0 h-24 z-20"
               style={{
                 background: "linear-gradient(to bottom, transparent, #F5F5F7 100%)",
               }}
