@@ -1,44 +1,104 @@
 /**
- * Vercel Serverless Function Entry Point
- *
- * Vercel 识别 server/api/index.js 为 api/index 函数
- * 委托给编译后的 NestJS vercelHandler 处理请求
+ * Simple Auth Handler with Database
  */
+const { Pool } = require('pg');
+const bcrypt = require('bcryptjs');
 
-const path = require('path');
+let cachedPool = null;
 
-// 获取编译后的 NestJS main.js 路径
-const mainPath = path.resolve(__dirname, '..', 'dist', 'main');
-
-// 加载 NestJS vercelHandler
-let vercelHandler;
-try {
-  const main = require(mainPath);
-  vercelHandler = main.default || main;
-
-  if (typeof vercelHandler !== 'function') {
-    throw new Error('vercelHandler is not a function');
-  }
-} catch (error) {
-  console.error('Failed to load NestJS handler:', error.message);
-  vercelHandler = (req, res) => {
-    res.status(500).json({
-      statusCode: 500,
-      message: 'Failed to initialize NestJS application',
-      error: error.message,
-    });
-  };
+function getPool() {
+  if (cachedPool) return cachedPool;
+  cachedPool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+  return cachedPool;
 }
 
-// Vercel Serverless Handler Export
 module.exports = async function handler(req, res) {
-  try {
-    await vercelHandler(req, res);
-  } catch (error) {
-    console.error('Handler error:', error);
-    res.status(500).json({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
+  const url = req.url || '';
+  console.log('Request:', req.method, url);
+
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
   }
+
+  // Health check
+  if (url === '/api/v1/health' || url === '/v1/health') {
+    res.status(200).json({
+      status: 'ok',
+      message: 'Server working',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+
+  // Login - handle multiple paths
+  const isLoginPath = url === '/api/v1/auth/login' ||
+                      url === '/api/v1/login' ||
+                      url === '/v1/auth/login' ||
+                      url === '/v1/login' ||
+                      url.includes('/auth/login');
+
+  if (req.method === 'POST' && isLoginPath) {
+    const { email, password } = req.body || {};
+    console.log('Login attempt:', email);
+
+    try {
+      const pool = getPool();
+      const result = await pool.query(
+        'SELECT id, email, password, name, role, "isActive" FROM users WHERE email = $1',
+        [email]
+      );
+
+      if (result.rows.length === 0) {
+        console.log('User not found');
+        res.status(401).json({ message: 'Invalid credentials' });
+        return;
+      }
+
+      const user = result.rows[0];
+      console.log('Found user:', user.email, 'isActive:', user.isActive);
+
+      if (!user.isActive) {
+        res.status(401).json({ message: 'Account disabled' });
+        return;
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      console.log('Password valid:', isPasswordValid);
+
+      if (!isPasswordValid) {
+        res.status(401).json({ message: 'Invalid credentials' });
+        return;
+      }
+
+      res.status(200).json({
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
+        accessToken: 'auth-token-' + user.id,
+      });
+      return;
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+      return;
+    }
+  }
+
+  res.status(404).json({
+    statusCode: 404,
+    message: 'Not Found',
+    path: url,
+  });
 };
