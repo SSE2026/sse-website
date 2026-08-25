@@ -263,9 +263,17 @@ export default function ProductDetailPage() {
                     textShadow: "0 1px 8px rgba(0,0,0,0.6)",
                   }}
                 >
-                  {locale === "zh"
-                    ? `专为无人机、具身智能、深海探测设备打造边界动力方案`
-                    : `Boundary power solutions for UAVs, embodied AI, and deep-sea exploration devices`}
+                  {locale === "zh" ? (
+                    <>专为无人机、具身智能、深海探测设备打造边界动力方案</>
+                  ) : (
+                    <>
+                      Pushing Energy Limits. Redefining Electric Boundaries.
+                      <br />
+                      Ultimate Power Solutions for Drones, Embodied AI,
+                      <br />
+                      and Deep-Sea Exploration.
+                    </>
+                  )}
                 </p>
 
                 {/* CTA Button */}

@@ -131,12 +131,12 @@ function HeroSlideVideo({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      <div className="absolute inset-0 flex items-center justify-end bg-[#0a0a0a]">
+      <div className="absolute inset-0 flex items-end justify-end bg-[#0a0a0a]">
         <video
           ref={videoRef}
           src={videoSrc}
           poster={slide.posterUrl}
-          className="absolute bottom-0 right-0 w-auto h-[82%] max-w-[58%] object-contain"
+          className="absolute bottom-0 right-0 w-auto h-[72%] max-w-[58%] object-contain"
           muted
           playsInline
           loop={slide.loop}
@@ -157,7 +157,7 @@ function HeroContent({
 }) {
   return (
     <div className="absolute inset-0 z-20 pointer-events-none">
-      <div className="absolute inset-x-0 bottom-0 flex items-end md:justify-start gap-3 md:gap-5 px-6 md:pl-[20%] md:pr-[3%] pb-14 md:pb-16 pointer-events-auto">
+      <div className="absolute inset-x-0 bottom-0 flex items-end md:justify-start gap-3 md:gap-5 px-6 md:pl-[20%] md:pr-[3%] pb-4 md:pb-6 pointer-events-auto">
         {/* Text Content - Left side */}
         <div className="max-w-[460px] flex-shrink-0">
           {/* Eyebrow */}
@@ -167,7 +167,7 @@ function HeroContent({
 
           {/* Title */}
           <h1
-            className="text-[32px] md:text-[48px] lg:text-[56px] font-extrabold leading-[1.1] mb-4"
+            className="text-[24px] md:text-[36px] lg:text-[42px] font-extrabold leading-[1.15] mb-3"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
             <span className="text-white">{slide.title.split(' ')[0]} </span>
@@ -176,7 +176,7 @@ function HeroContent({
 
           {/* Description */}
           <p
-            className="text-[14px] md:text-[16px] text-gray-400 leading-relaxed mb-6 max-w-[440px]"
+            className="text-[12px] md:text-[13px] text-gray-400 leading-relaxed mb-5 max-w-[420px]"
             style={{ fontFamily: "var(--font-inter, sans-serif)" }}
           >
             {slide.description}
