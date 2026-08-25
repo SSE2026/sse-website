@@ -22,7 +22,10 @@ const notoSansSC = Noto_Sans_SC({
 });
 
 export const metadata: Metadata = {
-  title: "Deep Safe Lithium Energy | Solid-State Battery Technology",
+  title: {
+    default: "Swift Safe Energy Official",
+    template: "%s | Swift Safe Energy Official",
+  },
   description:
     "Leading innovator in solid-state battery technology. Developing next-generation energy storage solutions for EVs, drones, robotics, and consumer electronics.",
   keywords: [
@@ -33,9 +36,9 @@ export const metadata: Metadata = {
     "next-generation battery",
     "drone battery",
   ],
-  authors: [{ name: "Deep Safe Lithium Energy" }],
+  authors: [{ name: "Swift Safe Energy" }],
   openGraph: {
-    title: "Deep Safe Lithium Energy | Solid-State Battery Technology",
+    title: "Swift Safe Energy Official",
     description:
       "Leading innovator in solid-state battery technology for the future of energy.",
     type: "website",

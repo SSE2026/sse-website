@@ -7,7 +7,7 @@ import HeroCarousel, { HeroSlide } from "@/components/ui/hero-carousel/HeroCarou
 const DEFAULT_SLIDES_EN: HeroSlide[] = [
   {
     id: 1,
-    video: "/videos/homepage-hero.mp4",
+    video: "/videos/homepage-hero-new.webm",
     loop: true,
     imageAlt: "Aeroride Series Solid-State Battery",
     eyebrow: "Solid-State Battery Tech",
@@ -26,7 +26,7 @@ const DEFAULT_SLIDES_EN: HeroSlide[] = [
 const DEFAULT_SLIDES_ZH: HeroSlide[] = [
   {
     id: 1,
-    video: "/videos/homepage-hero.mp4",
+    video: "/videos/homepage-hero-new.webm",
     loop: true,
     imageAlt: "云驰系列固态电池",
     eyebrow: "固态电池技术",

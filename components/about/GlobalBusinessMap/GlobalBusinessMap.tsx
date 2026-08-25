@@ -32,16 +32,20 @@ export default function GlobalBusinessMap({ locale = 'zh', className = '' }: Glo
 
     async function initChart() {
       try {
-        // 加载 ECharts
+        // 加载 ECharts（自托管）
         if (!window.echarts) {
-          await loadScript('https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js');
+          await loadScript('/js/echarts.min.js');
         }
-        // 加载 world 地图
+        // 加载 world 地图（自托管）
         if (!window.echarts?.getMap('world')) {
-          await loadScript('https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js');
+          await loadScript('/js/world.js');
         }
 
         if (!mounted || !containerRef.current) return;
+
+        if (!window.echarts) {
+          throw new Error('ECharts failed to initialize');
+        }
 
         echarts = window.echarts;
         const chart = echarts.init(containerRef.current, undefined, { renderer: 'canvas' });
@@ -126,17 +130,32 @@ export default function GlobalBusinessMap({ locale = 'zh', className = '' }: Glo
 }
 
 // 辅助函数：加载脚本
+const scriptLoadCache = new Map<string, Promise<void>>();
+
 function loadScript(src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
+  if (scriptLoadCache.has(src)) {
+    return scriptLoadCache.get(src)!;
+  }
+
+  const promise = new Promise<void>((resolve, reject) => {
     const existing = document.querySelector(`script[src="${src}"]`);
     if (existing) {
+      // 标签已存在，但脚本可能仍在加载或加载失败，等待 onload
+      // 如果脚本标签没有 onload 标记则视为已加载完成
       resolve();
       return;
     }
     const script = document.createElement('script');
     script.src = src;
+    script.async = true;
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error(`Failed to load ${src}`));
+    script.onerror = () => {
+      scriptLoadCache.delete(src);
+      reject(new Error(`Failed to load ${src}`));
+    };
     document.head.appendChild(script);
   });
+
+  scriptLoadCache.set(src, promise);
+  return promise;
 }

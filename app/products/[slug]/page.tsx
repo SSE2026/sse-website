@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -8,6 +8,7 @@ import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
@@ -43,7 +44,6 @@ const SERIES_CONFIG = [
 export default function ProductDetailPage() {
   const [locale, setLocale] = useState<"en" | "zh">("en");
   const [activeTab, setActiveTab] = useState("360p");
-  const videoRef = useRef<HTMLVideoElement>(null);
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
 
@@ -52,14 +52,9 @@ export default function ProductDetailPage() {
     return products.filter((p) => p.series === seriesId);
   };
 
-  // Single video - plays once on page load
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.playbackRate = 1.25;
-    video.loop = false;
-    video.play().catch(() => {});
-  }, []);
+  // Single video - plays once on page load via autoPlay only, no JS touching
+  // the video element to prevent any restart
+  // (Removed: useEffect was triggering restart on re-render)
 
   // Scroll spy for tabs
   useEffect(() => {
@@ -187,130 +182,103 @@ export default function ProductDetailPage() {
         />
 
         <main>
-          {/* Video Hero - Full screen with video as background */}
+          {/* Video Hero - Full screen with video as background, no mask */}
           <section
             className="relative overflow-hidden"
-            style={{ backgroundColor: "#F5F5F7", minHeight: "100vh", marginTop: "-80px", paddingTop: "80px" }}
+            style={{
+              backgroundColor: "#F5F5F7",
+              marginTop: "80px",
+              minHeight: "calc(100vh - 80px)",
+            }}
           >
-            <style>{`
-              @keyframes fadeInUp {
-                from { opacity: 0; transform: translateY(24px); filter: blur(8px); }
-                to { opacity: 1; transform: translateY(0); filter: blur(0); }
-              }
-              @keyframes shine {
-                0% { background-position: -200% center; }
-                100% { background-position: 200% center; }
-              }
-              .hero-title-animate {
-                opacity: 0;
-                animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
-              }
-              .gradient-text-animated {
-                background: linear-gradient(110deg, #475569 0%, #64748B 15%, #94A3B8 30%, #CBD5E1 45%, #94A3B8 60%, #64748B 75%, #475569 100%);
-                background-size: 200% auto;
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                animation: shine 5s linear infinite;
-              }
-            `}</style>
+            {/* Full-screen background video - no mask, no crop, right-aligned */}
+            <div className="absolute inset-0 flex items-center justify-end bg-[#0a0a0a]">
+              <video
+                src="/videos/product-hero-new.mp4"
+                muted
+                playsInline
+                autoPlay
+                preload="auto"
+                className="w-full h-full object-contain object-right"
+              />
+            </div>
 
+            {/* Left-side subtle gradient for text legibility */}
             <div
-              className="absolute inset-0"
+              className="absolute inset-y-0 left-0 w-1/2 z-[5] pointer-events-none"
               style={{
-                background:
-                  "radial-gradient(ellipse 80% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.03) 100%)",
-              }}
-            />
-
-            {/* Full-screen background video */}
-            <video
-              ref={videoRef}
-              src="/videos/product-hero-new.mp4"
-              muted
-              playsInline
-              autoPlay
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{
-                maskImage: "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)",
-              }}
-            />
-
-            {/* Soft overlay for text readability */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: "radial-gradient(ellipse 80% 70% at 50% 50%, rgba(245,245,247,0.95) 0%, rgba(245,245,247,0.7) 50%, rgba(245,245,247,0.2) 100%)",
+                background: "linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, transparent 100%)",
               }}
             />
 
             <div
-              className="relative max-w-7xl mx-auto px-6 z-10"
+              className="relative max-w-7xl pl-8 pr-6 md:pl-12 lg:pl-16 z-10"
               style={{
                 minHeight: "calc(100vh - 80px)",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                paddingTop: "80px",
-                paddingBottom: "60px",
               }}
             >
-              <div
-                className={`flex flex-col gap-8 w-full ${
-                  locale === "en" ? "max-w-5xl" : "max-w-4xl"
-                }`}
-              >
-                {/* Text Content - centered, vertical layout */}
-                <div
-                  className="text-center mx-auto"
-                  style={{ maxWidth: "900px" }}
+              {/* Plain text on left - no card, no animation (instant render) */}
+              <div className="flex flex-col gap-5 max-w-[480px]">
+                {/* Eyebrow */}
+                <span
+                  className="text-xs font-mono tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full inline-block w-fit"
+                  style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}
                 >
-                  <h1
-                    className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight hero-title-animate"
-                    style={{
-                      fontFamily: "var(--font-space-grotesk)",
-                      color: "#0F172A",
-                    }}
-                  >
-                    {locale === "zh" ? (
-                      <>
-                        突破能量极限
-                        <br />
-                        <span className="gradient-text-animated">重塑电动边界</span>
-                      </>
-                    ) : (
-                      <>
-                        Breaking Energy Limits
-                        <br />
-                        <span className="gradient-text-animated">
-                          Reshaping Electric Future
-                        </span>
-                      </>
-                    )}
-                  </h1>
+                  {locale === "zh" ? "固态电池技术" : "Solid-State Battery Tech"}
+                </span>
 
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    className="text-base md:text-lg leading-relaxed"
-                    style={{ color: "#475569" }}
-                  >
-                    {locale === "zh"
-                      ? `专为无人机、具身智能、深海探测设备打造边界动力方案`
-                      : `Boundary power solutions for UAVs, embodied AI, and deep-sea exploration devices`}
-                  </motion.p>
+                {/* Title */}
+                <h1
+                  className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-[1.1]"
+                  style={{
+                    fontFamily: "var(--font-space-grotesk)",
+                    color: "#FFFFFF",
+                    textShadow: "0 2px 16px rgba(0,0,0,0.6), 0 1px 4px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  {locale === "zh" ? (
+                    <>
+                      突破能量极限
+                      <br />
+                      <span className="gradient-text-animated">重塑电动边界</span>
+                    </>
+                  ) : (
+                    <>
+                      Breaking Energy Limits
+                      <br />
+                      <span className="gradient-text-animated">
+                        Reshaping Electric Future
+                      </span>
+                    </>
+                  )}
+                </h1>
+
+                {/* Description */}
+                <p
+                  className="text-sm md:text-base leading-relaxed"
+                  style={{
+                    color: "rgba(255,255,255,0.92)",
+                    textShadow: "0 1px 8px rgba(0,0,0,0.6)",
+                  }}
+                >
+                  {locale === "zh"
+                    ? `专为无人机、具身智能、深海探测设备打造边界动力方案`
+                    : `Boundary power solutions for UAVs, embodied AI, and deep-sea exploration devices`}
+                </p>
+
+                {/* CTA Button */}
+                <div>
+                  <Link href="/contact">
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#0a0a0a] font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all shadow-lg">
+                      {locale === "zh" ? "即刻咨询" : "Contact Us"}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
-
-            <div
-              className="absolute bottom-0 left-0 right-0 h-24 z-20"
-              style={{
-                background: "linear-gradient(to bottom, transparent, #F5F5F7 100%)",
-              }}
-            />
           </section>
 
           {/* Product Series Section */}

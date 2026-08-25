@@ -131,12 +131,12 @@ function HeroSlideVideo({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]">
+      <div className="absolute inset-0 flex items-center justify-end bg-[#0a0a0a]">
         <video
           ref={videoRef}
           src={videoSrc}
           poster={slide.posterUrl}
-          className="w-[75%] h-[80%] object-contain translate-x-[25%]"
+          className="absolute bottom-0 right-0 w-auto h-[82%] max-w-[58%] object-contain"
           muted
           playsInline
           loop={slide.loop}
@@ -152,29 +152,14 @@ function HeroSlideVideo({
 // ============================================
 function HeroContent({
   slide,
-  locale,
-  slideIndex,
-  totalSlides,
-  progress,
-  onPrev,
-  onNext,
-  onDotClick,
 }: {
   slide: HeroSlide;
-  locale: string;
-  slideIndex: number;
-  totalSlides: number;
-  progress: number;
-  onPrev: () => void;
-  onNext: () => void;
-  onDotClick: (index: number) => void;
 }) {
   return (
-    <div className="absolute inset-0 z-20 flex flex-col justify-end">
-      {/* Main Content Container */}
-      <div className="relative w-full h-full flex items-center">
-        {/* Text Content - Center Left */}
-        <div className="absolute top-1/2 -translate-y-1/2 left-6 md:left-[8%] max-w-[560px]">
+    <div className="absolute inset-0 z-20 pointer-events-none">
+      <div className="absolute inset-x-0 bottom-0 flex items-end md:justify-start gap-3 md:gap-5 px-6 md:pl-[20%] md:pr-[3%] pb-14 md:pb-16 pointer-events-auto">
+        {/* Text Content - Left side */}
+        <div className="max-w-[460px] flex-shrink-0">
           {/* Eyebrow */}
           <span className="text-xs font-mono tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-full inline-block mb-4">
             {slide.eyebrow}
@@ -182,7 +167,7 @@ function HeroContent({
 
           {/* Title */}
           <h1
-            className="text-[28px] md:text-[42px] lg:text-[52px] font-extrabold leading-[1.1] mb-4"
+            className="text-[32px] md:text-[48px] lg:text-[56px] font-extrabold leading-[1.1] mb-4"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
             <span className="text-white">{slide.title.split(' ')[0]} </span>
@@ -191,7 +176,7 @@ function HeroContent({
 
           {/* Description */}
           <p
-            className="text-[14px] md:text-[16px] text-gray-400 leading-relaxed mb-6 max-w-[480px]"
+            className="text-[14px] md:text-[16px] text-gray-400 leading-relaxed mb-6 max-w-[440px]"
             style={{ fontFamily: "var(--font-inter, sans-serif)" }}
           >
             {slide.description}
@@ -206,7 +191,7 @@ function HeroContent({
           </Link>
 
           {/* Three Stats - Horizontal */}
-          <div className="mt-8 pt-6 border-t border-white/10 flex gap-8">
+          <div className="mt-8 flex gap-8">
             {slide.stats.map((stat, index) => (
               <div key={index}>
                 <div className="text-2xl font-bold text-white font-mono">
@@ -215,70 +200,6 @@ function HeroContent({
                 </div>
                 <div className="text-[10px] text-gray-500 mt-0.5">{stat.label}</div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Controls - Bottom Right */}
-      <div className="absolute bottom-6 md:bottom-10 right-6 md:right-[8%] flex items-center gap-6">
-        {/* Navigation Arrows - Desktop Only */}
-        <div className="hidden md:flex items-center gap-2">
-          <button
-            onClick={onPrev}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-white/30 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/50 transition-all cursor-pointer"
-            aria-label="Previous slide"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button
-            onClick={onNext}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-white/30 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/50 transition-all cursor-pointer"
-            aria-label="Next slide"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Slide Counter & Progress */}
-        <div className="flex flex-col items-end gap-2">
-          {/* Counter */}
-          <div className="flex items-center gap-3">
-            <span
-              className="text-[12px] md:text-[13px] text-white/60 font-medium tabular-nums"
-              style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-            >
-              {String(slideIndex + 1).padStart(2, "0")}
-              <span className="mx-1">/</span>
-              {String(totalSlides).padStart(2, "0")}
-            </span>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="w-[80px] md:w-[100px] h-[2px] bg-white/20 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-white rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          {/* Dots */}
-          <div className="flex items-center gap-2 mt-1">
-            {Array.from({ length: totalSlides }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => onDotClick(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                  index === slideIndex
-                    ? "bg-white w-4"
-                    : "bg-white/40 hover:bg-white/60"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
             ))}
           </div>
         </div>
@@ -450,16 +371,7 @@ export default function HeroCarousel({
       />
 
       {/* Content Overlay */}
-      <HeroContent
-        slide={slides[currentIndex]}
-        locale="en"
-        slideIndex={currentIndex}
-        totalSlides={slides.length}
-        progress={progress}
-        onPrev={goToPrev}
-        onNext={goToNext}
-        onDotClick={goToSlide}
-      />
+      <HeroContent slide={slides[currentIndex]} />
     </section>
   );
 }

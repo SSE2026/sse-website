@@ -40,6 +40,11 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Sync document.title with current locale
+  useEffect(() => {
+    document.title = locale === "zh" ? "深安锂能官网" : "Swift Safe Energy Official";
+  }, [locale]);
+
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
