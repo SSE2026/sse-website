@@ -13,7 +13,7 @@ const logger = new Logger('Bootstrap');
  */
 async function configureApp(app: any): Promise<void> {
   // API Prefix
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('v1');
 
   // CORS Configuration
   const corsOrigin = process.env.CORS_ORIGIN ||
