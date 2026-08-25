@@ -17,16 +17,19 @@ const handler = NextAuth({
       },
       async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) {
+          console.log('[NextAuth] Missing credentials');
           return null;
         }
 
-        // Skip if no real API URL configured (e.g., during build)
-        if (!process.env.NEXT_PUBLIC_API_URL) {
-          return null;
-        }
+        const apiUrl = getApiUrl();
+        console.log('[NextAuth] API URL:', apiUrl);
+        console.log('[NextAuth] ENV var:', process.env.NEXT_PUBLIC_API_URL);
 
         try {
-          const res = await fetch(`${getApiUrl()}/api/v1/auth/login`, {
+          const targetUrl = `${apiUrl}/api/v1/auth/login`;
+          console.log('[NextAuth] Calling:', targetUrl);
+
+          const res = await fetch(targetUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -35,11 +38,15 @@ const handler = NextAuth({
             }),
           });
 
+          console.log('[NextAuth] Response status:', res.status);
           if (!res.ok) {
+            const errBody = await res.text().catch(() => '');
+            console.log('[NextAuth] Error body:', errBody);
             return null;
           }
 
           const data = await res.json();
+          console.log('[NextAuth] Response data:', JSON.stringify(data));
 
           return {
             id: data.user.id,
@@ -47,7 +54,8 @@ const handler = NextAuth({
             name: data.user.name,
             role: data.user.role,
           } as User;
-        } catch {
+        } catch (e) {
+          console.log('[NextAuth] Fetch error:', (e as Error).message);
           return null;
         }
       },
