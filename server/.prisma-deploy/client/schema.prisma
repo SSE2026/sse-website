@@ -1,7 +1,7 @@
 // Prisma Schema for Swift Safe Energy Platform - V2.0 B2B
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x", "rhel-openssl-3.0.x"]
 }
 
@@ -15,17 +15,17 @@ datasource db {
 // ============================================
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            String       @id @default(cuid())
+  email         String       @unique
   password      String
   name          String
   avatar        String?
-  role          UserRole  @default(USER)
-  isActive      Boolean   @default(true)
+  role          UserRole     @default(USER)
+  isActive      Boolean      @default(true)
   emailVerified DateTime?
   portalStatus  PortalStatus @default(NONE)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   // Customer ownership (1:1)
   customerId String?   @unique
@@ -162,17 +162,17 @@ enum InquiryType {
 // ============================================
 
 enum PortalStatus {
-  NONE     // 未创建门户账户
-  INVITED  // 已邀请，等待验证
-  ACTIVE   // 活跃，可访问门户
+  NONE // 未创建门户账户
+  INVITED // 已邀请，等待验证
+  ACTIVE // 活跃，可访问门户
   DISABLED // 被禁用
 }
 
 enum InvitationStatus {
-  PENDING   // 等待接受
-  ACCEPTED  // 已接受
-  EXPIRED   // 已过期
-  REVOKED   // 已撤销
+  PENDING // 等待接受
+  ACCEPTED // 已接受
+  EXPIRED // 已过期
+  REVOKED // 已撤销
 }
 
 // ============================================
@@ -227,12 +227,12 @@ model Customer {
   lastActivityAt DateTime?
 
   // User ownership (1:1 reverse relation)
-  user      User?
+  user User?
 
   // Portal invitations
   invitations PortalInvitation[]
-  inquiries  Inquiry[]
-  activities LeadActivity[]
+  inquiries   Inquiry[]
+  activities  LeadActivity[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -692,11 +692,11 @@ model LeadActivity {
 // ============================================
 
 enum DocumentStatus {
-  DRAFT      // 草稿，未上传文件
-  UPLOADING  // 上传中
-  READY      // 文件已上传
-  PUBLISHED  // 已发布
-  ARCHIVED   // 已归档
+  DRAFT // 草稿，未上传文件
+  UPLOADING // 上传中
+  READY // 文件已上传
+  PUBLISHED // 已发布
+  ARCHIVED // 已归档
 }
 
 model Document {
@@ -716,7 +716,7 @@ model Document {
   status DocumentStatus @default(DRAFT)
 
   version  String?
-  language String        @default("en")
+  language String  @default("en")
   pages    Int?
 
   leadRequired Boolean @default(true)
@@ -725,13 +725,13 @@ model Document {
   downloadCount Int @default(0)
 
   // 发布状态
-  published  Boolean    @default(true)
+  published   Boolean   @default(true)
   publishedAt DateTime? // 发布时间
-  archivedAt DateTime?  // 归档时间
+  archivedAt  DateTime? // 归档时间
 
   // 软删除
   deletedAt DateTime?
-  sortOrder Int         @default(0)
+  sortOrder Int       @default(0)
 
   // 关联关系
   products     ProductDocument[]
@@ -896,34 +896,34 @@ model BlogPostTranslation {
 // ============================================
 
 model PortalInvitation {
-  id         String   @id @default(cuid())
-  email      String
+  id    String @id @default(cuid())
+  email String
 
   // 关联的用户 (创建时可能为 null)
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 
   // 目标客户
   customerId String
   customer   Customer @relation(fields: [customerId], references: [id])
 
   // 安全令牌 (存储 hash)
-  tokenHash String   @unique
+  tokenHash String @unique
 
   // 过期时间
   expiresAt DateTime
 
   // 邀请状态
-  status    InvitationStatus @default(PENDING)
+  status InvitationStatus @default(PENDING)
 
   // 邀请人
   invitedById   String?
   invitedByName String?
 
   // 时间戳
-  createdAt  DateTime  @default(now())
-  acceptedAt DateTime?
-  revokedAt DateTime?
+  createdAt     DateTime  @default(now())
+  acceptedAt    DateTime?
+  revokedAt     DateTime?
   revokedReason String?
 
   @@index([email])
@@ -945,36 +945,36 @@ enum MediaType {
 }
 
 model Banner {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
   // Media Type
   mediaType MediaType @default(IMAGE)
 
   // Content - English
-  title       String?
-  subtitle    String?
-  ctaText     String?
+  title    String?
+  subtitle String?
+  ctaText  String?
 
   // Content - Chinese
-  titleZh     String?
-  subtitleZh   String?
-  ctaTextZh   String?
+  titleZh    String?
+  subtitleZh String?
+  ctaTextZh  String?
 
   // Desktop Media
-  image       String?  // Image URL (for IMAGE type)
-  videoUrl    String?  // Video URL (for VIDEO type)
-  posterUrl   String?  // Video poster/thumbnail URL
+  image     String? // Image URL (for IMAGE type)
+  videoUrl  String? // Video URL (for VIDEO type)
+  posterUrl String? // Video poster/thumbnail URL
 
   // Mobile Media
-  mobileImage    String?  // Mobile image URL
-  mobileVideoUrl String?  // Mobile video URL
+  mobileImage    String? // Mobile image URL
+  mobileVideoUrl String? // Mobile video URL
 
   // Navigation
-  link        String?  // CTA link URL
+  link String? // CTA link URL
 
   // Display Settings
-  isActive    Boolean  @default(true)
-  sortOrder   Int      @default(0)
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
 
   // SEO
   seoTitle       String?

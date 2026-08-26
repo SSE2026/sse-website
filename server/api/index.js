@@ -1,15 +1,44 @@
 /**
  * Minimal Vercel Serverless Handler
- * Uses Prisma directly to serve blog/products/banners from Neon database
+ * - Locally: uses Prisma from node_modules
+ * - On Vercel: bypasses @prisma/client stub, requires generated client directly
  */
-const { PrismaClient } = require('@prisma/client');
+const path = require('path');
+
+function findGeneratedClientPath() {
+  // Project-local deploy directory containing the pre-generated client.
+  // Vercel's allow-scripts skips postinstall, so the npm-bundled @prisma/client
+  // is just a stub. We ship the real generated client in .prisma-deploy/client/
+  // so the runtime engine binary + generated index.js are bundled.
+  const candidates = [
+    path.join(__dirname, '.prisma-deploy', 'client'),
+    path.resolve(__dirname, '..', '.prisma-deploy', 'client'),
+    path.join(process.env.LAMBDA_TASK_ROOT || '/var/task', 'node_modules', '.prisma', 'client'),
+    path.resolve(process.cwd(), 'node_modules', '.prisma', 'client'),
+  ];
+  for (const p of candidates) {
+    try {
+      require.resolve(p);
+      return p;
+    } catch (e) { /* next */ }
+  }
+  return null;
+}
+
+const generatedClientPath = findGeneratedClientPath();
+let PrismaClient;
+
+if (generatedClientPath) {
+  const gen = require(path.join(generatedClientPath, 'index.js'));
+  PrismaClient = gen.PrismaClient;
+} else {
+  PrismaClient = require('@prisma/client').PrismaClient;
+}
 
 let prisma = null;
 function getPrisma() {
   if (!prisma) {
-    prisma = new PrismaClient({
-      log: ['error', 'warn'],
-    });
+    prisma = new PrismaClient({ log: ['error', 'warn'] });
   }
   return prisma;
 }
@@ -26,13 +55,11 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Health
   if (url === '/health' || url === '/v1/health' || url === '/api/v1/health') {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
     return;
   }
 
-  // Login
   const isLogin = url.endsWith('/auth/login') || url.endsWith('/login');
   if (req.method === 'POST' && isLogin) {
     try {
@@ -44,12 +71,7 @@ module.exports = async function handler(req, res) {
 
       if (email === 'admin@ssebatt.com' && password === 'SSEadmin2026!') {
         res.status(200).json({
-          user: {
-            id: '906f0e6e-0f4c-474d-96d2-e891c0445551',
-            email: 'admin@ssebatt.com',
-            name: 'Admin',
-            role: 'ADMIN',
-          },
+          user: { id: '906f0e6e-0f4c-474d-96d2-e891c0445551', email: 'admin@ssebatt.com', name: 'Admin', role: 'ADMIN' },
           accessToken: 'mock-token-' + Date.now(),
         });
         return;
@@ -63,7 +85,6 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Blog list
   if (req.method === 'GET' && (url === '/blog' || url === '/v1/blog' || url === '/api/v1/blog')) {
     try {
       const db = getPrisma();
@@ -76,33 +97,19 @@ module.exports = async function handler(req, res) {
         orderBy: { publishedAt: 'desc' },
         take: 50,
       });
-
       const items = posts.map((p) => {
-        const enTrans = p.translations.find((t) => t.locale === 'en') || p.translations[0];
+        const en = p.translations.find((t) => t.locale === 'en') || p.translations[0];
         const catTrans = p.category?.translations?.find((t) => t.locale === 'en') || p.category?.translations?.[0];
         return {
-          id: p.id,
-          slug: p.slug,
-          title: enTrans?.title || p.slug,
-          excerpt: enTrans?.excerpt || p.excerpt,
-          coverImage: p.coverImage,
-          authorName: p.authorName,
-          category: p.category ? {
-            id: p.category.id,
-            slug: p.category.slug,
-            name: catTrans?.name || p.category.slug,
-          } : null,
-          tags: p.tags || [],
-          publishedAt: p.publishedAt,
-          viewCount: p.viewCount || 0,
+          id: p.id, slug: p.slug,
+          title: en?.title || p.slug,
+          excerpt: en?.excerpt || p.excerpt,
+          coverImage: p.coverImage, authorName: p.authorName,
+          category: p.category ? { id: p.category.id, slug: p.category.slug, name: catTrans?.name || p.category.slug } : null,
+          tags: p.tags || [], publishedAt: p.publishedAt, viewCount: p.viewCount || 0,
         };
       });
-
-      res.status(200).json({
-        success: true,
-        items,
-        meta: { page: 1, pageSize: items.length, total: items.length, totalPages: 1 },
-      });
+      res.status(200).json({ success: true, items, meta: { page: 1, pageSize: items.length, total: items.length, totalPages: 1 } });
       return;
     } catch (err) {
       console.error('Blog list error:', err.message);
@@ -111,33 +118,6 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Blog categories
-  if (req.method === 'GET' && (url === '/blog/categories' || url === '/v1/blog/categories' || url === '/api/v1/blog/categories')) {
-    try {
-      const db = getPrisma();
-      const cats = await db.blogCategory.findMany({
-        include: { translations: true },
-        orderBy: { sortOrder: 'asc' },
-      });
-      const data = cats.map((c) => {
-        const trans = c.translations.find((t) => t.locale === 'en') || c.translations[0];
-        return {
-          id: c.id,
-          slug: c.slug,
-          name: trans?.name || c.slug,
-          sortOrder: c.sortOrder,
-        };
-      });
-      res.status(200).json({ success: true, data });
-      return;
-    } catch (err) {
-      console.error('Blog cats error:', err.message);
-      res.status(500).json({ success: false, error: err.message });
-      return;
-    }
-  }
-
-  // Blog detail
   const blogMatch = url.match(/^(\/blog|\/v1\/blog|\/api\/v1\/blog)\/(.+)$/);
   if (req.method === 'GET' && blogMatch && !url.endsWith('/categories')) {
     const slug = blogMatch[2];
@@ -145,34 +125,18 @@ module.exports = async function handler(req, res) {
       const db = getPrisma();
       const post = await db.blogPost.findUnique({
         where: { slug },
-        include: {
-          translations: true,
-          category: { include: { translations: true } },
-        },
+        include: { translations: true, category: { include: { translations: true } } },
       });
-      if (!post) {
-        res.status(404).json({ success: false, message: 'Not found' });
-        return;
-      }
-      const enTrans = post.translations.find((t) => t.locale === 'en') || post.translations[0];
+      if (!post) { res.status(404).json({ success: false, message: 'Not found' }); return; }
+      const en = post.translations.find((t) => t.locale === 'en') || post.translations[0];
       res.status(200).json({
         success: true,
         data: {
-          id: post.id,
-          slug: post.slug,
-          title: enTrans?.title || post.slug,
-          excerpt: enTrans?.excerpt || post.excerpt,
-          content: enTrans?.content || post.content,
-          coverImage: post.coverImage,
-          authorName: post.authorName,
-          category: post.category ? {
-            id: post.category.id,
-            slug: post.category.slug,
-            name: post.category.translations?.find((t) => t.locale === 'en')?.name || post.category.slug,
-          } : null,
-          tags: post.tags || [],
-          publishedAt: post.publishedAt,
-          viewCount: post.viewCount || 0,
+          id: post.id, slug: post.slug, title: en?.title || post.slug,
+          excerpt: en?.excerpt || post.excerpt, content: en?.content || post.content,
+          coverImage: post.coverImage, authorName: post.authorName,
+          category: post.category ? { id: post.category.id, slug: post.category.slug, name: post.category.translations?.find((t) => t.locale === 'en')?.name || post.category.slug } : null,
+          tags: post.tags || [], publishedAt: post.publishedAt, viewCount: post.viewCount || 0,
         },
       });
       return;
@@ -183,7 +147,6 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Products list
   if (req.method === 'GET' && (url === '/products' || url === '/v1/products' || url === '/api/v1/products')) {
     try {
       const db = getPrisma();
@@ -196,27 +159,15 @@ module.exports = async function handler(req, res) {
       const items = products.map((p) => {
         const en = p.translations.find((t) => t.locale === 'en') || p.translations[0];
         return {
-          id: p.id,
-          sku: p.sku,
-          model: p.model,
-          slug: p.slug,
+          id: p.id, sku: p.sku, model: p.model, slug: p.slug,
           name: en?.name || p.model,
           shortDescription: en?.shortDescription || p.shortDescription,
-          energyDensity: p.energyDensity,
-          cycleLife: p.cycleLife,
-          weight: p.weight,
-          nominalVoltage: p.nominalVoltage,
-          nominalCapacity: p.nominalCapacity,
-          dischargeRate: p.dischargeRate,
-          published: p.published,
-          featured: p.featured,
+          energyDensity: p.energyDensity, cycleLife: p.cycleLife, weight: p.weight,
+          nominalVoltage: p.nominalVoltage, nominalCapacity: p.nominalCapacity,
+          dischargeRate: p.dischargeRate, published: p.published, featured: p.featured,
         };
       });
-      res.status(200).json({
-        success: true,
-        items,
-        meta: { page: 1, pageSize: items.length, total: items.length, totalPages: 1 },
-      });
+      res.status(200).json({ success: true, items, meta: { page: 1, pageSize: items.length, total: items.length, totalPages: 1 } });
       return;
     } catch (err) {
       console.error('Products error:', err.message);
@@ -225,39 +176,24 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Product detail
   const prodMatch = url.match(/^(\/products|\/v1\/products|\/api\/v1\/products)\/(.+)$/);
   if (req.method === 'GET' && prodMatch && !url.endsWith('/categories')) {
     const slug = prodMatch[2];
     try {
       const db = getPrisma();
-      const p = await db.product.findUnique({
-        where: { slug },
-        include: { translations: true },
-      });
-      if (!p) {
-        res.status(404).json({ success: false, message: 'Not found' });
-        return;
-      }
+      const p = await db.product.findUnique({ where: { slug }, include: { translations: true } });
+      if (!p) { res.status(404).json({ success: false, message: 'Not found' }); return; }
       const en = p.translations.find((t) => t.locale === 'en') || p.translations[0];
       res.status(200).json({
         success: true,
         data: {
-          id: p.id,
-          sku: p.sku,
-          model: p.model,
-          slug: p.slug,
+          id: p.id, sku: p.sku, model: p.model, slug: p.slug,
           name: en?.name || p.model,
           shortDescription: en?.shortDescription || p.shortDescription,
           description: en?.description || p.description,
-          energyDensity: p.energyDensity,
-          cycleLife: p.cycleLife,
-          weight: p.weight,
-          nominalVoltage: p.nominalVoltage,
-          nominalCapacity: p.nominalCapacity,
-          dischargeRate: p.dischargeRate,
-          published: p.published,
-          featured: p.featured,
+          energyDensity: p.energyDensity, cycleLife: p.cycleLife, weight: p.weight,
+          nominalVoltage: p.nominalVoltage, nominalCapacity: p.nominalCapacity,
+          dischargeRate: p.dischargeRate, published: p.published, featured: p.featured,
         },
       });
       return;
@@ -268,11 +204,9 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Banners
   if (req.method === 'GET' && (url === '/banners' || url === '/v1/banners' || url === '/api/v1/banners')) {
     try {
       const db = getPrisma();
-      // Use raw SQL to avoid schema/DB column mismatches
       const banners = await db.$queryRaw`
         SELECT id, title, subtitle, "ctaText", "titleZh", "subtitleZh", "ctaTextZh",
                image, "mobileImage", link, "isActive", "sortOrder",
@@ -281,10 +215,7 @@ module.exports = async function handler(req, res) {
         WHERE "isActive" = true
         ORDER BY "sortOrder" ASC
       `;
-      res.status(200).json({
-        success: true,
-        data: banners,
-      });
+      res.status(200).json({ success: true, data: banners });
       return;
     } catch (err) {
       console.error('Banners error:', err.message);
@@ -293,6 +224,5 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Default 404
   res.status(404).json({ statusCode: 404, message: 'Not Found', path: url });
 };
