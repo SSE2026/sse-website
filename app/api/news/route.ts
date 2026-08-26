@@ -44,10 +44,13 @@ export async function GET(request: NextRequest) {
       }
     );
 
+    console.log('[news-api] Backend response:', response.status, response.statusText);
+
     if (!response.ok) {
-      console.error('News API error:', response.status);
+      const errBody = await response.text().catch(() => '');
+      console.error('[news-api] Backend error body:', errBody.substring(0, 500));
       return NextResponse.json(
-        { success: false, error: `Backend returned ${response.status}` },
+        { success: false, error: `Backend returned ${response.status}: ${errBody.substring(0, 200)}` },
         { status: response.status }
       );
     }
