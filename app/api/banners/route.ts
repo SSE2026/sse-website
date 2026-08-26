@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/banners`,
+      `${API_BASE_URL}/v1/banners`,
       {
         headers: {
           'Content-Type': 'application/json',

@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
     if (featured !== null) params.set('featured', featured);
 
     const response = await fetch(
-      `${API_BASE_URL}/products?${params.toString()}`,
+      `${API_BASE_URL}/v1/products?${params.toString()}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -98,13 +98,19 @@ export async function GET(request: NextRequest) {
 
     if (!response.ok) {
       console.error('Products API error:', response.status);
-      return NextResponse.json({ success: true, items: MOCK_PRODUCTS });
+      return NextResponse.json(
+        { success: false, error: `Backend returned ${response.status}` },
+        { status: response.status }
+      );
     }
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error('Products API error:', error);
-    return NextResponse.json({ success: true, items: MOCK_PRODUCTS });
+    return NextResponse.json(
+      { success: false, error: 'Backend unreachable' },
+      { status: 502 }
+    );
   }
 }
