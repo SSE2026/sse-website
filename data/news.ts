@@ -1,12 +1,13 @@
 // News data from the old website (真实新闻内容)
+// Click on any card jumps directly to the original article on ssebatt.com
 export interface NewsItem {
-  id: number
-  slug: string
-  date: string
-  category: "COMPANY" | "TECHNOLOGY" | "PRODUCT" | "INDUSTRY"
-  title: string
-  image: string
-  excerpt?: string
+  id: number;
+  slug: string;
+  date: string;
+  category: "COMPANY" | "TECHNOLOGY" | "PRODUCT" | "INDUSTRY";
+  title: string;
+  image: string;
+  originalUrl: string; // Direct link to the original article page on ssebatt.com
 }
 
 export const newsItems: NewsItem[] = [
@@ -17,6 +18,7 @@ export const newsItems: NewsItem[] = [
     category: "TECHNOLOGY",
     title: '【深安前沿】让AI"懂电化学"，物理增强AI将航空电池电解液研发提速近4倍',
     image: "/images/news/ai-electrochemistry.jpg",
+    originalUrl: "http://www.ssebatt.com/page123?article_id=22",
   },
   {
     id: 21,
@@ -25,6 +27,7 @@ export const newsItems: NewsItem[] = [
     category: "COMPANY",
     title: '赋能"空天地海"，迈向产业化交付新阶段',
     image: "/images/news/industrialization.jpg",
+    originalUrl: "http://www.ssebatt.com/page123?article_id=21",
   },
   {
     id: 20,
@@ -33,6 +36,7 @@ export const newsItems: NewsItem[] = [
     category: "INDUSTRY",
     title: "【行业观察】政策驱动低空物流产业化，高能量密度电池解锁无人机载重与航程新边界",
     image: "/images/news/low-altitude-logistics.jpg",
+    originalUrl: "http://www.ssebatt.com/page123?article_id=20",
   },
   {
     id: 19,
@@ -41,6 +45,7 @@ export const newsItems: NewsItem[] = [
     category: "PRODUCT",
     title: "【重磅发布】460Wh/kg 无负极电池登场！深安锂能云驰 460-X 解锁极限动力新边界",
     image: "/images/news/yunchi-460x.jpg",
+    originalUrl: "http://www.ssebatt.com/page123?article_id=19",
   },
   {
     id: 18,
@@ -49,6 +54,7 @@ export const newsItems: NewsItem[] = [
     category: "COMPANY",
     title: "战略携手 共筑新能｜深安锂能与柳工签署合作协议，共推工程机械固态电池系统关键技术研发与产业化",
     image: "/images/news/liugong-partnership.jpg",
+    originalUrl: "http://www.ssebatt.com/page123?article_id=18",
   },
   {
     id: 17,
@@ -57,6 +63,7 @@ export const newsItems: NewsItem[] = [
     category: "INDUSTRY",
     title: "【行业观察】万亿低空 × 万亿具身：下一代产业的天花板，其实卡在电池里",
     image: "/images/news/trillion-low-altitude.jpg",
+    originalUrl: "http://www.ssebatt.com/page123?article_id=17",
   },
   {
     id: 16,
@@ -65,6 +72,7 @@ export const newsItems: NewsItem[] = [
     category: "COMPANY",
     title: "深安锂能完成数千万天使轮融资 加快高比能超充固态电池产业化",
     image: "/images/news/angel-funding.jpg",
+    originalUrl: "http://www.ssebatt.com/page123?article_id=16",
   },
   {
     id: 15,
@@ -73,11 +81,12 @@ export const newsItems: NewsItem[] = [
     category: "TECHNOLOGY",
     title: "「深安锂能」携下一代超充固态电池技术亮相CIBF2025，创始人杨晓光教授发表演讲",
     image: "/images/news/cibf2025.jpg",
+    originalUrl: "http://www.ssebatt.com/page123?article_id=15",
   },
-]
+];
 
-export const categories = ["ALL", "COMPANY", "TECHNOLOGY", "PRODUCT", "INDUSTRY"] as const
-export type Category = (typeof categories)[number]
+export const categories = ["ALL", "COMPANY", "TECHNOLOGY", "PRODUCT", "INDUSTRY"] as const;
+export type Category = (typeof categories)[number];
 
 export const getCategoryLabel = (category: Category, locale: string) => {
   const labels: Record<Category, { en: string; zh: string }> = {
@@ -86,11 +95,15 @@ export const getCategoryLabel = (category: Category, locale: string) => {
     TECHNOLOGY: { en: "Technology", zh: "技术前沿" },
     PRODUCT: { en: "Product", zh: "产品发布" },
     INDUSTRY: { en: "Industry", zh: "行业观察" },
-  }
-  return labels[category][locale === "zh" ? "zh" : "en"]
-}
+  };
+  return labels[category][locale === "zh" ? "zh" : "en"];
+};
 
 export const getNewsByCategory = (category: Category) => {
-  if (category === "ALL") return newsItems
-  return newsItems.filter((item) => item.category === category)
-}
+  if (category === "ALL") return newsItems;
+  return newsItems.filter((item) => item.category === category);
+};
+
+export const getNewsBySlug = (slug: string) => {
+  return newsItems.find((item) => item.slug === slug);
+};
