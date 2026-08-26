@@ -272,10 +272,15 @@ module.exports = async function handler(req, res) {
   if (req.method === 'GET' && (url === '/banners' || url === '/v1/banners' || url === '/api/v1/banners')) {
     try {
       const db = getPrisma();
-      const banners = await db.banner.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' },
-      });
+      // Use raw SQL to avoid schema/DB column mismatches
+      const banners = await db.$queryRaw`
+        SELECT id, title, subtitle, "ctaText", "titleZh", "subtitleZh", "ctaTextZh",
+               image, "mobileImage", link, "isActive", "sortOrder",
+               "seoTitle", "seoDescription", "createdAt", "updatedAt"
+        FROM banners
+        WHERE "isActive" = true
+        ORDER BY "sortOrder" ASC
+      `;
       res.status(200).json({
         success: true,
         data: banners,
