@@ -44,7 +44,7 @@ function AnimatedStat({ value, prefix = "", suffix = "", duration = 2 }: { value
   }, [absValue, duration]);
 
   return (
-    <div ref={ref} className="text-3xl md:text-4xl font-bold text-white">
+    <div ref={ref} className="text-4xl md:text-5xl font-bold text-white">
       {prefix}{value < 0 ? '-' : ''}{count}{suffix}
     </div>
   );
@@ -52,18 +52,58 @@ function AnimatedStat({ value, prefix = "", suffix = "", duration = 2 }: { value
 
 export function CaseHero() {
   const t = useTranslations("casesPage.hero");
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // Ensure video plays automatically (muted autoplay is allowed in all browsers)
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
 
   return (
-    <section className="relative w-full min-h-screen bg-[#050505] text-[#F5F5F5] pt-28 pb-20 px-6 md:px-16 overflow-hidden flex items-center">
-      {/* Background Grid */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: `linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)`,
-        backgroundSize: '60px 60px'
-      }} />
+    <section className="relative w-full min-h-screen bg-black text-[#F5F5F5] overflow-hidden flex items-center justify-center">
+      {/* Background Video - Full bleed */}
+      <video
+        ref={videoRef}
+        src="/videos/cases-hero.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      />
 
-      <div className="max-w-7xl mx-auto w-full">
-        {/* Top Section - Badge, Title */}
-        <div className="text-center mb-16">
+      {/* Dark gradient overlay on the whole hero for legibility */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 35%, rgba(0,0,0,0.15) 65%, rgba(0,0,0,0.7) 100%)",
+        }}
+      />
+
+      {/* Fan-shaped pure black overlay in the middle band of the hero */}
+      <div className="absolute inset-0 z-[1] pointer-events-none flex items-center justify-center">
+        <svg
+          viewBox="0 0 1200 300"
+          preserveAspectRatio="none"
+          className="w-full h-[42%] min-h-[260px]"
+          aria-hidden="true"
+        >
+          {/* Fan/sector shape: left point -> top curve -> right point -> bottom curve -> close.
+              Wider on the right edge, narrower on the left edge = classic fan/sector silhouette. */}
+          <path
+            d="M 60,150 Q 600,30 1180,150 Q 600,270 60,150 Z"
+            fill="#000000"
+          />
+        </svg>
+      </div>
+
+      {/* Content layer */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-16 pt-32 pb-20 flex flex-col min-h-screen">
+        {/* TOP TEXT BLOCK — sits above the fan */}
+        <div className="text-center">
           {/* Badge */}
           <motion.span
             initial={{ opacity: 0, y: 20 }}
@@ -99,30 +139,33 @@ export function CaseHero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-base text-[#8A8A8A] max-w-2xl mx-auto"
+            className="text-base text-[#C5C5C5] max-w-2xl mx-auto"
           >
             {t("subtitle")}
           </motion.p>
         </div>
 
-        {/* Key Stats */}
+        {/* Spacer pushes the bottom stats down so the fan sits between the two text blocks */}
+        <div className="flex-1 min-h-[80px]" />
+
+        {/* BOTTOM TEXT BLOCK — sits below the fan */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="mt-16 pt-8 border-t border-white/10 grid grid-cols-3 gap-8 text-center"
+          className="pt-8 border-t border-white/15 grid grid-cols-3 gap-8 text-center"
         >
           <div>
             <AnimatedStat value={-40} suffix="°C" duration={1.5} />
-            <p className="text-xs text-[#8A8A8A] mt-1">{t("stats.coldResilient")}</p>
+            <p className="text-xs text-[#C5C5C5] mt-2">{t("stats.coldResilient")}</p>
           </div>
           <div>
             <AnimatedStat value={150} suffix=" kg" duration={1.5} />
-            <p className="text-xs text-[#8A8A8A] mt-1">{t("stats.maxPayload")}</p>
+            <p className="text-xs text-[#C5C5C5] mt-2">{t("stats.maxPayload")}</p>
           </div>
           <div>
             <AnimatedStat value={63} prefix="+" suffix="%" duration={1.5} />
-            <p className="text-xs text-[#8A8A8A] mt-1">{t("stats.flightTime")}</p>
+            <p className="text-xs text-[#C5C5C5] mt-2">{t("stats.flightTime")}</p>
           </div>
         </motion.div>
       </div>
