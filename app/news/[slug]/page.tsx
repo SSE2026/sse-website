@@ -66,8 +66,7 @@ export default function NewsDetailClient() {
         src={`/api/news/article?url=${encodeURIComponent(item.originalUrl)}`}
         title={item.title}
         className="w-full border-0 block"
-        style={{ height: `${iframeHeight}px` }}
-        loading="lazy"
+        style={{ height: `${iframeHeight}px`, display: 'block' }}
         referrerPolicy="no-referrer-when-downgrade"
       />
     </div>

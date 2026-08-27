@@ -159,7 +159,7 @@ function HeroContent({
     <div className="absolute inset-0 z-20 pointer-events-none">
       <div className="absolute inset-x-0 bottom-0 flex items-end md:justify-start gap-3 md:gap-5 px-6 md:pl-[20%] md:pr-[3%] pb-6 md:pb-10 pointer-events-auto">
         {/* Text Content - Left side */}
-        <div className="max-w-[520px] flex-shrink-0">
+        <div className="max-w-[460px] flex-shrink-0">
           {/* Eyebrow */}
           <span className="text-sm font-mono tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/20 px-3.5 py-1.5 rounded-full inline-block mb-5">
             {slide.eyebrow}
@@ -167,7 +167,7 @@ function HeroContent({
 
           {/* Title */}
           <h1
-            className="text-[32px] md:text-[48px] lg:text-[56px] font-extrabold leading-[1.1] mb-4"
+            className="text-[24px] md:text-[36px] lg:text-[42px] font-extrabold leading-[1.1] mb-4"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
             <span className="text-white">{slide.title.split(' ')[0]} </span>
@@ -176,7 +176,7 @@ function HeroContent({
 
           {/* Description */}
           <p
-            className="text-[14px] md:text-[16px] text-gray-300 leading-relaxed mb-6 max-w-[480px]"
+            className="text-[12px] md:text-[13px] text-gray-300 leading-relaxed mb-6 max-w-[480px]"
             style={{ fontFamily: "var(--font-inter, sans-serif)" }}
           >
             {slide.description}
@@ -184,7 +184,7 @@ function HeroContent({
 
           {/* CTA Button */}
           <Link href={slide.ctaLink}>
-            <button className="inline-flex items-center gap-2 px-7 md:px-9 py-3.5 bg-white text-[#0a0a0a] font-semibold text-[16px] rounded-lg hover:bg-gray-200 transition-all cursor-pointer">
+            <button className="inline-flex items-center gap-2 px-7 md:px-9 py-3.5 bg-white text-[#0a0a0a] font-semibold text-[14px] rounded-lg hover:bg-gray-200 transition-all cursor-pointer">
               {slide.ctaText}
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -194,11 +194,11 @@ function HeroContent({
           <div className="mt-10 flex gap-10">
             {slide.stats.map((stat, index) => (
               <div key={index}>
-                <div className="text-3xl font-bold text-white font-mono">
+                <div className="text-2xl font-bold text-white font-mono">
                   {stat.value}
                   {stat.unit && <span className="text-sm text-blue-400 ml-1">{stat.unit}</span>}
                 </div>
-                <div className="text-xs text-gray-400 mt-1">{stat.label}</div>
+                <div className="text-[10px] text-gray-400 mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
