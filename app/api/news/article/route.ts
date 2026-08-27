@@ -6,13 +6,22 @@ import { NextRequest } from "next/server";
 // and stripping those headers, the iframe can render.
 
 // Hide the old site's chrome inside the iframe so users only see one header (ours).
+// Also unlock the body/html height — the upstream page uses absolute-positioned layout
+// with body { height: 100% } which clips article content to the iframe box height.
 const HIDE_OLD_CHROME_CSS = `
-  html, body { background: #ffffff !important; }
+  html, body {
+    background: #ffffff !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
   #site_footer, #footer_content { display: none !important; }
   .wp-new_navigation_content, .nav1.menu_hs9, .navigation { display: none !important; }
   header, .site-header, .topbar { display: none !important; }
-  body { padding-top: 0 !important; margin-top: 0 !important; }
-  #scroll_container, #canvas { margin-top: 0 !important; padding-top: 0 !important; }
+  #scroll_container, #canvas { margin-top: 0 !important; padding-top: 0 !important; height: auto !important; }
+  /* Ensure iframe content scrolls inside the iframe box */
+  body { overflow-y: auto !important; }
 `;
 
 function isAllowedUrl(url: string): boolean {

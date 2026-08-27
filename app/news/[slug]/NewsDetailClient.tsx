@@ -29,12 +29,14 @@ export function NewsDetailClient({ item }: NewsDetailClientProps) {
       {/* Spacer for fixed header (72px) */}
       <div className="h-[72px] flex-shrink-0" />
 
-      {/* Iframe with original article (proxied via /api/news/article to bypass X-Frame-Options) */}
-      <div className="flex-1 w-full bg-[#F7F8FA]">
+      {/* Iframe with original article (proxied via /api/news/article to bypass X-Frame-Options).
+          Iframe auto-sizes to article content height; the parent page scrolls. */}
+      <div className="w-full bg-[#F7F8FA]">
         <iframe
           src={`/api/news/article?url=${encodeURIComponent(item.originalUrl)}`}
           title={item.title}
-          className="w-full h-full min-h-[calc(100vh-72px)] border-0"
+          className="w-full border-0"
+          style={{ height: '12000px', minHeight: '100vh' }}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         />
