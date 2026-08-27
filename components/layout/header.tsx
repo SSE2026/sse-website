@@ -98,13 +98,13 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
               </motion.div>
               <div className="hidden sm:block">
                 <p className={cn(
-                  "font-semibold text-sm leading-tight transition-colors duration-300",
+                  "font-semibold text-base leading-tight transition-colors duration-300",
                   forceLightText && !isScrolled ? "text-white group-hover:text-[#60A5FA]" : "text-[#0A0A0A] group-hover:text-[#2563EB]"
                 )}>
                   {locale === "zh" ? "深安锂能" : "Swift Safe Energy"}
                 </p>
                 <p className={cn(
-                  "text-[10px] transition-colors duration-300",
+                  "text-xs transition-colors duration-300",
                   forceLightText && !isScrolled ? "text-[#52525B]" : "text-[#A1A1AA]"
                 )}>
                   {locale === "zh" ? "高比能电池专家" : "High Energy Density Battery Expert"}
@@ -124,7 +124,7 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                   <Link
                     href={item.href}
                     className={cn(
-                      "relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200",
+                      "relative px-4 py-2 text-base font-medium rounded-md transition-all duration-200",
                       "hover:bg-[#F4F4F5]",
                       activeLink === item.key
                         ? "text-[#0A0A0A] bg-[#F4F4F5]"
@@ -146,7 +146,7 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => onLocaleChange(locale === "en" ? "zh" : "en")}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-2 text-base text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
               >
                 <Globe className="w-4 h-4" />
                 <span className="uppercase font-medium hidden sm:inline">{locale}</span>
@@ -158,7 +158,7 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className={cn(
-                    "px-5 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 cursor-pointer",
+                    "px-5 py-2.5 text-base font-semibold rounded-md transition-all duration-200 cursor-pointer",
                     forceLightText && !isScrolled
                       ? "bg-white text-[#0A0A0A] hover:bg-[#F4F4F5]"
                       : "bg-[#2563EB] text-white hover:bg-[#1D4ED8]"
