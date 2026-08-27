@@ -219,10 +219,18 @@ export default function ProductDetailPage() {
               }}
             >
               {/* Plain text on left - no card, no animation (instant render) */}
-              <div className="flex flex-col gap-3 max-w-[420px]">
+              <div className="flex flex-col gap-5 max-w-[480px]">
+                {/* Eyebrow */}
+                <span
+                  className="text-xs font-mono tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full inline-block w-fit"
+                  style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}
+                >
+                  {locale === "zh" ? "固态电池技术" : "Solid-State Battery Tech"}
+                </span>
+
                 {/* Title */}
                 <h1
-                  className="text-xl md:text-2xl lg:text-3xl font-extrabold leading-[1.15]"
+                  className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-[1.1]"
                   style={{
                     fontFamily: "var(--font-space-grotesk)",
                     color: "#FFFFFF",
@@ -248,31 +256,23 @@ export default function ProductDetailPage() {
 
                 {/* Description */}
                 <p
-                  className="text-xs md:text-sm leading-relaxed"
+                  className="text-sm md:text-base leading-relaxed"
                   style={{
                     color: "rgba(255,255,255,0.92)",
                     textShadow: "0 1px 8px rgba(0,0,0,0.6)",
                   }}
                 >
-                  {locale === "zh" ? (
-                    <>专为无人机、具身智能、深海探测设备打造边界动力方案</>
-                  ) : (
-                    <>
-                      Pushing Energy Limits. Redefining Electric Boundaries.
-                      <br />
-                      Ultimate Power Solutions for Drones, Embodied AI,
-                      <br />
-                      and Deep-Sea Exploration.
-                    </>
-                  )}
+                  {locale === "zh"
+                    ? `专为无人机、具身智能、深海探测设备打造边界动力方案`
+                    : `Boundary power solutions for UAVs, embodied AI, and deep-sea exploration devices`}
                 </p>
 
                 {/* CTA Button */}
                 <div>
                   <Link href="/contact">
-                    <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#0a0a0a] font-semibold text-xs rounded-lg hover:bg-gray-200 transition-all shadow-lg">
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#0a0a0a] font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all shadow-lg">
                       {locale === "zh" ? "即刻咨询" : "Contact Us"}
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </Link>
                 </div>
