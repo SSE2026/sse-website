@@ -61,7 +61,7 @@ export function CaseHero() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-screen bg-black text-[#F5F5F5] overflow-hidden flex items-end justify-center">
+    <section className="relative w-full min-h-screen bg-black text-[#F5F5F5] overflow-hidden flex flex-col items-stretch justify-end">
       {/* Background Video - Full bleed */}
       <video
         ref={videoRef}
@@ -82,12 +82,12 @@ export function CaseHero() {
         }}
       />
 
-      {/* Bottom stats — positioned closer to the bottom edge */}
+      {/* Bottom stats — anchored to the very bottom of the viewport */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-16 pb-24 md:pb-32 pt-8 border-t border-white/15 grid grid-cols-3 gap-8 text-center"
+        className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-16 pb-6 md:pb-8 pt-8 border-t border-white/15 grid grid-cols-3 gap-8 text-center mt-auto"
       >
         <div>
           <AnimatedStat value={-40} suffix="°C" duration={1.5} />
