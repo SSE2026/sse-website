@@ -7,7 +7,6 @@ import { Footer } from "@/components/layout/footer";
 import { CaseHero } from "@/components/cases/CaseHero";
 import { CaseSection } from "@/components/cases/CaseSection";
 import { EngineeringProcess } from "@/components/cases/EngineeringProcess";
-import { FinalCTA } from "@/components/cases/FinalCTA";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
@@ -93,9 +92,6 @@ function CasesPageContent({ translations }: { translations: CasesPageTranslation
 
       {/* Engineering Process */}
       <EngineeringProcess />
-
-      {/* Final CTA */}
-      <FinalCTA />
     </main>
   );
 }
