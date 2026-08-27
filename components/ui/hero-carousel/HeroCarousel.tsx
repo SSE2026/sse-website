@@ -136,7 +136,7 @@ function HeroSlideVideo({
           ref={videoRef}
           src={videoSrc}
           poster={slide.posterUrl}
-          className="absolute bottom-0 right-0 w-auto h-[72%] max-w-[58%] object-contain"
+          className="absolute bottom-0 right-0 w-auto h-[85%] max-w-[68%] object-contain"
           muted
           playsInline
           loop={slide.loop}
