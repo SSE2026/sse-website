@@ -28,6 +28,10 @@ const HIDE_OLD_CHROME_CSS = `
   #canvas > div[id^="layer"].full_column { display: none !important; }
   /* Old nav menu block nested inside the banner — also hide. */
   .full_content { display: none !important; }
+  /* Previous/Next article links at the bottom of the article — old-site's
+     nav widget, irrelevant inside our iframe (and would navigate away to
+     the old site if clicked). */
+  .artview_prev_next { display: none !important; }
   /* The old site's parallax background layer — it inflates to 80,000+px and
      inflates scrollHeight, making the iframe huge. Force it to 0. */
   #scroll_container_bg { display: none !important; height: 0 !important; min-height: 0 !important; max-height: 0 !important; }
