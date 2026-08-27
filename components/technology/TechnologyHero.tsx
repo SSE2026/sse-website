@@ -219,7 +219,7 @@ export function TechnologyHero({ hero }: TechnologyHeroProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="relative z-10 w-full max-w-6xl mx-auto px-6 pb-4"
+        className="relative z-10 w-full max-w-6xl mx-auto px-6 pb-20"
       >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/10 text-center">
           <div>
