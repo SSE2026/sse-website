@@ -26,7 +26,8 @@ scripts/
 # Build artifacts
 .next/
 .turbo/
-dist/
+# dist/ is REQUIRED — Vercel must ship the NestJS webpack bundle
+# produced by `npm run build:vercel` to dist/api/index.js
 
 # Misc
 .DS_Store

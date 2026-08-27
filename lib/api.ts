@@ -27,7 +27,7 @@ export async function apiClient<T = any>(
     (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${getApiUrl()}/api/v1${endpoint}`, {
+  const res = await fetch(`${getApiUrl()}/v1${endpoint}`, {
     ...fetchOptions,
     headers,
   });

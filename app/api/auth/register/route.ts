@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
@@ -51,7 +51,7 @@ export async function PUT() {
       );
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/bootstrap-admin`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/bootstrap-admin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/admin/blog?${params.toString()}`,
+      `${API_BASE_URL}/v1/admin/blog?${params.toString()}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const response = await fetch(`${API_BASE_URL}/admin/blog`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/blog`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

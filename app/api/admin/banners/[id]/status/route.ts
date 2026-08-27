@@ -22,7 +22,7 @@ export async function PATCH(
   const { id } = await params;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/admin/banners/${id}/status`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners/${id}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

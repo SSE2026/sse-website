@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${API_BASE_URL}/admin/banners/upload/confirm`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners/upload/confirm`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

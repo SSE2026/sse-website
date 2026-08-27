@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/admin/banners`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const response = await fetch(`${API_BASE_URL}/admin/banners`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

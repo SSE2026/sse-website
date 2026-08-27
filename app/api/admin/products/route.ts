@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     if (featured !== null && featured !== '') params.set('featured', featured);
 
     const response = await fetch(
-      `${API_BASE_URL}/admin/products?${params.toString()}`,
+      `${API_BASE_URL}/v1/admin/products?${params.toString()}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const response = await fetch(`${API_BASE_URL}/admin/products`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/products`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

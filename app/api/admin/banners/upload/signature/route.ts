@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/admin/banners/upload/signature?type=${type}`,
+      `${API_BASE_URL}/v1/admin/banners/upload/signature?type=${type}`,
       {
         headers: {
           'Authorization': `Bearer ${accessToken}`,

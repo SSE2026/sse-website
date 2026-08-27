@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     const backendFormData = new FormData();
     backendFormData.append('file', file);
 
-    const response = await fetch(`${API_BASE_URL}/admin/banners/upload`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners/upload`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,

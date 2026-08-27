@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/admin/blog/categories?locale=${locale}`,
+      `${API_BASE_URL}/v1/admin/blog/categories?locale=${locale}`,
       {
         headers: {
           'Content-Type': 'application/json',

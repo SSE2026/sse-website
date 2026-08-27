@@ -22,7 +22,7 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/admin/banners/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,
@@ -88,7 +88,7 @@ export async function PATCH(
   try {
     const body = await request.json();
 
-    const response = await fetch(`${API_BASE_URL}/admin/banners/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export async function DELETE(
   const { id } = await params;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/admin/banners/${id}/delete`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners/${id}/delete`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

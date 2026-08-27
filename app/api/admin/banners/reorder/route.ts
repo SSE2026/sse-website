@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${API_BASE_URL}/admin/banners/reorder`, {
+    const response = await fetch(`${API_BASE_URL}/v1/admin/banners/reorder`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
