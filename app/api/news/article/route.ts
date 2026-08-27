@@ -21,6 +21,16 @@ const HIDE_OLD_CHROME_CSS = `
   #site_footer, #footer_content { display: none !important; }
   .wp-new_navigation_content, .nav1.menu_hs9, .navigation { display: none !important; }
   header, .site-header, .topbar { display: none !important; }
+  /* Old site's top banner (light-blue bg image with logo + nav). It's the first
+     child of #canvas — a div.full_column with a layerXXXX id. Article content
+     uses .cstlayer so this rule doesn't touch it. */
+  #canvas > .full_column,
+  #canvas > div[id^="layer"].full_column { display: none !important; }
+  /* Old nav menu block nested inside the banner — also hide. */
+  .full_content { display: none !important; }
+  /* The old site's parallax background layer — it inflates to 80,000+px and
+     inflates scrollHeight, making the iframe huge. Force it to 0. */
+  #scroll_container_bg { display: none !important; height: 0 !important; min-height: 0 !important; max-height: 0 !important; }
   #scroll_container, #canvas { margin-top: 0 !important; padding-top: 0 !important; height: auto !important; max-height: none !important; }
 `;
 
@@ -46,19 +56,63 @@ const HIDE_OLD_CHROME_SCRIPT = `
       BODY.style.overflow = 'visible';
       var sc = document.getElementById('scroll_container');
       if (sc) { sc.style.height='auto'; sc.style.minHeight='12000px'; sc.style.maxHeight='none'; }
-      var cv = document.getElementById('canvas');
-      if (cv) { cv.style.height='auto'; cv.style.minHeight='12000px'; cv.style.maxHeight='none'; }
+      // Reset the parallax background layer that the old site inflates to ~80,000px
+      // (it follows viewport scroll for visual effect). Match it to canvas height.
+      var bg = document.getElementById('scroll_container_bg');
+      if (bg && canvas) { bg.style.height = canvas.style.height; }
+      var canvas = document.getElementById('canvas');
+      if (canvas) {
+        // Auto-size canvas to fit the article layer (the last .cstlayer inside it),
+        // so the iframe doesn't have 30,000+px of empty padding at the bottom.
+        var layers = canvas.querySelectorAll(':scope > .cstlayer');
+        var maxBottom = 0;
+        for (var i = 0; i < layers.length; i++) {
+          var top = parseFloat(layers[i].style.top) || 0;
+          var h = layers[i].offsetHeight || 0;
+          if (top + h > maxBottom) maxBottom = top + h;
+        }
+        if (maxBottom > 0) {
+          canvas.style.height = (maxBottom + 60) + 'px';
+          canvas.style.minHeight = (maxBottom + 60) + 'px';
+        } else {
+          canvas.style.height = 'auto';
+          canvas.style.minHeight = '12000px';
+        }
+        canvas.style.maxHeight = 'none';
+        // Lift the article up to fill the space the old top banner occupied
+        // (the banner is hidden but the article was positioned at top: 410px).
+        for (var j = 0; j < layers.length; j++) {
+          var t = parseFloat(layers[j].style.top) || 0;
+          if (t >= 200 && t <= 800) {
+            layers[j].style.top = '0px';
+          }
+        }
+      }
     } catch(e){}
   }
   // Post current document height to parent so it can resize the iframe to match.
-  function postHeight(){
+// We use body.scrollHeight (not html.scrollHeight) because the old site's parallax
+// JS inflates html.scrollHeight to 80,000+px even when nothing extends past the body.
+// Also clamp to actual visible content via the canvas (article layer's max).
+function postHeight(){
     try {
-      var h = Math.max(
-        document.body ? document.body.scrollHeight : 0,
-        document.documentElement ? document.documentElement.scrollHeight : 0,
-        document.body ? document.body.offsetHeight : 0,
-        document.documentElement ? document.documentElement.offsetHeight : 0
-      );
+      var canvas = document.getElementById('canvas');
+      var body = document.body;
+      var h = body ? body.scrollHeight : 0;
+      // If we can find the canvas, prefer its offsetHeight + top (article's actual size).
+      if (canvas) {
+        var layers = canvas.querySelectorAll(':scope > .cstlayer');
+        var maxBottom = 0;
+        for (var i = 0; i < layers.length; i++) {
+          var top = parseFloat(layers[i].style.top) || 0;
+          var lh = layers[i].offsetHeight || 0;
+          if (top + lh > maxBottom) maxBottom = top + lh;
+        }
+        if (maxBottom > 0) {
+          // Use the larger of canvas height and actual article bottom.
+          h = Math.max(canvas.offsetHeight, maxBottom + 60);
+        }
+      }
       // 32px buffer so the bottom border of the article isn't clipped.
       parent.postMessage({ type: 'sse-article-height', height: h + 32 }, '*');
     } catch(e){}
@@ -68,14 +122,18 @@ const HIDE_OLD_CHROME_SCRIPT = `
   if (document.readyState === 'complete' || document.readyState === 'interactive') tick();
   else document.addEventListener('DOMContentLoaded', tick);
   window.addEventListener('load', tick);
-  // Re-apply every 250ms for first 8s to defeat any post-load JS that resets height.
+  // Re-apply every 500ms for first 15s to defeat post-load height-resets.
   var count = 0;
-  var iv = setInterval(function(){ tick(); if (++count >= 32) clearInterval(iv); }, 250);
+  var iv = setInterval(function(){ tick(); if (++count >= 30) clearInterval(iv); }, 500);
+  // Persistent observer: re-fix heights whenever the old site's JS mutates them.
+  var obs = new MutationObserver(function(){ tick(); });
+  obs.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['style', 'class'] });
   // Re-post on resize and after images load (heights can change then).
   window.addEventListener('resize', postHeight);
   window.addEventListener('load', function(){
     setTimeout(postHeight, 500);
     setTimeout(postHeight, 1500);
+    setTimeout(postHeight, 3000);
   });
 })();
 </script>
