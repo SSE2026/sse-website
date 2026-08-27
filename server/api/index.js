@@ -85,8 +85,52 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  // Helper: pick a translation matching the requested locale
+  function pickTranslation(translations, locale) {
+    if (!translations || translations.length === 0) return null;
+    if (locale) {
+      const exact = translations.find((t) => t.locale === locale);
+      if (exact) return exact;
+      // zh-CN should also match locale=zh
+      const shortLocale = locale.split('-')[0];
+      if (shortLocale !== locale) {
+        const partial = translations.find((t) => t.locale === shortLocale);
+        if (partial) return partial;
+      }
+    }
+    return translations.find((t) => t.locale === 'en') || translations[0];
+  }
+
+  // Helper: convert simple HTML content to plain text with paragraph breaks
+  // so the frontend's markdown-like renderer can display it correctly
+  function htmlToPlain(html) {
+    if (!html) return '';
+    return String(html)
+      // Normalize line endings
+      .replace(/\r\n?/g, '\n')
+      // Convert <br> to newline
+      .replace(/<br\s*\/?>/gi, '\n')
+      // Convert </p><p> boundaries to double newlines (paragraph break)
+      .replace(/<\/p>\s*<p[^>]*>/gi, '\n\n')
+      // Strip remaining <p> and </p> tags
+      .replace(/<\/?p[^>]*>/gi, '\n\n')
+      // Strip any other HTML tags
+      .replace(/<[^>]+>/g, '')
+      // Decode common HTML entities
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      // Collapse runs of more than two newlines
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
   if (req.method === 'GET' && (url === '/blog' || url === '/v1/blog' || url === '/api/v1/blog')) {
     try {
+      const locale = (req.query?.locale || (req.url && new URL(req.url, 'http://x').searchParams.get('locale')) || 'en').toString();
       const db = getPrisma();
       const posts = await db.blogPost.findMany({
         where: { published: true, deletedAt: null },
@@ -98,14 +142,14 @@ module.exports = async function handler(req, res) {
         take: 50,
       });
       const items = posts.map((p) => {
-        const en = p.translations.find((t) => t.locale === 'en') || p.translations[0];
-        const catTrans = p.category?.translations?.find((t) => t.locale === 'en') || p.category?.translations?.[0];
+        const tr = pickTranslation(p.translations, locale);
+        const catTr = pickTranslation(p.category?.translations, locale);
         return {
           id: p.id, slug: p.slug,
-          title: en?.title || p.slug,
-          excerpt: en?.excerpt || p.excerpt,
+          title: tr?.title || p.slug,
+          excerpt: htmlToPlain(tr?.excerpt || p.excerpt),
           coverImage: p.coverImage, authorName: p.authorName,
-          category: p.category ? { id: p.category.id, slug: p.category.slug, name: catTrans?.name || p.category.slug } : null,
+          category: p.category ? { id: p.category.id, slug: p.category.slug, name: catTr?.name || p.category.slug } : null,
           tags: p.tags || [], publishedAt: p.publishedAt, viewCount: p.viewCount || 0,
         };
       });
@@ -122,21 +166,31 @@ module.exports = async function handler(req, res) {
   if (req.method === 'GET' && blogMatch && !url.endsWith('/categories')) {
     const slug = blogMatch[2];
     try {
+      const locale = (req.query?.locale || (req.url && new URL(req.url, 'http://x').searchParams.get('locale')) || 'en').toString();
       const db = getPrisma();
       const post = await db.blogPost.findUnique({
         where: { slug },
-        include: { translations: true, category: { include: { translations: true } } },
+        include: { translations: { orderBy: { locale: 'asc' } }, category: { include: { translations: { orderBy: { locale: 'asc' } } } } },
       });
       if (!post) { res.status(404).json({ success: false, message: 'Not found' }); return; }
-      const en = post.translations.find((t) => t.locale === 'en') || post.translations[0];
+      const tr = pickTranslation(post.translations, locale);
+      const catTr = pickTranslation(post.category?.translations, locale);
       res.status(200).json({
         success: true,
         data: {
-          id: post.id, slug: post.slug, title: en?.title || post.slug,
-          excerpt: en?.excerpt || post.excerpt, content: en?.content || post.content,
+          id: post.id, slug: post.slug,
+          title: tr?.title || post.slug,
+          excerpt: htmlToPlain(tr?.excerpt || post.excerpt),
+          content: htmlToPlain(tr?.content || post.content),
           coverImage: post.coverImage, authorName: post.authorName,
-          category: post.category ? { id: post.category.id, slug: post.category.slug, name: post.category.translations?.find((t) => t.locale === 'en')?.name || post.category.slug } : null,
+          category: post.category ? { id: post.category.id, slug: post.category.slug, name: catTr?.name || post.category.slug } : null,
           tags: post.tags || [], publishedAt: post.publishedAt, viewCount: post.viewCount || 0,
+          // Always include all translations so the detail page can switch languages client-side
+          // Each translation's content is converted from HTML to plain text with paragraph breaks
+          // so the frontend's renderer can display it correctly without parsing HTML
+          translations: (post.translations || []).map((t) => ({
+            locale: t.locale, title: t.title, excerpt: t.excerpt ? htmlToPlain(t.excerpt) : t.excerpt, content: htmlToPlain(t.content),
+          })),
         },
       });
       return;
@@ -149,19 +203,20 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'GET' && (url === '/products' || url === '/v1/products' || url === '/api/v1/products')) {
     try {
+      const locale = (req.query?.locale || (req.url && new URL(req.url, 'http://x').searchParams.get('locale')) || 'en').toString();
       const db = getPrisma();
       const products = await db.product.findMany({
         where: { published: true, deletedAt: null },
-        include: { translations: true },
+        include: { translations: { orderBy: { locale: 'asc' } } },
         orderBy: { sortOrder: 'asc' },
         take: 50,
       });
       const items = products.map((p) => {
-        const en = p.translations.find((t) => t.locale === 'en') || p.translations[0];
+        const tr = pickTranslation(p.translations, locale);
         return {
           id: p.id, sku: p.sku, model: p.model, slug: p.slug,
-          name: en?.name || p.model,
-          shortDescription: en?.shortDescription || p.shortDescription,
+          name: tr?.name || p.model,
+          shortDescription: tr?.shortDescription || p.shortDescription,
           energyDensity: p.energyDensity, cycleLife: p.cycleLife, weight: p.weight,
           nominalVoltage: p.nominalVoltage, nominalCapacity: p.nominalCapacity,
           dischargeRate: p.dischargeRate, published: p.published, featured: p.featured,
@@ -180,17 +235,18 @@ module.exports = async function handler(req, res) {
   if (req.method === 'GET' && prodMatch && !url.endsWith('/categories')) {
     const slug = prodMatch[2];
     try {
+      const locale = (req.query?.locale || (req.url && new URL(req.url, 'http://x').searchParams.get('locale')) || 'en').toString();
       const db = getPrisma();
-      const p = await db.product.findUnique({ where: { slug }, include: { translations: true } });
+      const p = await db.product.findUnique({ where: { slug }, include: { translations: { orderBy: { locale: 'asc' } } } });
       if (!p) { res.status(404).json({ success: false, message: 'Not found' }); return; }
-      const en = p.translations.find((t) => t.locale === 'en') || p.translations[0];
+      const tr = pickTranslation(p.translations, locale);
       res.status(200).json({
         success: true,
         data: {
           id: p.id, sku: p.sku, model: p.model, slug: p.slug,
-          name: en?.name || p.model,
-          shortDescription: en?.shortDescription || p.shortDescription,
-          description: en?.description || p.description,
+          name: tr?.name || p.model,
+          shortDescription: tr?.shortDescription || p.shortDescription,
+          description: tr?.description || p.description,
           energyDensity: p.energyDensity, cycleLife: p.cycleLife, weight: p.weight,
           nominalVoltage: p.nominalVoltage, nominalCapacity: p.nominalCapacity,
           dischargeRate: p.dischargeRate, published: p.published, featured: p.featured,
