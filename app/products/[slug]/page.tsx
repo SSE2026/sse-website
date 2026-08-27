@@ -211,7 +211,7 @@ export default function ProductDetailPage() {
             />
 
             <div
-              className="relative max-w-7xl pl-8 pr-6 md:pl-12 lg:pl-16 z-10"
+              className="relative max-w-7xl pl-4 pr-6 md:pl-6 lg:pl-8 z-10"
               style={{
                 minHeight: "100vh",
                 display: "flex",
@@ -220,14 +220,6 @@ export default function ProductDetailPage() {
             >
               {/* Plain text on left - no card, no animation (instant render) */}
               <div className="flex flex-col gap-5 max-w-[480px]">
-                {/* Eyebrow */}
-                <span
-                  className="text-xs font-mono tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full inline-block w-fit"
-                  style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}
-                >
-                  {locale === "zh" ? "固态电池技术" : "Solid-State Battery Tech"}
-                </span>
-
                 {/* Title */}
                 <h1
                   className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-[1.1]"
