@@ -178,7 +178,7 @@ export default function ProductDetailPage() {
           translations={currentMessages}
           locale={locale}
           onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
-          forceLightText={false}
+          forceLightText={true}
         />
 
         <main>
@@ -187,8 +187,7 @@ export default function ProductDetailPage() {
             className="relative overflow-hidden"
             style={{
               backgroundColor: "#F5F5F7",
-              marginTop: "80px",
-              minHeight: "calc(100vh - 80px)",
+              minHeight: "100vh",
             }}
           >
             {/* Full-screen background video - no mask, no crop, right-aligned */}
@@ -214,7 +213,7 @@ export default function ProductDetailPage() {
             <div
               className="relative max-w-7xl pl-8 pr-6 md:pl-12 lg:pl-16 z-10"
               style={{
-                minHeight: "calc(100vh - 80px)",
+                minHeight: "100vh",
                 display: "flex",
                 alignItems: "center",
               }}
