@@ -52,9 +52,7 @@ export function FeaturedNews({ item, locale }: FeaturedNewsProps) {
 
               {/* Read More Link - Minimal */}
               <Link
-                href={item.originalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`/news/${item.slug}`}
                 className="inline-flex items-center gap-3 text-[13px] font-medium text-[#111111] group"
               >
                 <span className="border-b border-[#D1D5DB] pb-0.5 hover:border-[#111111] transition-colors">
@@ -73,9 +71,7 @@ export function FeaturedNews({ item, locale }: FeaturedNewsProps) {
               className="lg:w-[420px] flex-shrink-0"
             >
               <Link
-                href={item.originalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`/news/${item.slug}`}
                 className="block group"
               >
                 {/* Container: fixed dimensions, centered flex, bg for letterbox */}

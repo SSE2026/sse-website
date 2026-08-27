@@ -25,9 +25,7 @@ export function NewsItemCard({ item, locale, index }: NewsItemCardProps) {
       className="border-b border-[#E5E7EB] last:border-b-0"
     >
       <Link
-        href={item.originalUrl}
-        target="_blank"
-        rel="noopener noreferrer"
+        href={`/news/${item.slug}`}
         className="block group"
       >
         <div className="flex flex-col sm:flex-row gap-6 lg:gap-8 py-6 lg:py-8">
