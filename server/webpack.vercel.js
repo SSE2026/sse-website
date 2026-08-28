@@ -17,6 +17,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      '@prisma/client$': path.resolve(__dirname, '.prisma-deploy', 'client', 'index.js'),
+    },
     fallback: {
       'class-transformer/storage': path.resolve(
         __dirname,
