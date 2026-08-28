@@ -222,7 +222,7 @@ export default function ProductDetailPage() {
               <div className="flex flex-col gap-5 max-w-[480px]">
                 {/* Title */}
                 <h1
-                  className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-[1.1]"
+                  className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-[1.1]"
                   style={{
                     fontFamily: "var(--font-space-grotesk)",
                     color: "#FFFFFF",
@@ -248,15 +248,21 @@ export default function ProductDetailPage() {
 
                 {/* Description */}
                 <p
-                  className="text-sm md:text-base leading-relaxed"
+                  className="text-xs md:text-sm leading-relaxed"
                   style={{
                     color: "rgba(255,255,255,0.92)",
                     textShadow: "0 1px 8px rgba(0,0,0,0.6)",
                   }}
                 >
-                  {locale === "zh"
-                    ? `专为无人机、具身智能、深海探测设备打造边界动力方案`
-                    : `Boundary power solutions for UAVs, embodied AI, and deep-sea exploration devices`}
+                  {locale === "zh" ? (
+                    <>专为无人机、具身智能、深海探测设备打造边界动力方案</>
+                  ) : (
+                    <>
+                      Boundary power solutions for UAVs, embodied AI,
+                      <br />
+                      and deep-sea exploration devices.
+                    </>
+                  )}
                 </p>
 
                 {/* CTA Button */}
