@@ -237,10 +237,16 @@ export default function ProductDetailPage() {
                     </>
                   ) : (
                     <>
-                      Breaking Energy Limits
+                      Breaking Energy
+                      <br />
+                      Limits
                       <br />
                       <span className="gradient-text-animated">
-                        Reshaping Electric Future
+                        Reshaping Electric
+                      </span>
+                      <br />
+                      <span className="gradient-text-animated">
+                        Future
                       </span>
                     </>
                   )}
