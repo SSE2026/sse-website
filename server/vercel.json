@@ -5,8 +5,8 @@
       "maxDuration": 60
     }
   },
-  "routes": [
-    { "src": "/(.*)", "dest": "/api/index.js" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index.js" }
   ],
   "regions": ["iad1"]
 }
