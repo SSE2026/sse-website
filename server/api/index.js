@@ -85,6 +85,17 @@ function ok(res, data) {
   send(res, 200, { success: true, data });
 }
 
+// Admin list responses: pages expect `{ success, items, meta }` at the top
+// level (some read `json?.data ?? json` then `.items`; returning top-level
+// `items` satisfies both).
+function sendList(res, items, page = 1, pageSize = items.length) {
+  send(res, 200, {
+    success: true,
+    items,
+    meta: { page, pageSize, total: items.length, totalPages: Math.max(1, Math.ceil(items.length / Math.max(1, pageSize))) },
+  });
+}
+
 function fail(res, status, message) {
   send(res, status, { success: false, message });
 }
@@ -355,7 +366,7 @@ module.exports = async function handler(req, res) {
         orderBy: { updatedAt: 'desc' },
         take: 200,
       });
-      ok(res, products.map(productShape));
+      sendList(res, products.map(productShape));
       return;
     }
     if (adminProducts && req.method === 'POST') {
@@ -501,7 +512,7 @@ module.exports = async function handler(req, res) {
     if (adminContentList && req.method === 'GET') {
       const locale = queryParams(req).get('locale') || 'en';
       const rows = await db.pageContent.findMany({ where: { locale } });
-      ok(res, rows);
+      sendList(res, rows);
       return;
     }
     if (adminContentMatch) {
@@ -532,7 +543,7 @@ module.exports = async function handler(req, res) {
 
     if (adminInqList && req.method === 'GET') {
       const inquiries = await db.inquiry.findMany({ where: { deletedAt: null }, orderBy: { createdAt: 'desc' }, take: 200 });
-      ok(res, inquiries);
+      sendList(res, inquiries);
       return;
     }
     if (adminInqMatch && req.method === 'GET') {
@@ -584,7 +595,7 @@ module.exports = async function handler(req, res) {
     }
     if (adminBlogList && req.method === 'GET') {
       const posts = await db.blogPost.findMany({ where: { deletedAt: null }, orderBy: { publishedAt: 'desc' }, take: 100 });
-      ok(res, posts);
+      sendList(res, posts);
       return;
     }
     if (adminBlogList && req.method === 'POST') {
