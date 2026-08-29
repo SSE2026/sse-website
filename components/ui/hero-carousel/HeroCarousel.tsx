@@ -345,7 +345,7 @@ export default function HeroCarousel({
       {/* Slides */}
       {slides.map((slide, index) => (
         <div key={slide.id}>
-          {slide.video ? (
+          {slide.video || slide.videoUrl ? (
             <HeroSlideVideo
               slide={slide}
               isActive={index === currentIndex}
