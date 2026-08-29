@@ -160,11 +160,6 @@ function HeroContent({
       <div className="absolute inset-x-0 top-[15%] md:top-[18%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[17%] md:pr-[3%] pointer-events-auto">
         {/* Text Content - Left side */}
         <div className="max-w-[460px] flex-shrink-0">
-          {/* Eyebrow */}
-          <span className="text-base font-mono tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full inline-block mb-6">
-            {slide.eyebrow}
-          </span>
-
           {/* Title */}
           <h1
             className="text-[28px] md:text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-5"
