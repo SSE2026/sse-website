@@ -136,7 +136,7 @@ function HeroSlideVideo({
           ref={videoRef}
           src={videoSrc}
           poster={slide.posterUrl}
-          className="absolute bottom-0 right-0 w-auto h-[85%] max-w-[68%] object-contain"
+          className="absolute bottom-0 right-0 w-auto h-[85%] max-w-[50%] object-contain"
           muted
           playsInline
           loop={slide.loop}
@@ -176,7 +176,7 @@ function HeroContent({
 
           {/* Description */}
           <p
-            className="text-[14px] md:text-[16px] text-gray-300 leading-relaxed mb-7 max-w-[520px]"
+            className="text-[14px] md:text-[16px] text-gray-300 leading-relaxed mb-7 max-w-[400px]"
             style={{ fontFamily: "var(--font-inter, sans-serif)" }}
           >
             {slide.description}
