@@ -510,9 +510,14 @@ module.exports = async function handler(req, res) {
     const adminContentList = /^\/v1\/admin\/content\/?$/.test(url);
     const adminContentMatch = url.match(/^\/v1\/admin\/content\/([^/]+)\/?$/);
     if (adminContentList && req.method === 'GET') {
-      const locale = queryParams(req).get('locale') || 'en';
-      const rows = await db.pageContent.findMany({ where: { locale } });
-      sendList(res, rows);
+      // Group pageContent rows by page → { page, locales: [{locale,published,updatedAt}] }
+      const rows = await db.pageContent.findMany();
+      const byPage = new Map();
+      for (const r of rows) {
+        if (!byPage.has(r.page)) byPage.set(r.page, { page: r.page, locales: [] });
+        byPage.get(r.page).locales.push({ locale: r.locale, published: r.published, updatedAt: r.updatedAt });
+      }
+      sendList(res, Array.from(byPage.values()));
       return;
     }
     if (adminContentMatch) {
