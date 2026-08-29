@@ -14,17 +14,10 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 
-// Force the RHEL Prisma query engine shipped in .prisma-deploy (git-tracked).
-const PRISMA_ENGINE = path.join(
-  __dirname,
-  '..',
-  '.prisma-deploy',
-  'client',
-  'libquery_engine-rhel-openssl-3.0.x.so.node',
-);
-if (!process.env.PRISMA_QUERY_ENGINE_BINARY && fs.existsSync(PRISMA_ENGINE)) {
-  process.env.PRISMA_QUERY_ENGINE_BINARY = PRISMA_ENGINE;
-}
+// NOTE: do NOT override PRISMA_QUERY_ENGINE_BINARY here. Vercel's nft bundles
+// node_modules/@prisma/client together with its own (platform-matched) query
+// engine; pointing at .prisma-deploy's engine caused a version mismatch at
+// runtime ("@prisma/client did not initialize").
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
