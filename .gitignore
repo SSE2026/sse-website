@@ -51,3 +51,7 @@ temp_pdf_images/
 
 .vercel
 .env*
+
+# Generated Vercel function bundle (built by npm run build:vercel)
+server/api/index.js
+server/api/index.js.LICENSE.txt

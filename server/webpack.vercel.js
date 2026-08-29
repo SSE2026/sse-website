@@ -7,10 +7,11 @@ const webpack = require('webpack');
 
 module.exports = {
   mode: 'production',
-  entry: './src/main.ts',
+  entry: './src/vercel-entry.ts',
   target: 'node',
   output: {
-    path: path.resolve(__dirname, 'dist', 'api'),
+    // Output directly as the Vercel serverless function (api/index.js).
+    path: path.resolve(__dirname, 'api'),
     filename: 'index.js',
     libraryTarget: 'umd',
     libraryExport: 'default',
