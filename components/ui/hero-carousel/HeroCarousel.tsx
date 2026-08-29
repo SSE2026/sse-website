@@ -136,7 +136,7 @@ function HeroSlideVideo({
           ref={videoRef}
           src={videoSrc}
           poster={slide.posterUrl}
-          className="absolute bottom-0 right-0 w-auto h-[90%] max-w-[55%] object-contain"
+          className="absolute bottom-0 right-0 w-auto h-[90%] max-w-[60%] object-contain"
           muted
           playsInline
           loop={slide.loop}
@@ -157,7 +157,7 @@ function HeroContent({
 }) {
   return (
     <div className="absolute inset-0 z-20 pointer-events-none">
-      <div className="absolute inset-x-0 top-[15%] md:top-[18%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[15%] md:pr-[3%] pointer-events-auto">
+      <div className="absolute inset-x-0 top-[15%] md:top-[18%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[17%] md:pr-[3%] pointer-events-auto">
         {/* Text Content - Left side */}
         <div className="max-w-[460px] flex-shrink-0">
           {/* Eyebrow */}
