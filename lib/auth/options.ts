@@ -17,26 +17,16 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        // eslint-disable-next-line no-console
-        console.log('[auth]u=' + (apiUrl ? 'yes' : 'no'));
-
         if (!credentials?.email || !credentials?.password) {
-          // eslint-disable-next-line no-console
-          console.log('[auth]nocred');
           return null;
         }
 
         // Skip if no real API URL configured (e.g., during build)
         if (!process.env.NEXT_PUBLIC_API_URL) {
-          // eslint-disable-next-line no-console
-          console.log('[auth]empty');
           return null;
         }
 
         try {
-          // eslint-disable-next-line no-console
-          console.log('[auth]call');
           const res = await fetch(`${getApiUrl()}/v1/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -45,9 +35,6 @@ export const authOptions: NextAuthOptions = {
               password: credentials.password,
             }),
           });
-
-          // eslint-disable-next-line no-console
-          console.log('[auth]resp=' + res.status);
 
           if (!res.ok) {
             return null;
@@ -73,9 +60,7 @@ export const authOptions: NextAuthOptions = {
             role: (body.user.role as string | undefined) ?? "USER",
             accessToken: body.accessToken as string,
           };
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error('[auth]err=' + ((e as Error)?.message || String(e)).slice(0, 60));
+        } catch {
           return null;
         }
       },
