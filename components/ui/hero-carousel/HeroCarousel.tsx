@@ -165,8 +165,7 @@ function HeroContent({
             className="text-[28px] md:text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-5"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
-            <span className="text-white">{slide.title.split(' ')[0]} </span>
-            <span className="text-shimmer">{slide.title.split(' ').slice(1).join(' ')}</span>
+            <span className="text-shimmer">{slide.title}</span>
           </h1>
 
           {/* Description */}
