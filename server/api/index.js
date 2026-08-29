@@ -14,12 +14,30 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 
-// NOTE: do NOT override PRISMA_QUERY_ENGINE_BINARY here. Vercel's nft bundles
-// node_modules/@prisma/client together with its own (platform-matched) query
-// engine; pointing at .prisma-deploy's engine caused a version mismatch at
-// runtime ("@prisma/client did not initialize").
+// Prisma client: on Linux (Vercel) use the committed generated client in
+// .prisma-deploy (shipped with its matching RHEL query engine); locally use
+// node_modules @prisma/client so the platform-matched engine is used.
+let PrismaClient;
+if (process.platform === 'linux') {
+  const DEPLOY_CLIENT = path.join(__dirname, '..', '.prisma-deploy', 'client', 'index.js');
+  if (fs.existsSync(DEPLOY_CLIENT)) {
+    const ENGINE = path.join(
+      __dirname,
+      '..',
+      '.prisma-deploy',
+      'client',
+      'libquery_engine-rhel-openssl-3.0.x.so.node',
+    );
+    if (fs.existsSync(ENGINE)) {
+      process.env.PRISMA_QUERY_ENGINE_BINARY = ENGINE;
+    }
+    ({ PrismaClient } = require(DEPLOY_CLIENT));
+  }
+}
+if (!PrismaClient) {
+  ({ PrismaClient } = require('@prisma/client'));
+}
 
-const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
