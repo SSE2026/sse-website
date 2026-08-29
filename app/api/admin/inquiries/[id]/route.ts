@@ -67,3 +67,52 @@ export async function GET(
     );
   }
 }
+
+// DELETE /api/admin/inquiries/[id] - Soft delete an inquiry (admin)
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const baseUrl = getApiBaseUrl();
+  const session = await getServerSession(authOptions);
+  const accessToken = session?.user?.accessToken;
+
+  if (!accessToken) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized" },
+      { status: 401 },
+    );
+  }
+
+  const { id } = await params;
+
+  try {
+    const response = await fetch(
+      `${baseUrl}${API_PREFIX}/admin/inquiries/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      return NextResponse.json(
+        { success: false, error: (data as { message?: string }).message || `Failed to delete (${response.status})` },
+        { status: response.status },
+      );
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Admin Inquiry delete error:", error);
+    return NextResponse.json(
+      { success: false, error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}

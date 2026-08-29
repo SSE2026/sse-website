@@ -6,6 +6,11 @@ import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 
 const INQUIRY_STATUSES = ["NEW","CONTACTED","QUALIFIED","QUOTING","SAMPLE","TESTING","NEGOTIATION","WON","LOST"] as const;
+const STATUS_LABELS: Record<string, string> = {
+  NEW: "新询盘", CONTACTED: "已联系", QUALIFIED: "已确认",
+  QUOTING: "报价中", SAMPLE: "样品中", TESTING: "测试中",
+  NEGOTIATION: "洽谈中", WON: "已成交", LOST: "已流失",
+};
 const ACTIVITY_TYPES = ["NOTE","EMAIL","CALL","MEETING","QUOTE","SAMPLE","FOLLOW_UP","OTHER"] as const;
 const ACTIVITY_TYPE_LABELS: Record<string, string> = {
   NOTE: "备注", EMAIL: "邮件", CALL: "电话", MEETING: "会议",
@@ -177,7 +182,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
           </h1>
           <p className="mt-1 text-sm text-[#71717A]">{inquiry.email} · {fmt(inquiry.createdAt)}</p>
         </div>
-        <StatusBadge tone={STATUS_TONES[inquiry.status] ?? "neutral"}>{inquiry.status}</StatusBadge>
+        <StatusBadge tone={STATUS_TONES[inquiry.status] ?? "neutral"}>{STATUS_LABELS[inquiry.status] ?? inquiry.status}</StatusBadge>
       </div>
 
       {error && (
@@ -307,7 +312,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
               disabled={savingStatus}
               className="h-9 w-full rounded-md border border-[#E4E4E7] bg-white px-3 text-sm text-[#0A0A0A] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 disabled:opacity-60"
             >
-              {INQUIRY_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              {INQUIRY_STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s] ?? s}</option>)}
             </select>
             <p className="mt-3 text-xs text-[#A1A1AA]">
               状态变更会记录在跟进日志中。

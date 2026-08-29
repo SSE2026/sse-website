@@ -558,6 +558,11 @@ module.exports = async function handler(req, res) {
       ok(res, inquiry);
       return;
     }
+    if (adminInqMatch && req.method === 'DELETE') {
+      await db.inquiry.update({ where: { id: adminInqMatch[1] }, data: { deletedAt: new Date() } });
+      ok(res, { id: adminInqMatch[1] });
+      return;
+    }
     if (adminInqStatus && req.method === 'PATCH') {
       const body = await readBody(req);
       const inquiry = await db.inquiry.update({
@@ -581,6 +586,11 @@ module.exports = async function handler(req, res) {
         data: { inquiryId: adminInqActivities[1], type: body.type, title: body.title, content: body.content, createdByName: adminPayload.email },
       });
       ok(res, { id: activity.id });
+      return;
+    }
+    if (adminInqActivities && adminInqActivities[2] && req.method === 'DELETE') {
+      await db.leadActivity.delete({ where: { id: adminInqActivities[2] } });
+      ok(res, { id: adminInqActivities[2] });
       return;
     }
 

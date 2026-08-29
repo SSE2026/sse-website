@@ -9,12 +9,21 @@ import {
   ArrowUpDown,
   Inbox,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 
 type InquiryStatus =
   | "NEW" | "CONTACTED" | "QUALIFIED" | "QUOTING" | "SAMPLE"
   | "TESTING" | "NEGOTIATION" | "WON" | "LOST";
+
+const INQUIRY_STATUSES: InquiryStatus[] =
+  ["NEW", "CONTACTED", "QUALIFIED", "QUOTING", "SAMPLE", "TESTING", "NEGOTIATION", "WON", "LOST"];
+
+const STATUS_LABELS: Record<InquiryStatus, string> = {
+  NEW: "新询盘", CONTACTED: "已联系", QUALIFIED: "已确认", QUOTING: "报价中",
+  SAMPLE: "样品中", TESTING: "测试中", NEGOTIATION: "洽谈中", WON: "已成交", LOST: "已流失",
+};
 
 const STATUS_TONES: Record<InquiryStatus, "neutral" | "success" | "warning" | "accent"> = {
   NEW: "accent", CONTACTED: "accent", QUALIFIED: "warning", QUOTING: "warning",
@@ -103,6 +112,27 @@ export default function InquiriesPage() {
   }, [fetchInquiries]);
 
   const toggleSort = () => setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const deleteInquiry = async (it: InquiryListItem) => {
+    if (!window.confirm(`确定删除询盘 ${it.inquiryNumber}（${it.customerName || it.email}）？`)) return;
+    setDeletingId(it.id);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/admin/inquiries/${it.id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setDeleteError((data as { error?: string }).error || "删除失败");
+        return;
+      }
+      setItems((prev) => prev.filter((x) => x.id !== it.id));
+    } catch {
+      setDeleteError("网络错误，删除失败");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -133,8 +163,8 @@ export default function InquiriesPage() {
             className="h-9 rounded-md border border-[#E4E4E7] bg-white px-3 text-sm text-[#0A0A0A] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
           >
             <option value="">全部状态</option>
-            {(["NEW","CONTACTED","QUALIFIED","QUOTING","SAMPLE","TESTING","NEGOTIATION","WON","LOST"]).map((s) => (
-              <option key={s} value={s}>{s}</option>
+            {INQUIRY_STATUSES.map((s) => (
+              <option key={s} value={s}>{STATUS_LABELS[s]}</option>
             ))}
           </select>
         </div>
@@ -144,6 +174,13 @@ export default function InquiriesPage() {
         <div role="alert" className="flex items-start gap-2 rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2.5 text-sm text-[#B91C1C]">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2} />
           <span>{error}</span>
+        </div>
+      )}
+
+      {deleteError && (
+        <div role="alert" className="flex items-start gap-2 rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2.5 text-sm text-[#B91C1C]">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2} />
+          <span>{deleteError}</span>
         </div>
       )}
 
@@ -166,6 +203,7 @@ export default function InquiriesPage() {
                       : <ArrowDown className="h-3 w-3 text-[#0A0A0A]" strokeWidth={2.5} />}
                   </button>
                 </th>
+                <th className="px-3 py-2.5">操作</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F4F4F5]">
@@ -181,7 +219,7 @@ export default function InquiriesPage() {
                 ))
               ) : items.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-3 py-16 text-center">
+                  <td colSpan={8} className="px-3 py-16 text-center">
                     <div className="mx-auto flex max-w-sm flex-col items-center">
                       <Inbox className="h-8 w-8 text-[#A1A1AA]" strokeWidth={1.25} />
                       <h3 className="mt-3 text-sm font-semibold text-[#0A0A0A]">暂无询盘</h3>
@@ -209,9 +247,21 @@ export default function InquiriesPage() {
                     </td>
                     <td className="px-3 py-2.5 text-[#52525B]">{it.inquiryType}</td>
                     <td className="px-3 py-2.5">
-                      <StatusBadge tone={STATUS_TONES[it.status] ?? "neutral"}>{it.status}</StatusBadge>
+                      <StatusBadge tone={STATUS_TONES[it.status] ?? "neutral"}>{STATUS_LABELS[it.status] ?? it.status}</StatusBadge>
                     </td>
                     <td className="px-3 py-2.5 text-xs text-[#71717A]">{fmtDate(it.createdAt)}</td>
+                    <td className="px-3 py-2.5">
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); deleteInquiry(it); }}
+                        disabled={deletingId === it.id}
+                        className="inline-flex h-7 items-center gap-1 rounded-md border border-[#E4E4E7] px-2 text-xs text-[#DC2626] hover:border-[#DC2626] hover:bg-[#FEF2F2] disabled:opacity-50"
+                        aria-label={`删除 ${it.inquiryNumber}`}
+                      >
+                        {deletingId === it.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" strokeWidth={1.75} />}
+                        删除
+                      </button>
+                    </td>
                   </tr>
                 ))
               )}
