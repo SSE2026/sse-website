@@ -211,7 +211,7 @@ export default function ProductDetailPage() {
             />
 
             <div
-              className="relative max-w-7xl pl-4 pr-6 md:pl-6 lg:pl-8 z-10"
+              className="relative max-w-7xl pl-8 pr-6 md:pl-16 lg:pl-24 z-10"
               style={{
                 minHeight: "100vh",
                 display: "flex",
