@@ -19,6 +19,10 @@ module.exports = {
     extensions: ['.ts', '.js'],
     alias: {
       '@prisma/client$': path.resolve(__dirname, '.prisma-deploy', 'client', 'index.js'),
+      // Optional NestJS subpackages not used by this app (only referenced by @nestjs/core).
+      '@nestjs/websockets/socket-module': path.resolve(__dirname, 'stubs', 'empty.js'),
+      '@nestjs/microservices/microservices-module': path.resolve(__dirname, 'stubs', 'empty.js'),
+      '@nestjs/microservices': path.resolve(__dirname, 'stubs', 'empty.js'),
     },
     fallback: {
       'class-transformer/storage': path.resolve(
@@ -47,14 +51,10 @@ module.exports = {
       },
     ],
   },
-  externals: {
-    '@nestjs/core': 'commonjs @nestjs/core',
-    '@nestjs/common': 'commonjs @nestjs/common',
-    '@nestjs/platform-express': 'commonjs @nestjs/platform-express',
-    'express': 'commonjs express',
-    'body-parser': 'commonjs body-parser',
-    'reflect-metadata': 'commonjs reflect-metadata',
-  },
+  // NOTE: keep the bundle self-contained. Externalizing @nestjs/*/express
+  // breaks the Vercel function because nft cannot trace requires inside the
+  // dynamically-loaded bundle, so node_modules is missing at runtime → 405.
+  externals: {},
   node: {
     __dirname: false,
     __filename: false,
