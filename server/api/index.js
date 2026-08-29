@@ -588,14 +588,25 @@ module.exports = async function handler(req, res) {
     const adminBlogList = /^\/v1\/admin\/blog\/?$/.test(url);
     const adminBlogMatch = url.match(/^\/v1\/admin\/blog\/([^/]+)\/?$/);
     const adminBlogCats = /^\/v1\/admin\/blog\/categories\/?$/.test(url);
+
+    const blogTitle = (p) => {
+      const en = (p.translations || []).find((t) => t.locale === 'en') || (p.translations || [])[0];
+      return en?.title || p.slug;
+    };
+
     if (adminBlogCats && req.method === 'GET') {
       const cats = await db.blogCategory.findMany({ orderBy: { sortOrder: 'asc' } });
       ok(res, cats);
       return;
     }
     if (adminBlogList && req.method === 'GET') {
-      const posts = await db.blogPost.findMany({ where: { deletedAt: null }, orderBy: { publishedAt: 'desc' }, take: 100 });
-      sendList(res, posts);
+      const posts = await db.blogPost.findMany({
+        where: { deletedAt: null },
+        include: { translations: true },
+        orderBy: { publishedAt: 'desc' },
+        take: 100,
+      });
+      sendList(res, posts.map((p) => ({ ...p, title: blogTitle(p) })));
       return;
     }
     if (adminBlogList && req.method === 'POST') {
@@ -603,22 +614,66 @@ module.exports = async function handler(req, res) {
       const post = await db.blogPost.create({
         data: {
           slug: body.slug,
-          title: body.title,
+          categoryId: body.categoryId,
+          coverImage: body.coverImage,
           excerpt: body.excerpt,
           content: body.content,
-          coverImage: body.coverImage,
-          categoryId: body.categoryId,
           published: body.published ?? false,
+          featured: body.featured ?? false,
+          translations: {
+            create: [
+              { locale: 'en', title: body.title || body.slug, excerpt: body.excerpt, content: body.content },
+              ...(body.titleZh ? [{ locale: 'zh', title: body.titleZh }] : []),
+            ],
+          },
         },
       });
       ok(res, { id: post.id });
+      return;
+    }
+    if (adminBlogMatch && req.method === 'GET') {
+      const post = await db.blogPost.findUnique({
+        where: { id: adminBlogMatch[1] },
+        include: { translations: true },
+      });
+      if (!post) {
+        fail(res, 404, 'Not found');
+        return;
+      }
+      ok(res, { ...post, title: blogTitle(post) });
       return;
     }
     if (adminBlogMatch && req.method === 'PATCH') {
       const body = await readBody(req);
       const data = { ...body };
       delete data.id;
-      const post = await db.blogPost.update({ where: { id: adminBlogMatch[1] }, data });
+      delete data.title;
+      delete data.titleZh;
+      delete data.translations;
+      const post = await db.blogPost.update({
+        where: { id: adminBlogMatch[1] },
+        data: {
+          ...data,
+          translations: {
+            upsert: [
+              {
+                where: { blogPostId_locale: { blogPostId: adminBlogMatch[1], locale: 'en' } },
+                update: { title: body.title || body.slug, excerpt: body.excerpt, content: body.content },
+                create: { locale: 'en', title: body.title || body.slug, excerpt: body.excerpt, content: body.content },
+              },
+              ...(body.titleZh
+                ? [
+                    {
+                      where: { blogPostId_locale: { blogPostId: adminBlogMatch[1], locale: 'zh' } },
+                      update: { title: body.titleZh },
+                      create: { locale: 'zh', title: body.titleZh },
+                    },
+                  ]
+                : []),
+            ],
+          },
+        },
+      });
       ok(res, { id: post.id });
       return;
     }
