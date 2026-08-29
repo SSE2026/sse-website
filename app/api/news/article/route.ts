@@ -32,6 +32,21 @@ const HIDE_OLD_CHROME_CSS = `
      nav widget, irrelevant inside our iframe (and would navigate away to
      the old site if clicked). */
   .artview_prev_next { display: none !important; }
+  /* Old site clips long articles: the content container has a FIXED height
+     (e.g. height:542px) with overflow:hidden, so only the first few hundred
+     px of text show. Unlock height/overflow on the article content chain so
+     the full text renders. */
+  .wp-article_detail_content,
+  .wp-article_detail_content *,
+  .artview_content,
+  .artview_detail,
+  .artview_body,
+  .artview_intro {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
   /* The old site's parallax background layer — it inflates to 80,000+px and
      inflates scrollHeight, making the iframe huge. Force it to 0. */
   #scroll_container_bg { display: none !important; height: 0 !important; min-height: 0 !important; max-height: 0 !important; }
