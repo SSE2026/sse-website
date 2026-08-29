@@ -62,7 +62,7 @@ export function CaseHero({ title, subtitle }: { title?: string; subtitle?: strin
 
   return (
     <section className="relative w-full min-h-screen bg-black text-[#F5F5F5] overflow-hidden flex flex-col items-stretch justify-end">
-      {/* Background Video - Full bleed */}
+      {/* Background Video - full frame, constrained size for sharpness */}
       <video
         ref={videoRef}
         src="/videos/cases-hero.mp4"
@@ -70,7 +70,7 @@ export function CaseHero({ title, subtitle }: { title?: string; subtitle?: strin
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-x-0 top-0 h-[85%] mx-auto w-auto max-w-[1300px] object-contain"
       />
 
       {/* Darkening gradient so text/stats stay legible */}
@@ -113,7 +113,7 @@ export function CaseHero({ title, subtitle }: { title?: string; subtitle?: strin
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-16 pb-6 md:pb-8 pt-8 border-t border-white/15 grid grid-cols-3 gap-8 text-center mt-auto"
+        className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-16 pb-6 md:pb-8 pt-8 grid grid-cols-3 gap-8 text-center mt-auto"
       >
         <div>
           <AnimatedStat value={-40} suffix="°C" duration={1.5} />
