@@ -3,7 +3,6 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "build": "nest build",
     "build:vercel": "npx webpack --config webpack.vercel.js",
     "start": "nest start",
     "start:dev": "nest start --watch",
