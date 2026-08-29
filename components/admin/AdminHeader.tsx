@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Bell, HelpCircle, Search } from "lucide-react";
 
 const titleMap: Record<string, { label: string; zh: string }> = {
   "/admin": { label: "仪表盘", zh: "仪表盘" },
@@ -38,27 +37,6 @@ export function AdminHeader() {
       </div>
 
       <div className="flex items-center gap-1">
-        <div className="hidden md:flex items-center gap-2 rounded-md border border-[#E4E4E7] bg-white px-3 py-1.5 text-xs text-[#71717A] mr-2 w-64">
-          <Search className="h-3.5 w-3.5" strokeWidth={1.75} />
-          <span>搜索</span>
-          <kbd className="ml-auto rounded border border-[#E4E4E7] bg-[#FAFAFA] px-1.5 py-0.5 font-mono text-[10px] text-[#A1A1AA]">
-            ⌘K
-          </kbd>
-        </div>
-        <button
-          type="button"
-          className="rounded-md p-2 text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#0A0A0A]"
-          aria-label="通知"
-        >
-          <Bell className="h-4 w-4" strokeWidth={1.75} />
-        </button>
-        <button
-          type="button"
-          className="rounded-md p-2 text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#0A0A0A]"
-          aria-label="帮助"
-        >
-          <HelpCircle className="h-4 w-4" strokeWidth={1.75} />
-        </button>
         {session?.user && (
           <div className="ml-2 hidden items-center gap-2 border-l border-[#E4E4E7] pl-3 md:flex">
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#1D4ED8] text-[11px] font-semibold text-white">

@@ -578,7 +578,7 @@ module.exports = async function handler(req, res) {
     if (adminInqActivities && req.method === 'POST' && !adminInqActivities[2]) {
       const body = await readBody(req);
       const activity = await db.leadActivity.create({
-        data: { inquiryId: adminInqActivities[1], type: body.type, note: body.note, performedBy: adminPayload.email },
+        data: { inquiryId: adminInqActivities[1], type: body.type, title: body.title, content: body.content, createdByName: adminPayload.email },
       });
       ok(res, { id: activity.id });
       return;

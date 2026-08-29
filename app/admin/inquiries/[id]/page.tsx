@@ -7,6 +7,10 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 
 const INQUIRY_STATUSES = ["NEW","CONTACTED","QUALIFIED","QUOTING","SAMPLE","TESTING","NEGOTIATION","WON","LOST"] as const;
 const ACTIVITY_TYPES = ["NOTE","EMAIL","CALL","MEETING","QUOTE","SAMPLE","FOLLOW_UP","OTHER"] as const;
+const ACTIVITY_TYPE_LABELS: Record<string, string> = {
+  NOTE: "备注", EMAIL: "邮件", CALL: "电话", MEETING: "会议",
+  QUOTE: "报价", SAMPLE: "样品", FOLLOW_UP: "跟进", OTHER: "其他",
+};
 
 const STATUS_TONES: Record<string, "neutral" | "success" | "warning" | "accent"> = {
   NEW: "accent", CONTACTED: "accent", QUALIFIED: "warning", QUOTING: "warning",
@@ -241,7 +245,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
                   disabled={addingActivity}
                   className="h-8 rounded-md border border-[#E4E4E7] bg-white px-2 text-xs text-[#0A0A0A]"
                 >
-                  {ACTIVITY_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                  {ACTIVITY_TYPES.map((t) => <option key={t} value={t}>{ACTIVITY_TYPE_LABELS[t] ?? t}</option>)}
                 </select>
                 <input
                   placeholder="标题 *"
@@ -277,7 +281,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium text-[#0A0A0A]">{a.title}</span>
-                        <StatusBadge tone="accent">{a.type}</StatusBadge>
+                        <StatusBadge tone="accent">{ACTIVITY_TYPE_LABELS[a.type] ?? a.type}</StatusBadge>
                       </div>
                       {a.content && <p className="mt-1 text-sm text-[#52525B] whitespace-pre-wrap">{a.content}</p>}
                       <div className="mt-1 text-xs text-[#A1A1AA]">
