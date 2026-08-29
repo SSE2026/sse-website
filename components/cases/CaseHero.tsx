@@ -62,7 +62,7 @@ export function CaseHero({ title, subtitle }: { title?: string; subtitle?: strin
 
   return (
     <section className="relative w-full min-h-screen bg-black text-[#F5F5F5] overflow-hidden flex flex-col items-stretch justify-end">
-      {/* Background Video - full screen, full frame visible */}
+      {/* Background Video - full bleed */}
       <video
         ref={videoRef}
         src="/videos/cases-hero.mp4"
@@ -70,7 +70,7 @@ export function CaseHero({ title, subtitle }: { title?: string; subtitle?: strin
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-contain"
+        className="absolute inset-0 w-full h-full object-cover"
       />
 
       {/* Darkening gradient so text/stats stay legible */}
