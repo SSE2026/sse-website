@@ -22,8 +22,11 @@ import { StorageModule } from './modules/storage/storage.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { BlogModule } from './modules/blog/blog.module';
 
-// Phase 4.2 - Banner Module
-import { BannerModule } from './modules/banners/banner.module';
+// Phase 4.2 - Banner Module (removed — content handled by CMS in Phase B)
+// import { BannerModule } from './modules/banners/banner.module';
+
+// Phase B - Content (CMS) Module
+import { ContentModule } from './modules/content/content.module';
 
 @Module({
   imports: [
@@ -69,8 +72,11 @@ import { BannerModule } from './modules/banners/banner.module';
     DocumentsModule,
     BlogModule,
 
-    // Phase 4.2 - Banner System
-    BannerModule,
+    // Phase 4.2 - Banner System (removed — content via CMS)
+    // BannerModule,
+
+    // Phase B - Content (CMS) System
+    ContentModule,
   ],
   providers: [
     // Global Throttler Guard

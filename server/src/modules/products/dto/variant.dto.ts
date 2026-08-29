@@ -30,6 +30,12 @@ export class CreateVariantDto {
   @MaxLength(200)
   nameEn?: string;
 
+  @ApiPropertyOptional({ example: 'https://res.cloudinary.com/.../variant.png' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  image?: string;
+
   // Override specs
   @ApiPropertyOptional({ example: 48 })
   @IsOptional()
@@ -130,6 +136,12 @@ export class UpdateVariantDto {
   @IsString()
   @MaxLength(200)
   nameEn?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  image?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

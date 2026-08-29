@@ -556,6 +556,7 @@ export class ProductService {
         sku: dto.sku,
         name: dto.name,
         nameEn: dto.nameEn,
+        image: dto.image,
         nominalVoltage: dto.nominalVoltage,
         nominalCapacity: dto.nominalCapacity,
         energy: dto.energy,
@@ -600,6 +601,7 @@ export class ProductService {
         sku: dto.sku,
         name: dto.name,
         nameEn: dto.nameEn,
+        image: dto.image,
         nominalVoltage: dto.nominalVoltage,
         nominalCapacity: dto.nominalCapacity,
         energy: dto.energy,
@@ -920,6 +922,7 @@ export class ProductService {
       sku: variant.sku,
       name: variant.name || product.model,
       nameEn: variant.nameEn,
+      image: variant.image,
       // Override from variant or fallback to product
       nominalVoltage: variant.nominalVoltage ?? product.nominalVoltage,
       nominalCapacity: variant.nominalCapacity ?? product.nominalCapacity,
@@ -929,6 +932,8 @@ export class ProductService {
       width: variant.width ?? product.width,
       height: variant.height ?? product.height,
       weight: variant.weight ?? product.weight,
+      // Extended specs (JSON: chargeRate, dischargeRate, dimensions, cycleLife...)
+      specifications: variant.specifications,
       // Price
       priceUsd: variant.priceUsd,
       priceUsdMin: variant.priceUsdMin,

@@ -5,9 +5,12 @@ import { motion } from "framer-motion"
 interface NewsHeroProps {
   locale: string
   totalCount: number
+  title?: string
+  subtitle?: string
+  badge?: string
 }
 
-export function NewsHero({ locale, totalCount }: NewsHeroProps) {
+export function NewsHero({ locale, totalCount, title, subtitle, badge }: NewsHeroProps) {
   const isZh = locale === "zh"
 
   return (
@@ -24,7 +27,7 @@ export function NewsHero({ locale, totalCount }: NewsHeroProps) {
               className="mb-4"
             >
               <span className="text-[11px] font-medium tracking-[0.18em] uppercase text-[#6B7280]">
-                {isZh ? "新闻中心" : "NEWS CENTER"}
+                {badge || (isZh ? "新闻中心" : "NEWS CENTER")}
               </span>
             </motion.div>
 
@@ -35,7 +38,7 @@ export function NewsHero({ locale, totalCount }: NewsHeroProps) {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-[28px] lg:text-[36px] font-medium leading-[1.2] text-[#111111] tracking-tight mb-3"
             >
-              {isZh ? "新闻动态" : "News & Insights"}
+              {title || (isZh ? "新闻动态" : "News & Insights")}
             </motion.h1>
 
             {/* Subtitle */}
@@ -45,9 +48,9 @@ export function NewsHero({ locale, totalCount }: NewsHeroProps) {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-[14px] leading-relaxed text-[#6B7280] max-w-[560px]"
             >
-              {isZh
+              {subtitle || (isZh
                 ? "探索深安锂能在先进电池技术、产业化进程及所服务行业的最新发展动态。"
-                : "Latest developments in advanced battery technology, products and the industries we serve."}
+                : "Latest developments in advanced battery technology, products and the industries we serve.")}
             </motion.p>
           </div>
 

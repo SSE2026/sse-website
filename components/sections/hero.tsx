@@ -42,56 +42,77 @@ const DEFAULT_SLIDES_ZH: HeroSlide[] = [
   },
 ];
 
-// Transform banner data to HeroSlide format
-interface Banner {
-  id: string;
-  mediaType?: 'IMAGE' | 'VIDEO';
-  title?: string;
-  titleZh?: string;
-  subtitle?: string;
-  subtitleZh?: string;
-  image?: string;
-  mobileImage?: string;
-  videoUrl?: string;
-  posterUrl?: string;
-  mobileVideoUrl?: string;
-  link?: string;
-  ctaText?: string;
-  ctaTextZh?: string;
-  sortOrder: number;
+interface HeroStats {
+  value?: string;
+  unit?: string;
+  label?: string;
 }
 
-function transformBannersToSlides(banners: Banner[], locale: string): HeroSlide[] {
-  return banners
-    .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map((banner, index) => {
-      const isVideo = banner.mediaType === 'VIDEO' || !!banner.videoUrl;
+interface HeroContent {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  videoUrl?: string;
+  posterUrl?: string;
+  statsJson?: string;
+  slidesJson?: string;
+  stats?: HeroStats[];
+}
 
-      return {
-        id: index + 1,
-        mediaType: banner.mediaType || (isVideo ? 'VIDEO' : 'IMAGE'),
-        image: banner.image,
-        videoUrl: banner.videoUrl,
-        posterUrl: banner.posterUrl,
-        mobileImage: banner.mobileImage,
-        mobileVideoUrl: banner.mobileVideoUrl,
-        // If it's a video type, enable loop
-        loop: banner.mediaType === 'VIDEO' ? true : undefined,
-        imageAlt: locale === "zh" ? (banner.titleZh || banner.title || "") : (banner.title || ""),
-        eyebrow: locale === "zh" ? "固态电池技术" : "Solid-State Battery Tech",
-        title: locale === "zh"
-          ? (banner.titleZh || banner.title || "Untitled")
-          : (banner.title || "Untitled"),
-        description: locale === "zh"
-          ? (banner.subtitleZh || banner.subtitle || "")
-          : (banner.subtitle || ""),
-        ctaText: locale === "zh"
-          ? (banner.ctaTextZh || banner.ctaText || "了解更多")
-          : (banner.ctaText || "Learn More"),
-        ctaLink: banner.link || "/",
-        stats: DEFAULT_SLIDES_EN[0].stats,
-      };
-    });
+// Build HeroSlide[] from CMS content (home.hero), falling back to defaults.
+function buildSlidesFromCms(content: Record<string, unknown>, locale: string): HeroSlide[] {
+  const hero = (content.hero ?? {}) as HeroContent & { slides?: HeroSlide[] };
+  const defaults = locale === "zh" ? DEFAULT_SLIDES_ZH[0] : DEFAULT_SLIDES_EN[0];
+
+  // Prefer slides array (migrated banners) or slidesJson, else single-field hero.
+  const slidesFromJson = (() => {
+    if (Array.isArray(hero.slides) && hero.slides.length > 0) return hero.slides;
+    if (hero.slidesJson) {
+      try {
+        const parsed = JSON.parse(hero.slidesJson);
+        if (Array.isArray(parsed)) return parsed as HeroSlide[];
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  })();
+
+  if (slidesFromJson && slidesFromJson.length > 0) {
+    return slidesFromJson.map((s, i) => ({
+      id: i + 1,
+      mediaType: (s as { mediaType?: string }).mediaType === "VIDEO" ? "VIDEO" : undefined,
+      image: (s as { image?: string }).image,
+      videoUrl: (s as { videoUrl?: string }).videoUrl,
+      posterUrl: (s as { posterUrl?: string }).posterUrl,
+      mobileImage: (s as { mobileImage?: string }).mobileImage,
+      loop: (s as { mediaType?: string }).mediaType === "VIDEO" ? true : undefined,
+      imageAlt: (s as { title?: string }).title || "",
+      eyebrow: defaults.eyebrow,
+      title: (s as { title?: string }).title || defaults.title,
+      description: (s as { subtitle?: string }).subtitle || defaults.description,
+      ctaText: (s as { ctaText?: string }).ctaText || defaults.ctaText,
+      ctaLink: (s as { ctaLink?: string }).ctaLink || defaults.ctaLink,
+      stats: defaults.stats,
+    }));
+  }
+
+  return [
+    {
+      id: 1,
+      video: hero.videoUrl || defaults.video,
+      loop: true,
+      imageAlt: hero.title || defaults.imageAlt,
+      eyebrow: hero.eyebrow || defaults.eyebrow,
+      title: hero.title || defaults.title,
+      description: hero.description || defaults.description,
+      ctaText: hero.ctaText || defaults.ctaText,
+      ctaLink: hero.ctaLink || defaults.ctaLink,
+      stats: defaults.stats,
+    },
+  ];
 }
 
 interface HeroProps {
@@ -101,44 +122,38 @@ interface HeroProps {
 
 export function Hero({ locale }: HeroProps) {
   const [slides, setSlides] = useState<HeroSlide[]>(locale === "zh" ? DEFAULT_SLIDES_ZH : DEFAULT_SLIDES_EN);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchBanners() {
+    // Reset to defaults immediately on locale change, then try CMS.
+    const defaults = locale === "zh" ? DEFAULT_SLIDES_ZH : DEFAULT_SLIDES_EN;
+    setSlides(defaults);
+
+    let cancelled = false;
+    (async () => {
       try {
-        const response = await fetch("/api/banners", {
+        const response = await fetch(`/api/content/home?locale=${locale}`, {
           next: { revalidate: 60 }, // Cache for 60 seconds
         });
 
-        if (!response.ok) {
-          console.error("Failed to fetch banners, using defaults");
-          return;
-        }
+        if (!response.ok || cancelled) return;
 
         const data = await response.json();
-        const banners: Banner[] = data.items || [];
+        const content = (data?.content ?? {}) as Record<string, unknown>;
 
-        // Only use banners if there are any active ones
-        if (banners.length > 0) {
-          const transformedSlides = transformBannersToSlides(banners, locale);
-          setSlides(transformedSlides);
+        // Only override if the hero section actually has content.
+        const hero = content.hero as Record<string, unknown> | undefined;
+        if (hero && Object.keys(hero).length > 0) {
+          setSlides(buildSlidesFromCms(content, locale));
         }
       } catch (error) {
-        console.error("Error fetching banners:", error);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching page content:", error);
       }
-    }
+    })();
 
-    fetchBanners();
+    return () => {
+      cancelled = true;
+    };
   }, [locale]);
-
-  // Update slides when locale changes (without refetching if we already have data)
-  useEffect(() => {
-    if (!loading) {
-      setSlides(locale === "zh" ? DEFAULT_SLIDES_ZH : DEFAULT_SLIDES_EN);
-    }
-  }, [locale, loading]);
 
   return <HeroCarousel slides={slides} autoPlayInterval={3000} />;
 }

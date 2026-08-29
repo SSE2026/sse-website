@@ -42,12 +42,23 @@ export const authOptions: NextAuthOptions = {
 
           const data = await res.json();
 
+          // NestJS 全局 TransformInterceptor 把响应包装成 { success, data: {...} }
+          // 兼容两种结构：直接 body 或 unwrapped
+          const body = (data?.data ?? data) as {
+            user?: { id?: string; email?: string; name?: string; role?: string };
+            accessToken?: string;
+          };
+
+          if (!body?.user?.id || !body.accessToken) {
+            return null;
+          }
+
           return {
-            id: data.user.id,
-            email: data.user.email,
-            name: data.user.name,
-            role: data.user.role,
-            accessToken: data.accessToken,
+            id: body.user.id as string,
+            email: (body.user.email as string | undefined) ?? "",
+            name: (body.user.name as string | undefined) ?? "",
+            role: (body.user.role as string | undefined) ?? "USER",
+            accessToken: body.accessToken as string,
           };
         } catch {
           return null;

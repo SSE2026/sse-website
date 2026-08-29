@@ -9,6 +9,7 @@ import { NewsFilter } from "@/components/news/NewsFilter";
 import { NewsList } from "@/components/news/NewsList";
 import { NewsPagination } from "@/components/news/NewsPagination";
 import { NewsCTA } from "@/components/news/NewsCTA";
+import { useCmsContent } from "@/lib/cms/use-cms";
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
 import { newsItems, categories, type Category } from "@/data/news";
@@ -22,6 +23,10 @@ export default function NewsPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const currentMessages = messages[locale];
+  const cms = useCmsContent("news", locale) as {
+    hero?: { title?: string; subtitle?: string; badge?: string };
+  };
+  const heroCms = cms.hero ?? {};
 
   // Filter news by category (client-side, static data)
   const filteredNews = useMemo(() => {
@@ -58,7 +63,7 @@ export default function NewsPage() {
 
       <main className="min-h-screen bg-[#F7F8FA] pt-[72px]">
         {/* 01. Page Hero */}
-        <NewsHero locale={locale} totalCount={newsItems.length} />
+        <NewsHero locale={locale} totalCount={newsItems.length} title={heroCms.title} subtitle={heroCms.subtitle} badge={heroCms.badge} />
 
         {/* 02. Featured Story */}
         {featuredItem && <FeaturedNews item={featuredItem} locale={locale} />}

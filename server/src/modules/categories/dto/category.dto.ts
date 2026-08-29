@@ -17,6 +17,18 @@ export class CreateCategoryDto {
   @MaxLength(100)
   slug!: string;
 
+  @ApiPropertyOptional({ example: 'Battery Cells', description: 'English display name' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  name?: string;
+
+  @ApiPropertyOptional({ example: '电芯', description: 'Chinese display name' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  nameZh?: string;
+
   @ApiPropertyOptional({ example: 'https://example.com/category.jpg' })
   @IsOptional()
   @IsString()
@@ -73,6 +85,18 @@ export class UpdateCategoryDto {
   @IsString()
   @MaxLength(100)
   slug?: string;
+
+  @ApiPropertyOptional({ example: 'Battery Cells' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  name?: string;
+
+  @ApiPropertyOptional({ example: '电芯' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  nameZh?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

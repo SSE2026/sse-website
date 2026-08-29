@@ -88,7 +88,7 @@ export class CategoryService {
     const { page = 1, limit = 50, includeCounts = true } = query;
     const skip = (page - 1) * limit;
 
-    const [items, total] = await Promise.all([
+    const [rawItems, total] = await Promise.all([
       this.prisma.productCategory.findMany({
         orderBy: { sortOrder: 'asc' },
         skip,
@@ -109,6 +109,7 @@ export class CategoryService {
               sortOrder: true,
             },
           },
+          translations: true,
           ...(includeCounts && {
             _count: {
               select: { products: true, children: true },
@@ -118,6 +119,8 @@ export class CategoryService {
       }),
       this.prisma.productCategory.count(),
     ]);
+
+    const items = rawItems.map((c: any) => this.flattenTranslation(c));
 
     return {
       items,
@@ -138,6 +141,7 @@ export class CategoryService {
         children: {
           orderBy: { sortOrder: 'asc' },
         },
+        translations: true,
         products: {
           where: { deletedAt: null },
           select: {
@@ -158,7 +162,7 @@ export class CategoryService {
       throw new NotFoundException('Category not found');
     }
 
-    return category;
+    return this.flattenTranslation(category);
   }
 
   async create(dto: CreateCategoryDto) {
@@ -203,8 +207,13 @@ export class CategoryService {
       },
     });
 
+    // Upsert display-name translations
+    if (dto.name || dto.nameZh) {
+      await this.upsertTranslations(category.id, dto.name, dto.nameZh);
+    }
+
     this.logger.log(`Category created: ${category.id}`);
-    return category;
+    return this.flattenTranslation(category, dto.name, dto.nameZh);
   }
 
   async update(id: string, dto: UpdateCategoryDto) {
@@ -264,8 +273,13 @@ export class CategoryService {
       },
     });
 
+    // Upsert display-name translations
+    if (dto.name || dto.nameZh) {
+      await this.upsertTranslations(id, dto.name, dto.nameZh);
+    }
+
     this.logger.log(`Category updated: ${category.id}`);
-    return category;
+    return this.flattenTranslation(category, dto.name, dto.nameZh);
   }
 
   async delete(id: string) {
@@ -305,6 +319,29 @@ export class CategoryService {
   }
 
   // ==================== Helpers ====================
+
+  private async upsertTranslations(categoryId: string, name?: string, nameZh?: string) {
+    const upsert = (locale: string, value?: string) => {
+      if (!value || value.trim() === '') return;
+      return this.prisma.productCategoryTranslation.upsert({
+        where: { categoryId_locale: { categoryId, locale } },
+        update: { name: value.trim() },
+        create: { categoryId, locale, name: value.trim() },
+      });
+    };
+    await Promise.all([upsert('en', name), upsert('zh', nameZh)]);
+  }
+
+  // Flatten the translations array into top-level name/nameZh for the response.
+  private flattenTranslation(category: any, name?: string, nameZh?: string): any {
+    const en = category.translations?.find((t: any) => t.locale === 'en')?.name;
+    const zh = category.translations?.find((t: any) => t.locale === 'zh')?.name;
+    return {
+      ...category,
+      name: name ?? en ?? null,
+      nameZh: nameZh ?? zh ?? null,
+    };
+  }
 
   private buildTree(categories: any[], includeCounts: boolean): any[] {
     const map = new Map();

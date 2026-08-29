@@ -86,20 +86,23 @@ const milestones: Milestone[] = [
 
 interface MilestonesProps {
   lang?: 'zh' | 'en';
+  /** CMS-provided milestones; falls back to built-in defaults when absent. */
+  items?: Milestone[];
 }
 
-export default function MilestonesSection({ lang = 'zh' }: MilestonesProps) {
+export default function MilestonesSection({ lang = 'zh', items }: MilestonesProps) {
+  const data = items && items.length > 0 ? items : milestones;
   const [activeIndex, setActiveIndex] = useState(6); // 默认高亮 2023 年
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % milestones.length);
+      setActiveIndex((prev) => (prev + 1) % data.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [data.length]);
 
   const isEn = lang === 'en';
-  const current = milestones[activeIndex];
+  const current = data[activeIndex];
 
   return (
     <section className="w-full py-10 md:py-16 px-6 md:px-12 border-t border-zinc-800/80 bg-[#07080a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(212,212,216,0.12),rgba(255,255,255,0))] text-slate-100 font-sans antialiased overflow-hidden select-none">
@@ -121,7 +124,7 @@ export default function MilestonesSection({ lang = 'zh' }: MilestonesProps) {
               {String(activeIndex + 1).padStart(2, '0')}
             </span>
             <span className="text-zinc-600"> / </span>
-            <span>{String(milestones.length).padStart(2, '0')}</span>
+            <span>{String(data.length).padStart(2, '0')}</span>
           </div>
         </div>
 
@@ -172,13 +175,13 @@ export default function MilestonesSection({ lang = 'zh' }: MilestonesProps) {
             {/* 左右翻页控制 */}
             <div className="lg:col-span-2 flex justify-end gap-3 self-center">
               <button
-                onClick={() => setActiveIndex((prev) => (prev === 0 ? milestones.length - 1 : prev - 1))}
+                onClick={() => setActiveIndex((prev) => (prev === 0 ? data.length - 1 : prev - 1))}
                 className="w-11 h-11 rounded-full border border-zinc-700 bg-zinc-900/90 hover:bg-white hover:text-black transition-all duration-200 flex items-center justify-center text-zinc-200 hover:scale-105 active:scale-95 shadow-lg backdrop-blur-sm"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
-                onClick={() => setActiveIndex((prev) => (prev + 1) % milestones.length)}
+                onClick={() => setActiveIndex((prev) => (prev + 1) % data.length)}
                 className="w-11 h-11 rounded-full border border-zinc-700 bg-zinc-900/90 hover:bg-white hover:text-black transition-all duration-200 flex items-center justify-center text-zinc-200 hover:scale-105 active:scale-95 shadow-lg backdrop-blur-sm"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -196,11 +199,11 @@ export default function MilestonesSection({ lang = 'zh' }: MilestonesProps) {
           {/* 动态前进的金属银发光线条 */}
           <div
             className="absolute top-[25px] left-0 h-[1.5px] bg-gradient-to-r from-zinc-500 via-white to-slate-200 shadow-[0_0_12px_rgba(255,255,255,0.9)] transition-all duration-500"
-            style={{ width: `${((activeIndex + 1) / milestones.length) * 100}%` }}
+            style={{ width: `${((activeIndex + 1) / data.length) * 100}%` }}
           />
 
           <div className="relative z-10 grid grid-cols-10 gap-1 md:gap-2">
-            {milestones.map((item, idx) => {
+            {data.map((item, idx) => {
               const isActive = idx === activeIndex;
               const isPassed = idx < activeIndex;
 

@@ -7,4 +7,4 @@ const handler = require('./api/index.js');
 const app = express();
 app.use(express.json());
 app.use((req, res) => handler(req, res));
-app.listen(3001, () => console.log('Local backend on 3001'));
+app.listen(3001, '0.0.0.0', () => console.log('Local backend on 3001'));

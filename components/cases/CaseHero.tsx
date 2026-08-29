@@ -50,7 +50,7 @@ function AnimatedStat({ value, prefix = "", suffix = "", duration = 2 }: { value
   );
 }
 
-export function CaseHero() {
+export function CaseHero({ title, subtitle }: { title?: string; subtitle?: string }) {
   const t = useTranslations("casesPage.hero");
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -73,7 +73,7 @@ export function CaseHero() {
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* Bottom darkening gradient so the stats stay legible */}
+      {/* Darkening gradient so text/stats stay legible */}
       <div
         className="absolute inset-0 z-0 pointer-events-none"
         style={{
@@ -81,6 +81,32 @@ export function CaseHero() {
             "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.85) 100%)",
         }}
       />
+
+      {/* Optional hero title/subtitle (CMS-editable) */}
+      {(title || subtitle) && (
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-16 pt-28 md:pt-36">
+          {title && (
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-3xl md:text-5xl font-bold text-white tracking-tight"
+            >
+              {title}
+            </motion.h1>
+          )}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="mt-3 text-base md:text-lg text-white/70 max-w-2xl"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+        </div>
+      )}
 
       {/* Bottom stats — anchored to the very bottom of the viewport */}
       <motion.div

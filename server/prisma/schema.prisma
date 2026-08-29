@@ -408,6 +408,7 @@ model ProductVariant {
   sku    String  @unique
   name   String
   nameEn String?
+  image  String?  // Variant 单图 URL (Cloudinary 或相对路径)
 
   // 规格覆盖
   nominalVoltage  Float?
@@ -987,4 +988,22 @@ model Banner {
   @@index([isActive])
   @@index([sortOrder])
   @@map("banners")
+}
+
+// ============================================
+// Page Content (CMS) — 每页内容块可编辑
+// ============================================
+
+model PageContent {
+  id        String   @id @default(cuid())
+  page      String   // 'home' | 'about' | 'cases' | 'contact' | 'technology' | 'products' | 'news'
+  locale    String   // 'en' | 'zh'
+  content   Json     // { hero: {...}, sections: {...} }
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([page, locale])
+  @@index([page])
+  @@map("page_contents")
 }

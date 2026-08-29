@@ -10,6 +10,9 @@ interface CaseSectionProps {
   highlight: string;
   videoPath: string;
   locale: string;
+  platform?: string;
+  battery?: string;
+  highlightLabel?: string;
 }
 
 // Define stats keys for each case (no duplicates with highlight)
@@ -25,6 +28,9 @@ export function CaseSection({
   highlight,
   videoPath,
   locale,
+  platform,
+  battery,
+  highlightLabel,
 }: CaseSectionProps) {
   const t = useTranslations("casesPage");
   const sectionRef = useRef<HTMLElement>(null);
@@ -50,12 +56,12 @@ export function CaseSection({
   // Get case number from id (pad to 2 digits)
   const caseNum = id.replace("case-", "").padStart(2, "0");
 
-  // Get translations for this case
+  // Get translations for this case (CMS props override messages)
   const caseData = {
     caseNumber: t(`case${caseNum}.caseNumber`),
-    platform: t(`case${caseNum}.platform`),
-    battery: t(`case${caseNum}.battery`),
-    highlightLabel: t(`case${caseNum}.highlightLabel`),
+    platform: platform || t(`case${caseNum}.platform`),
+    battery: battery || t(`case${caseNum}.battery`),
+    highlightLabel: highlightLabel || t(`case${caseNum}.highlightLabel`),
   };
 
   // Get only the stats that exist for this case

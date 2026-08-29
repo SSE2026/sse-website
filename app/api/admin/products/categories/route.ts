@@ -23,12 +23,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const searchParams = request.nextUrl.searchParams;
-  const locale = searchParams.get('locale') || 'en';
-
   try {
     const response = await fetch(
-      `${API_BASE_URL}/v1/admin/product-categories?locale=${locale}`,
+      `${API_BASE_URL}/v1/admin/categories`,
       {
         headers: {
           'Content-Type': 'application/json',

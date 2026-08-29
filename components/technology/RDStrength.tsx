@@ -10,13 +10,14 @@ interface RDStrengthSectionProps {
     label: string;
     title: string;
   };
+  certs?: Array<{ src: string; alt: string }>;
 }
 
-export function RDStrengthSection({ labels }: RDStrengthSectionProps) {
+export function RDStrengthSection({ labels, certs }: RDStrengthSectionProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  const certifications = [
+  const defaultCerts = [
     { src: "/images/technology/资质/图片1.png", alt: "资质证书 1" },
     { src: "/images/technology/资质/图片2.png", alt: "资质证书 2" },
     { src: "/images/technology/资质/图片3.png", alt: "资质证书 3" },
@@ -25,6 +26,8 @@ export function RDStrengthSection({ labels }: RDStrengthSectionProps) {
     { src: "/images/technology/资质/图片6.png", alt: "资质证书 6" },
     { src: "/images/technology/资质/图片7.png", alt: "资质证书 7" },
   ];
+
+  const certifications = certs && certs.length > 0 ? certs : defaultCerts;
 
   return (
     <section ref={ref} className="relative bg-white py-16 md:py-20 overflow-hidden">

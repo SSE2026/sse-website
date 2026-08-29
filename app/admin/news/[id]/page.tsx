@@ -1,670 +1,240 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Save,
-  X,
-  Eye,
-  Trash2,
-  Bold,
-  Italic,
-  Link as LinkIcon,
-  List,
-  Loader2,
-  AlertCircle,
-  CheckCircle,
-} from "lucide-react";
-import { useAdmin } from "@/app/admin/layout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 
-// News translations
-const newsTranslations = {
-  en: {
-    title: "Edit Article",
-    titleNew: "New Article",
-    basicInfo: "Basic Information",
-    titleField: "Title",
-    titleFieldZh: "Title (Chinese)",
-    excerpt: "Excerpt",
-    excerptZh: "Excerpt (Chinese)",
-    category: "Category",
-    selectCategory: "Select category",
-    content: "Content",
-    contentZh: "Content (Chinese)",
-    featuredImage: "Featured Image",
-    uploadImage: "Upload Image",
-    removeImage: "Remove",
-    settings: "Settings",
-    status: "Status",
-    published: "Published",
-    draft: "Draft",
-    author: "Author",
-    publishDate: "Publish Date",
-    slug: "URL Slug",
-    slugHelp: "Auto-generated from title if empty",
-    save: "Save Changes",
-    saving: "Saving...",
-    cancel: "Cancel",
-    viewArticle: "View Article",
-    deleteArticle: "Delete Article",
-    deleteConfirm: "Are you sure you want to delete this article?",
-    deleteSuccess: "Article deleted successfully",
-    deleteError: "Failed to delete article",
-    loadError: "Failed to load article",
-    saveSuccess: "Article saved successfully",
-    saveError: "Failed to save article",
-    loading: "Loading...",
-    noCategory: "No Category",
-  },
-  zh: {
-    title: "编辑文章",
-    titleNew: "新建文章",
-    basicInfo: "基本信息",
-    titleField: "标题",
-    titleFieldZh: "标题（中文）",
-    excerpt: "摘要",
-    excerptZh: "摘要（中文）",
-    category: "分类",
-    selectCategory: "选择分类",
-    content: "正文",
-    contentZh: "正文（中文）",
-    featuredImage: "封面图片",
-    uploadImage: "上传图片",
-    removeImage: "移除",
-    settings: "设置",
-    status: "状态",
-    published: "已发布",
-    draft: "草稿",
-    author: "作者",
-    publishDate: "发布日期",
-    slug: "URL别名",
-    slugHelp: "留空则自动从标题生成",
-    save: "保存更改",
-    saving: "保存中...",
-    cancel: "取消",
-    viewArticle: "预览文章",
-    deleteArticle: "删除文章",
-    deleteConfirm: "确定要删除这篇文章吗？",
-    deleteSuccess: "文章删除成功",
-    deleteError: "删除文章失败",
-    loadError: "加载文章失败",
-    saveSuccess: "文章保存成功",
-    saveError: "保存文章失败",
-    loading: "加载中...",
-    noCategory: "无分类",
-  },
-};
-
-// Types
-interface Category {
+interface BlogCategory { id: string; slug: string; }
+interface BlogPost {
   id: string;
   slug: string;
-  name: string;
-  postCount: number;
-}
-
-interface NewsFormData {
   title: string;
-  titleZh: string;
-  excerpt: string;
-  excerptZh: string;
-  content: string;
-  contentZh: string;
-  slug: string;
-  coverImage: string;
-  published: boolean;
-  authorName: string;
-  publishedAt: string;
-  categoryId: string;
+  titleZh?: string | null;
+  excerpt?: string | null;
+  content?: string | null;
+  categoryId?: string | null;
+  published?: boolean;
+  featured?: boolean;
+  coverImage?: string | null;
 }
 
-interface NewsDetailResponse {
-  success: boolean;
-  data?: {
-    id: string;
-    slug: string;
-    title: string;
-    excerpt: string | null;
-    content: string | null;
-    coverImage: string | null;
-    authorName: string | null;
-    categoryId: string | null;
-    published: boolean;
-    publishedAt: string | null;
-    translations: Array<{
-      locale: string;
-      title: string;
-      excerpt: string | null;
-      content: string | null;
-    }>;
-  };
-  error?: string;
-}
-
-export default function EditNewsPage() {
-  const params = useParams();
+export default function NewsEditPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const isNew = id === "new";
   const router = useRouter();
-  const { locale } = useAdmin();
-  const t = newsTranslations[locale];
-  const newsId = params.id as string;
 
-  const isNew = newsId === "new";
-
-  // State
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  const [formData, setFormData] = useState<NewsFormData>({
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
+  const [form, setForm] = useState({
+    slug: "",
     title: "",
     titleZh: "",
     excerpt: "",
-    excerptZh: "",
     content: "",
-    contentZh: "",
-    slug: "",
+    categoryId: "",
     coverImage: "",
     published: false,
-    authorName: "",
-    publishedAt: new Date().toISOString().split("T")[0],
-    categoryId: "",
+    featured: false,
   });
 
-  // Fetch categories
   useEffect(() => {
-    const fetchCategories = async () => {
+    const ctl = new AbortController();
+    (async () => {
+      // 加载分类
       try {
-        const response = await fetch("/api/admin/news/categories");
-        if (response.ok) {
-          const data = await response.json();
-          setCategories(data.data || []);
+        const catRes = await fetch("/api/admin/news/categories?locale=en", { signal: ctl.signal, cache: "no-store" });
+        if (catRes.ok) {
+          const data = await catRes.json();
+          const body = (data?.data ?? data) as { items?: BlogCategory[] } | BlogCategory[] | undefined;
+          const list = Array.isArray(body) ? body : (body?.items ?? []);
+          setCategories(list);
         }
-      } catch (err) {
-        console.error("Failed to fetch categories:", err);
+      } catch { /* non-fatal */ }
+
+      if (isNew) return;
+      try {
+        const res = await fetch(`/api/admin/news/${id}`, { signal: ctl.signal, cache: "no-store" });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          setError((data as { error?: string }).error || `Failed to load (${res.status})`);
+          return;
+        }
+        const json = await res.json();
+        const body = (json?.data ?? json) as BlogPost;
+        const tr = body as unknown as { translations?: Array<{ locale: string; title: string; excerpt: string; content: string }> };
+        const zh = tr.translations?.find((t) => t.locale === "zh" || t.locale === "zh-CN");
+        setForm({
+          slug: body.slug ?? "",
+          title: body.title ?? "",
+          titleZh: zh?.title ?? "",
+          excerpt: body.excerpt ?? "",
+          content: body.content ?? "",
+          categoryId: body.categoryId ?? "",
+          coverImage: body.coverImage ?? "",
+          published: body.published ?? false,
+          featured: body.featured ?? false,
+        });
+      } catch (e) {
+        if ((e as Error).name === "AbortError") return;
+        setError("Network error while loading.");
+      } finally {
+        setLoading(false);
       }
-    };
-    fetchCategories();
-  }, []);
+    })();
+    return () => ctl.abort();
+  }, [id, isNew]);
 
-  // Fetch existing article
-  const fetchArticle = useCallback(async () => {
-    if (isNew) return;
-
-    setLoading(true);
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError(null);
-
-    try {
-      const response = await fetch(`/api/admin/news/${newsId}`);
-      const data: NewsDetailResponse = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          router.push("/auth/login");
-          return;
-        }
-        if (response.status === 403) {
-          router.push("/403");
-          return;
-        }
-        if (response.status === 404) {
-          setError("Article not found");
-          return;
-        }
-        throw new Error(data.error || "Failed to load article");
-      }
-
-      const article = data.data;
-
-      if (!article) {
-        throw new Error(data.error || "Article not found");
-      }
-
-      // Find translations
-      const enTrans = article.translations?.find((t) => t.locale === "en");
-      const zhTrans = article.translations?.find((t) => t.locale === "zh-CN");
-
-      setFormData({
-        title: enTrans?.title || article.title || "",
-        titleZh: zhTrans?.title || "",
-        excerpt: enTrans?.excerpt || article.excerpt || "",
-        excerptZh: zhTrans?.excerpt || "",
-        content: enTrans?.content || article.content || "",
-        contentZh: zhTrans?.content || "",
-        slug: article.slug || "",
-        coverImage: article.coverImage || "",
-        published: article.published || false,
-        authorName: article.authorName || "",
-        publishedAt: article.publishedAt
-          ? new Date(article.publishedAt).toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        categoryId: article.categoryId || "",
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load article");
-    } finally {
-      setLoading(false);
-    }
-  }, [isNew, newsId, router]);
-
-  useEffect(() => {
-    fetchArticle();
-  }, [fetchArticle]);
-
-  // Generate slug from title
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .replace(/[^a-z0-9一-龥]+/g, "-")
-      .replace(/^-|-$/g, "");
-  };
-
-  // Handle save
-  const handleSave = async () => {
-    if (!formData.title.trim()) {
-      setError("Title is required");
+    if (!form.slug.trim() || !form.title.trim()) {
+      setError("URL 别名和标题必填。");
       return;
     }
-
     setSaving(true);
-    setError(null);
-
     try {
-      // Generate slug if empty
-      const slug = formData.slug.trim() || generateSlug(formData.title);
-
-      const payload = {
-        slug,
-        title: formData.title,
-        titleZh: formData.titleZh,
-        excerpt: formData.excerpt,
-        excerptZh: formData.excerptZh,
-        content: formData.content,
-        contentZh: formData.contentZh,
-        coverImage: formData.coverImage,
-        published: formData.published,
-        authorName: formData.authorName,
-        categoryId: formData.categoryId || null,
-        publishedAt: formData.publishedAt || null,
-      };
-
-      const url = isNew
-        ? "/api/admin/news"
-        : `/api/admin/news/${newsId}`;
+      const url = isNew ? "/api/admin/news" : `/api/admin/news/${id}`;
       const method = isNew ? "POST" : "PATCH";
-
-      const response = await fetch(url, {
+      const payload = {
+        slug: form.slug.trim(),
+        title: form.title.trim(),
+        titleZh: form.titleZh.trim() || undefined,
+        excerpt: form.excerpt.trim() || undefined,
+        content: form.content || undefined,
+        categoryId: form.categoryId || undefined,
+        coverImage: form.coverImage.trim() || undefined,
+        published: form.published,
+        featured: form.featured,
+      };
+      const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to save");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError((data as { error?: string }).error || `保存失败 (${res.status})`);
+        return;
       }
-
-      setSaveSuccess(true);
-
-      // Redirect after short delay
-      setTimeout(() => {
-        router.push("/admin/news");
-      }, 1500);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save article");
+      router.push("/admin/news");
+      router.refresh();
+    } catch {
+      setError("Network error while saving.");
     } finally {
       setSaving(false);
     }
   };
 
-  // Handle delete
-  const handleDelete = async () => {
-    setDeleting(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`/api/admin/news/${newsId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to delete");
-      }
-
-      setDeleteSuccess(true);
-      setTimeout(() => {
-        router.push("/admin/news");
-      }, 1500);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete article");
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  // Get current slug for view link
-  const viewSlug = formData.slug || (formData.title ? generateSlug(formData.title) : newsId);
+  const inputCls = "h-9 w-full rounded-md border border-[#E4E4E7] bg-white px-3 text-sm text-[#0A0A0A] placeholder:text-[#A1A1AA] transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20";
+  const labelCls = "mb-1.5 block text-xs font-medium text-[#52525B]";
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-[#3B82F6] animate-spin" />
-        <span className="ml-3 text-white/60">{t.loading}</span>
+      <div className="flex items-center justify-center py-20 text-[#71717A]">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span className="ml-2 text-sm">加载中…</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/admin/news"
-            className="p-2 rounded-lg hover:bg-white/[0.05] transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-white/60" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-semibold text-white">
-              {isNew ? t.titleNew : t.title}
-            </h1>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          {!isNew && (
-            <Link href={`/news/${viewSlug}`} target="_blank">
-              <Button variant="ghost">
-                <Eye className="w-4 h-4 mr-2" />
-                {t.viewArticle}
-              </Button>
-            </Link>
-          )}
-          <Link href="/admin/news">
-            <Button variant="ghost">{t.cancel}</Button>
-          </Link>
-          <Button onClick={handleSave} loading={saving}>
-            <Save className="w-4 h-4 mr-2" />
-            {saving ? t.saving : t.save}
-          </Button>
+    <div className="space-y-5">
+      <div className="flex items-center gap-3">
+        <button type="button" onClick={() => router.push("/admin/news")} className="rounded-md p-1.5 text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#0A0A0A]">
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
+        </button>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#0A0A0A]" style={{ fontFamily: "var(--font-space-grotesk), system-ui" }}>
+            {isNew ? "新建文章" : "编辑文章"}
+          </h1>
         </div>
       </div>
 
-      {/* Success/Error Messages */}
-      {saveSuccess && (
-        <div className="flex items-center gap-2 p-4 rounded-lg bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981]">
-          <CheckCircle className="w-5 h-5" />
-          <span>{t.saveSuccess}</span>
-        </div>
-      )}
-      {deleteSuccess && (
-        <div className="flex items-center gap-2 p-4 rounded-lg bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981]">
-          <CheckCircle className="w-5 h-5" />
-          <span>{t.deleteSuccess}</span>
-        </div>
-      )}
       {error && (
-        <div className="flex items-center gap-2 p-4 rounded-lg bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444]">
-          <AlertCircle className="w-5 h-5" />
+        <div role="alert" className="flex items-start gap-2 rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2.5 text-sm text-[#B91C1C]">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2} />
           <span>{error}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Basic Info */}
-          <div className="p-6 rounded-xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06]">
-            <h2 className="text-lg font-semibold text-white mb-4">{t.basicInfo}</h2>
-            <div className="space-y-4">
-              <Input
-                label={t.titleField}
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Enter article title..."
-                required
-              />
-              <Input
-                label={t.titleFieldZh}
-                value={formData.titleZh}
-                onChange={(e) => setFormData({ ...formData, titleZh: e.target.value })}
-                placeholder="输入文章标题..."
-              />
-              <div>
-                <label className="block text-sm font-medium text-[#E2E8F0] mb-1.5">
-                  {t.excerpt}
-                </label>
-                <textarea
-                  value={formData.excerpt}
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                  rows={2}
-                  className="w-full px-4 py-3 rounded-lg bg-[#0F172A] border border-[#334155] text-white placeholder-[#64748B] focus:outline-none focus:border-[#3B82F6] resize-none"
-                  placeholder="Brief description for article preview..."
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#E2E8F0] mb-1.5">
-                  {t.excerptZh}
-                </label>
-                <textarea
-                  value={formData.excerptZh}
-                  onChange={(e) => setFormData({ ...formData, excerptZh: e.target.value })}
-                  rows={2}
-                  className="w-full px-4 py-3 rounded-lg bg-[#0F172A] border border-[#334155] text-white placeholder-[#64748B] focus:outline-none focus:border-[#3B82F6] resize-none"
-                  placeholder="简短描述，用于文章预览..."
-                />
-              </div>
+      <form onSubmit={onSubmit} className="space-y-5">
+        <section className="rounded-xl border border-[#E4E4E7] bg-white p-5 md:p-6">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-[#52525B]">基本信息</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label className={labelCls} htmlFor="slug">URL 别名 *</label>
+              <input id="slug" className={inputCls} value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} disabled={saving} required />
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="category">分类</label>
+              <select id="category" className={inputCls} value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} disabled={saving}>
+                <option value="">无</option>
+                {categories.map((c) => <option key={c.id} value={c.id}>{c.slug}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="title">标题 *</label>
+              <input id="title" className={inputCls} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} disabled={saving} required />
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="titleZh">标题（中文）</label>
+              <input id="titleZh" className={inputCls} value={form.titleZh} onChange={(e) => setForm({ ...form, titleZh: e.target.value })} disabled={saving} />
+            </div>
+            <div className="md:col-span-2">
+              <label className={labelCls} htmlFor="coverImage">封面图片 URL</label>
+              <input id="coverImage" className={inputCls} value={form.coverImage} onChange={(e) => setForm({ ...form, coverImage: e.target.value })} disabled={saving} />
             </div>
           </div>
+        </section>
 
-          {/* Content */}
-          <div className="p-6 rounded-xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06]">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white">{t.content}</h2>
-              <div className="flex items-center gap-1">
-                <button className="p-2 text-white/40 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors">
-                  <Bold className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-white/40 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors">
-                  <Italic className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-white/40 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors">
-                  <LinkIcon className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-white/40 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors">
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
+        <section className="rounded-xl border border-[#E4E4E7] bg-white p-5 md:p-6">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-[#52525B]">正文</h2>
+          <div className="space-y-4">
+            <div>
+              <label className={labelCls} htmlFor="excerpt">摘要</label>
+              <textarea id="excerpt" rows={2} className="w-full rounded-md border border-[#E4E4E7] bg-white px-3 py-2 text-sm text-[#0A0A0A] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20" value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} disabled={saving} />
             </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs text-white/40 mb-2">English</label>
-                <textarea
-                  value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  rows={12}
-                  className="w-full px-4 py-3 rounded-lg bg-[#0F172A] border border-[#334155] text-white placeholder-[#64748B] focus:outline-none focus:border-[#3B82F6] resize-none font-mono text-sm"
-                  placeholder="Article content in English (supports Markdown)..."
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-white/40 mb-2">中文</label>
-                <textarea
-                  value={formData.contentZh}
-                  onChange={(e) => setFormData({ ...formData, contentZh: e.target.value })}
-                  rows={12}
-                  className="w-full px-4 py-3 rounded-lg bg-[#0F172A] border border-[#334155] text-white placeholder-[#64748B] focus:outline-none focus:border-[#3B82F6] resize-none font-mono text-sm"
-                  placeholder="中文文章内容（支持 Markdown）..."
-                />
-              </div>
+            <div>
+              <label className={labelCls} htmlFor="content">正文</label>
+              <textarea id="content" rows={12} className="w-full rounded-md border border-[#E4E4E7] bg-white px-3 py-2 text-sm font-mono text-[#0A0A0A] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20" value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} disabled={saving} placeholder="HTML 或纯文本" />
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Status */}
-          <div className="p-6 rounded-xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06]">
-            <h2 className="text-lg font-semibold text-white mb-4">{t.settings}</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-white/60 mb-2">{t.status}</label>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setFormData({ ...formData, published: true })}
-                    className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      formData.published
-                        ? "bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30"
-                        : "bg-white/[0.03] text-white/60 border border-white/[0.10] hover:border-white/[0.20]"
-                    }`}
-                  >
-                    {t.published}
-                  </button>
-                  <button
-                    onClick={() => setFormData({ ...formData, published: false })}
-                    className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      !formData.published
-                        ? "bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/30"
-                        : "bg-white/[0.03] text-white/60 border border-white/[0.10] hover:border-white/[0.20]"
-                    }`}
-                  >
-                    {t.draft}
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm text-white/60 mb-2">{t.category}</label>
-                <select
-                  value={formData.categoryId}
-                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                  className="w-full h-10 px-4 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#3B82F6]"
-                >
-                  <option value="">{t.selectCategory}</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name} ({cat.postCount})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm text-white/60 mb-2">{t.author}</label>
-                <Input
-                  value={formData.authorName}
-                  onChange={(e) => setFormData({ ...formData, authorName: e.target.value })}
-                  placeholder="Author name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-white/60 mb-2">{t.publishDate}</label>
-                <input
-                  type="date"
-                  value={formData.publishedAt}
-                  onChange={(e) => setFormData({ ...formData, publishedAt: e.target.value })}
-                  className="w-full h-10 px-4 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#3B82F6]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-white/60 mb-2">{t.slug}</label>
-                <Input
-                  value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  placeholder="auto-generated-from-title"
-                />
-                <p className="text-xs text-white/40 mt-1">{t.slugHelp}</p>
-              </div>
-
-              {!isNew && (
-                <div className="pt-4 border-t border-white/[0.06]">
-                  <button
-                    onClick={() => setShowDeleteConfirm(true)}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-[#EF4444] bg-[#EF4444]/10 hover:bg-[#EF4444]/20 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    {t.deleteArticle}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Featured Image */}
-          <div className="p-6 rounded-xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06]">
-            <h2 className="text-lg font-semibold text-white mb-4">{t.featuredImage}</h2>
-            {formData.coverImage ? (
-              <div className="relative aspect-video rounded-lg overflow-hidden">
-                <Image
-                  src={formData.coverImage}
-                  alt="Featured image"
-                  fill
-                  className="object-cover"
-                />
+        <section className="rounded-xl border border-[#E4E4E7] bg-white p-5 md:p-6">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-[#52525B]">发布设置</h2>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {([["published", "已发布"], ["featured", "精选"]] as const).map(([key, label]) => (
+              <label key={key} className="flex items-center justify-between gap-3 rounded-md border border-[#E4E4E7] bg-white px-3 py-2.5">
+                <span className="text-sm font-medium text-[#0A0A0A]">{label}</span>
                 <button
-                  onClick={() => setFormData({ ...formData, coverImage: "" })}
-                  className="absolute top-2 right-2 p-2 rounded-lg bg-black/50 text-white/60 hover:text-white transition-colors"
+                  type="button"
+                  role="switch"
+                  aria-checked={form[key]}
+                  onClick={() => setForm({ ...form, [key]: !form[key] })}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors ${form[key] ? "bg-[#2563EB]" : "bg-[#E4E4E7]"}`}
                 >
-                  <X className="w-4 h-4" />
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${form[key] ? "translate-x-[18px]" : "translate-x-[3px]"}`} />
                 </button>
-              </div>
-            ) : (
-              <div>
-                <Input
-                  placeholder="https://example.com/image.jpg"
-                  value={formData.coverImage}
-                  onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                />
-                <p className="text-xs text-white/40 mt-2">{t.uploadImage} (URL)</p>
-              </div>
-            )}
+              </label>
+            ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-[#111827] border border-white/10 rounded-2xl p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-white mb-4">{t.deleteArticle}</h3>
-            <p className="text-white/70 mb-6">{t.deleteConfirm}</p>
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => setShowDeleteConfirm(false)}
-              >
-                {t.cancel}
-              </Button>
-              <Button
-                variant="danger"
-                className="flex-1"
-                onClick={handleDelete}
-                disabled={deleting}
-              >
-                {deleting ? (
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                ) : (
-                  <Trash2 className="w-4 h-4 mr-2" />
-                )}
-                {t.deleteArticle}
-              </Button>
-            </div>
-          </div>
+        <div className="flex items-center justify-between border-t border-[#F4F4F5] pt-5">
+          <button type="button" onClick={() => router.push("/admin/news")} disabled={saving}
+            className="inline-flex h-9 items-center rounded-md border border-[#E4E4E7] bg-white px-3 text-sm font-medium text-[#52525B] hover:border-[#0A0A0A] hover:text-[#0A0A0A] disabled:opacity-50">
+            取消
+          </button>
+          <button type="submit" disabled={saving}
+            className="inline-flex h-9 items-center rounded-md bg-[#0A0A0A] px-4 text-sm font-semibold text-white hover:bg-[#27272A] disabled:opacity-60">
+            {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+            {saving ? "Saving…" : (isNew ? "创建文章" : "保存修改")}
+          </button>
         </div>
-      )}
+      </form>
     </div>
   );
 }

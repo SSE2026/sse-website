@@ -4,7 +4,14 @@ import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
-export function EngineeringProcess() {
+interface EngineeringProcessProps {
+  title?: string;
+  subtitle?: string;
+  steps?: Array<{ title: string }>;
+  keywords?: string[];
+}
+
+export function EngineeringProcess({ title, subtitle, steps, keywords }: EngineeringProcessProps) {
   const t = useTranslations("casesPage.workflow");
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -20,7 +27,7 @@ export function EngineeringProcess() {
     return () => observer.disconnect();
   }, []);
 
-  const steps = [
+  const defaultSteps = [
     { key: "flightPlatform", title: t("steps.0.title") },
     { key: "missionRequirements", title: t("steps.1.title") },
     { key: "batteryArchitecture", title: t("steps.2.title") },
@@ -28,7 +35,7 @@ export function EngineeringProcess() {
     { key: "flightValidation", title: t("steps.4.title") },
   ];
 
-  const keywords = [
+  const defaultKeywords = [
     t("keywords.0"),
     t("keywords.1"),
     t("keywords.2"),
@@ -37,6 +44,15 @@ export function EngineeringProcess() {
     t("keywords.5"),
     t("keywords.6"),
   ];
+
+  // CMS overrides fall back to messages
+  const finalSteps = (steps && steps.length > 0 ? steps : defaultSteps).map((s, i) => ({
+    key: `step-${i}`,
+    title: s.title,
+  }));
+  const finalKeywords = keywords && keywords.length > 0 ? keywords : defaultKeywords;
+  const sectionTitle = title || t("title");
+  const sectionSubtitle = subtitle || t("subtitle");
 
   return (
     <section
@@ -52,10 +68,10 @@ export function EngineeringProcess() {
           className="mb-16 text-center"
         >
           <h2 className="mb-4 text-2xl md:text-3xl lg:text-4xl font-bold text-[#1a1a1a]">
-            {t("title")}
+            {sectionTitle}
           </h2>
           <p className="text-sm text-[#666666] max-w-2xl mx-auto">
-            {t("subtitle")}
+            {sectionSubtitle}
           </p>
         </motion.div>
 
@@ -75,7 +91,7 @@ export function EngineeringProcess() {
             </div>
 
             <div className="grid grid-cols-5 gap-4 lg:gap-6">
-              {steps.map((step, index) => (
+              {finalSteps.map((step, index) => (
                 <motion.div
                   key={step.key}
                   initial={{ opacity: 0, y: 20 }}
@@ -104,7 +120,7 @@ export function EngineeringProcess() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="flex flex-wrap justify-center gap-3"
         >
-          {keywords.map((keyword, index) => (
+          {finalKeywords.map((keyword, index) => (
             <span
               key={index}
               className="rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-xs text-[#666666] hover:border-[#2563EB]/50 hover:text-[#2563EB] transition-colors"

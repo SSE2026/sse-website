@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import GlobalBusinessMap from "@/components/about/GlobalBusinessMap/GlobalBusinessMap";
-import MilestonesSection from "@/components/about/MilestonesSection";
+import MilestonesSection, { type Milestone } from "@/components/about/MilestonesSection";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
@@ -34,6 +34,57 @@ export default function AboutPage() {
   const [locale, setLocale] = useState<"en" | "zh">("en");
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
+
+  // CMS content: intro body + milestones (Hero stays hardcoded per requirement).
+  const [introText, setIntroText] = useState<string | null>(null);
+  const [introTitle, setIntroTitle] = useState<string | null>(null);
+  const [milestoneItems, setMilestoneItems] = useState<Milestone[] | undefined>(undefined);
+  const [heroCms, setHeroCms] = useState<{ title?: string; subtitle?: string; auxText?: string }>({});
+  const [ctaCms, setCtaCms] = useState<{ title?: string; desc?: string; button?: string }>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/content/about?locale=${locale}`, {
+          next: { revalidate: 60 },
+        });
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+        const content = (data?.content ?? {}) as {
+          intro?: { body?: string; title?: string };
+          milestones?: { itemsJson?: string; items?: Milestone[] };
+          hero?: { title?: string; subtitle?: string; auxText?: string };
+          cta?: { title?: string; desc?: string; button?: string };
+        };
+        const intro = content.intro;
+        if (intro?.body && intro.body.trim()) {
+          setIntroText(intro.body);
+        }
+        if (intro?.title && intro.title.trim()) {
+          setIntroTitle(intro.title);
+        }
+        const m = content.milestones;
+        if (m?.itemsJson) {
+          try {
+            const parsed = JSON.parse(m.itemsJson);
+            if (Array.isArray(parsed) && parsed.length > 0) setMilestoneItems(parsed as Milestone[]);
+          } catch {
+            /* fall back to defaults */
+          }
+        } else if (Array.isArray(m?.items) && m.items.length > 0) {
+          setMilestoneItems(m.items);
+        }
+        if (content.hero) setHeroCms(content.hero);
+        if (content.cta) setCtaCms(content.cta);
+      } catch {
+        /* fall back to hardcoded intro/milestones */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   return (
     <>
@@ -73,7 +124,9 @@ export default function AboutPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 0.3 }}
               >
-                {isZh ? (
+                {heroCms.title ? (
+                  <span className="text-shimmer-light">{heroCms.title}</span>
+                ) : isZh ? (
                   <>
                     <span className="text-shimmer-light">好产品，</span>
                     <span className="text-shimmer-light">要让世界知道</span>
@@ -91,7 +144,7 @@ export default function AboutPage() {
                 transition={{ delay: 1, duration: 0.8 }}
                 style={{ color: 'rgba(143, 155, 175, 0.85)' }}
               >
-                {isZh ? "深安锂能 · 全球研发与产业布局" : "SSE · GLOBAL R&D AND INDUSTRIAL NETWORK"}
+                {heroCms.subtitle || (isZh ? "深安锂能 · 全球研发与产业布局" : "SSE · GLOBAL R&D AND INDUSTRIAL NETWORK")}
               </motion.p>
 
               {/* Auxiliary text */}
@@ -102,7 +155,7 @@ export default function AboutPage() {
                 transition={{ delay: 1.3, duration: 0.8 }}
                 style={{ color: 'rgba(100, 113, 135, 0.75)' }}
               >
-                {isZh ? "固态电池技术专家" : "Solid-State Battery Expert"}
+                {heroCms.auxText || (isZh ? "固态电池技术专家" : "Solid-State Battery Expert")}
               </motion.p>
             </motion.div>
           </div>
@@ -131,7 +184,7 @@ export default function AboutPage() {
                 </span>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-[#0A0A0A]">
-                {isZh ? "深安锂能" : "Swift Safe Energy"}
+                {introTitle || (isZh ? "深安锂能" : "Swift Safe Energy")}
               </h2>
             </motion.div>
 
@@ -145,13 +198,13 @@ export default function AboutPage() {
             >
               {isZh ? (
                 <div className="space-y-4 text-[#71717A] leading-relaxed text-sm md:text-base">
-                  {CHINESE_INTRO.split('\n\n').map((paragraph, index) => (
+                  {(introText ?? CHINESE_INTRO).split('\n\n').map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
               ) : (
                 <div className="space-y-4 text-[#71717A] leading-relaxed text-sm md:text-base">
-                  {ENGLISH_INTRO.split('\n\n').map((paragraph, index) => (
+                  {(introText ?? ENGLISH_INTRO).split('\n\n').map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
@@ -161,7 +214,7 @@ export default function AboutPage() {
         </section>
 
         {/* Milestones Section */}
-        <MilestonesSection lang={locale === 'en' ? 'en' : 'zh'} />
+        <MilestonesSection lang={locale === 'en' ? 'en' : 'zh'} items={milestoneItems} />
 
         {/* CTA Section - Explore Products */}
         <section className="py-12 bg-gradient-to-b from-[#09090B] to-[#050505] relative">
@@ -177,18 +230,18 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                {isZh ? "探索我们的产品" : "Explore Our Products"}
+                {ctaCms.title || (isZh ? "探索我们的产品" : "Explore Our Products")}
               </h2>
               <p className="text-white/50 mb-8 max-w-xl mx-auto">
-                {isZh
+                {ctaCms.desc || (isZh
                   ? "了解深安锂能如何通过创新电池技术改变世界"
-                  : "Discover how Swift Safe Energy is transforming the world with innovative battery technology"}
+                  : "Discover how Swift Safe Energy is transforming the world with innovative battery technology")}
               </p>
               <Link
                 href="/products/cloudchi-360-p"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-[#2563EB] text-white font-semibold rounded-xl hover:bg-[#1D4ED8] transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
               >
-                {isZh ? "查看产品中心" : "View Products"}
+                {ctaCms.button || (isZh ? "查看产品中心" : "View Products")}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>

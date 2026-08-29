@@ -11,6 +11,7 @@ import ContactMap from "@/components/contact/ContactMap/ContactMap";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
+import { useCmsContent } from "@/lib/cms/use-cms";
 
 const messages = { en, zh };
 
@@ -25,6 +26,8 @@ export default function ContactPage() {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -36,23 +39,29 @@ export default function ContactPage() {
   const isZh = locale === "zh";
   const currentMessages = messages[locale];
 
+  // CMS overrides for contact info + title/subtitle + form block.
+  const cms = useCmsContent("contact", locale) as {
+    contact?: { title?: string; subtitle?: string; email?: string; phone?: string; address?: string; studioTitle?: string; studioDesc?: string };
+  };
+  const c = cms.contact ?? {};
+
   // 公司信息
   const contactData = {
-    address: isZh
+    address: c.address || (isZh
       ? "深圳市坪山区坑梓街道沙田社区坪山大道6352号2栋210"
-      : "Unit 210, Building 2, No. 6352 Pingshan Avenue, Shatian Community, Kengzi Subdistrict, Pingshan District, Shenzhen",
-    phone: "+86 188 1031 1215",
-    email: "zhanwenwei@ssebatt.com",
+      : "Unit 210, Building 2, No. 6352 Pingshan Avenue, Shatian Community, Kengzi Subdistrict, Pingshan District, Shenzhen"),
+    phone: c.phone || "+86 188 1031 1215",
+    email: c.email || "zhanwenwei@ssebatt.com",
     coords: { lng: 114.402008, lat: 22.760216 },
   };
 
   // 文本内容
   const content = {
     sectionLabel: "04 / Contact & Engagement",
-    title: isZh ? "与深安锂能\n工程团队取得联系" : "Connect with SSE\nEngineering Team",
-    subtitle: isZh
+    title: c.title || (isZh ? "与深安锂能\n工程团队取得联系" : "Connect with SSE\nEngineering Team"),
+    subtitle: c.subtitle || (isZh
       ? "专注于低空飞行与智能装备电源解决方案。无论您需要电池模组规格评估、样品调测或商务合作，我们随时提供专业支持。"
-      : "Focusing on low-altitude flight and intelligent equipment power solutions. Whether you need battery module evaluation, sample testing, or business cooperation, we provide professional support.",
+      : "Focusing on low-altitude flight and intelligent equipment power solutions. Whether you need battery module evaluation, sample testing, or business cooperation, we provide professional support."),
     locationTitle: isZh ? "Location / 总部" : "Location / HQ",
     contactTitle: isZh ? "Direct Reach / 联系方式" : "Direct Reach / Contact",
     serviceTitle: isZh ? "Service SLA / 服务响应" : "Service SLA / Response",
@@ -69,10 +78,10 @@ export default function ContactPage() {
     mapSub: isZh ? "深圳总部" : "Shenzhen HQ",
     mapAddr: isZh ? "坪山大道6352号2栋" : "No. 6352 Pingshan Avenue, Bldg 2",
     navigateBtn: isZh ? "高德地图导航去总部" : "Navigate with AutoNavi",
-    studioTitle: isZh ? "在线提交需求" : "Submit Your Request",
-    studioDesc: isZh
+    studioTitle: c.studioTitle || (isZh ? "在线提交需求" : "Submit Your Request"),
+    studioDesc: c.studioDesc || (isZh
       ? "请选择您的咨询类型，我们的技术经理将根据您勾选的业务类别配备对应的工程人员与您对接。"
-      : "Please select your inquiry type, and our technical manager will connect you with the appropriate engineering staff.",
+      : "Please select your inquiry type, and our technical manager will connect you with the appropriate engineering staff."),
     nameLabel: isZh ? "您的姓名 / Name *" : "Name / 姓名 *",
     namePlaceholder: isZh ? "例如：张经理" : "e.g., John Smith",
     emailContactLabel: isZh ? "工作邮箱 / Email *" : "Email / 邮箱 *",
@@ -100,10 +109,44 @@ export default function ContactPage() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setFormData({ name: "", email: "", company: "", phone: "", message: "" });
+    setSubmitting(true);
+    setSubmitError(null);
+
+    // 咨询类型 → inquiryType
+    const typeMap: Array<"PRODUCT" | "CUSTOM" | "GENERAL"> = ["GENERAL", "CUSTOM", "PRODUCT", "GENERAL"];
+    const inquiryType = typeMap[selectedTag] || "GENERAL";
+
+    try {
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inquiryType,
+          customerName: formData.name,
+          email: formData.email,
+          companyName: formData.company || undefined,
+          phone: formData.phone || undefined,
+          message: formData.message || undefined,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setSubmitError(
+          (data as { error?: string }).error || "Failed to send. Please try again.",
+        );
+        return;
+      }
+
+      setSubmitted(true);
+      setFormData({ name: "", email: "", company: "", phone: "", message: "" });
+    } catch {
+      setSubmitError("Network error. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -277,11 +320,18 @@ export default function ContactPage() {
                             {content.submitAgree}
                           </span>
 
+                          {submitError && (
+                            <span className="text-xs text-red-600">{submitError}</span>
+                          )}
+
                           <button
                             type="submit"
-                            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-all shadow-sm"
+                            disabled={submitting}
+                            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                           >
-                            {content.submitBtn}
+                            {submitting
+                              ? (isZh ? "发送中…" : "Sending…")
+                              : content.submitBtn}
                           </button>
                         </div>
                       </form>
