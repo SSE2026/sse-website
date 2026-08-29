@@ -136,7 +136,7 @@ function HeroSlideVideo({
           ref={videoRef}
           src={videoSrc}
           poster={slide.posterUrl}
-          className="absolute bottom-0 right-0 w-auto h-[85%] max-w-[50%] object-contain"
+          className="absolute bottom-0 right-0 w-auto h-[90%] max-w-[60%] object-contain"
           muted
           playsInline
           loop={slide.loop}
@@ -157,9 +157,9 @@ function HeroContent({
 }) {
   return (
     <div className="absolute inset-0 z-20 pointer-events-none">
-      <div className="absolute inset-x-0 top-[15%] md:top-[18%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[20%] md:pr-[3%] pointer-events-auto">
+      <div className="absolute inset-x-0 top-[15%] md:top-[18%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[10%] md:pr-[3%] pointer-events-auto">
         {/* Text Content - Left side */}
-        <div className="max-w-[520px] flex-shrink-0">
+        <div className="max-w-[460px] flex-shrink-0">
           {/* Eyebrow */}
           <span className="text-base font-mono tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full inline-block mb-6">
             {slide.eyebrow}
@@ -167,7 +167,7 @@ function HeroContent({
 
           {/* Title */}
           <h1
-            className="text-[32px] md:text-[48px] lg:text-[56px] font-extrabold leading-[1.1] mb-5"
+            className="text-[28px] md:text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-5"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
             <span className="text-white">{slide.title.split(' ')[0]} </span>
@@ -176,7 +176,7 @@ function HeroContent({
 
           {/* Description */}
           <p
-            className="text-[14px] md:text-[16px] text-gray-300 leading-relaxed mb-7 max-w-[400px]"
+            className="text-[13px] md:text-[14px] text-gray-300 leading-relaxed mb-7 max-w-[380px]"
             style={{ fontFamily: "var(--font-inter, sans-serif)" }}
           >
             {slide.description}
