@@ -167,7 +167,7 @@ function HeroContent({
           >
             <span className="text-shimmer-logo">{slide.title.split(' ')[0]}</span>
             {slide.title.includes(' ') && (
-              <span className="text-shimmer"> {slide.title.split(' ').slice(1).join(' ')}</span>
+              <span className="text-white"> {slide.title.split(' ').slice(1).join(' ')}</span>
             )}
           </h1>
 
