@@ -165,10 +165,18 @@ function HeroContent({
             className="text-[28px] md:text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-5"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
-            <span className="text-shimmer-logo">{slide.title.split(' ')[0]}</span>
-            {slide.title.includes(' ') && (
-              <span className="text-white"> {slide.title.split(' ').slice(1).join(' ')}</span>
-            )}
+            {(() => {
+              const t = slide.title;
+              const cut = t.includes(" ") ? t.indexOf(" ") : 2;
+              const first = t.slice(0, cut);
+              const rest = t.slice(cut);
+              return (
+                <>
+                  <span className="text-shimmer-logo">{first}</span>
+                  {rest && <span className="text-white">{rest}</span>}
+                </>
+              );
+            })()}
           </h1>
 
           {/* Description */}
