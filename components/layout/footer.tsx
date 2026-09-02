@@ -55,7 +55,7 @@ export function Footer({ translations, locale }: FooterProps) {
   ];
 
   return (
-    <footer className="relative bg-[#0A0A0A] border-t border-[#27272A]">
+    <footer className="relative bg-[#0A0A0A]">
       {/* Subtle grid pattern */}
       <div className="absolute inset-0 grid-pattern opacity-30" />
 
