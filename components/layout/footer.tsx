@@ -166,11 +166,6 @@ export function Footer({ translations, locale }: FooterProps) {
             <p className="text-xs text-[#52525B]">
               {translations.footer.copyright}
             </p>
-            <div className="flex items-center gap-6">
-              <span className="text-xs text-[#52525B]">
-                {locale === "zh" ? "粤ICP备XXXXXXXX号" : "ICP License XXXXXXXX"}
-              </span>
-            </div>
           </div>
         </div>
       </div>
