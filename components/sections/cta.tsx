@@ -146,18 +146,18 @@ export function CTA({ translations, locale }: CTAProps) {
             className="flex flex-wrap items-center justify-center gap-6 mb-12"
           >
             <a
-              href="mailto:zhanwenwei@ssebatt.com"
+              href="mailto:changhao@ssebatt.com"
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
             >
               <Mail className="w-4 h-4 text-[#2563EB]" />
-              <span className="text-sm text-white/80 group-hover:text-white">zhanwenwei@ssebatt.com</span>
+              <span className="text-sm text-white/80 group-hover:text-white">changhao@ssebatt.com</span>
             </a>
             <a
-              href="tel:+8618810311215"
+              href="tel:+8613651071130"
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
             >
               <Phone className="w-4 h-4 text-[#2563EB]" />
-              <span className="text-sm text-white/80 group-hover:text-white">+86 188 1031 1215</span>
+              <span className="text-sm text-white/80 group-hover:text-white">+86 13651071130</span>
             </a>
           </motion.div>
 

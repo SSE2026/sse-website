@@ -306,8 +306,8 @@ export const PAGE_DEFS: CmsPageDef[] = [
       contact: {
         title: "与深安锂能\n工程团队取得联系",
         subtitle: "",
-        email: "zhanwenwei@ssebatt.com",
-        phone: "+86 188 1031 1215",
+        email: "changhao@ssebatt.com",
+        phone: "+86 13651071130",
         address: "深圳市坪山区坑梓街道沙田社区坪山大道6352号2栋210",
         studioTitle: "",
         studioDesc: "",
