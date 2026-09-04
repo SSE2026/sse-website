@@ -203,11 +203,6 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
               <div><Label>公司</Label><Value>{inquiry.companyName}</Value></div>
               <div><Label>邮箱</Label><Value>{inquiry.email}</Value></div>
               <div><Label>电话</Label><Value>{inquiry.phone}</Value></div>
-              <div><Label>国家</Label><Value>{inquiry.country}</Value></div>
-              <div><Label>类型</Label><Value>{inquiry.inquiryType}</Value></div>
-              <div><Label>产品</Label><Value>{inquiry.productModel}</Value></div>
-              <div><Label>变体 / SKU</Label><Value>{inquiry.variantName || inquiry.variantSku}</Value></div>
-              <div><Label>数量</Label><Value>{inquiry.quantity}</Value></div>
               <div><Label>优先级</Label><Value>{inquiry.priority}</Value></div>
               <div><Label>来源</Label><Value>{inquiry.source}</Value></div>
             </dl>
