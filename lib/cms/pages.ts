@@ -200,7 +200,7 @@ export const PAGE_DEFS: CmsPageDef[] = [
       },
     ],
     defaultContent: {
-      hero: { badge: "Products", title: "CloudChi Series", subtitle: "" },
+      hero: { badge: "Products", title: "Aeroride Series", subtitle: "" },
       series: { seriesJson: "[]" },
       comparison: { eyebrow: "", title: "", rowsJson: "[]" },
       cta: { title: "", desc: "", button: "" },

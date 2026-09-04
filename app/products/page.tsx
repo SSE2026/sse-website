@@ -209,7 +209,7 @@ export default function ProductsPage() {
                 </motion.span>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-6">
-                  {heroCms.title || (locale === "zh" ? "云驰系列" : "CloudChi Series")}
+                  {heroCms.title || (locale === "zh" ? "云驰系列" : "Aeroride Series")}
                 </h1>
                 <p className="text-lg md:text-xl text-white/60 max-w-3xl mx-auto">
                   {heroCms.subtitle || (locale === "zh"
@@ -241,7 +241,7 @@ export default function ProductsPage() {
                 {!loading && !error && seriesMeta.map((meta, index) => {
                   const detail = seriesData[meta.slug];
                   const isEven = index % 2 === 0;
-                  const name = detail?.name || (locale === "zh" ? `云驰 ${meta.key}` : `CloudChi ${meta.key}`);
+                  const name = detail?.name || (locale === "zh" ? `云驰 ${meta.key}` : `Aeroride ${meta.key}`);
                   const variants = detail?.variants || [];
                   const seriesCopy = seriesCms[meta.key] ?? {};
                   const headline =
