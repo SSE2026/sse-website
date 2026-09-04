@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import type { NewsItem } from "@/data/news"
-import { getCategoryLabel } from "@/data/news"
+import { getCategoryLabel, getNewsTitle, getNewsExcerpt } from "@/data/news"
 
 interface NewsItemCardProps {
   item: NewsItem
@@ -16,6 +16,8 @@ interface NewsItemCardProps {
 export function NewsItemCard({ item, locale, index }: NewsItemCardProps) {
   const formattedDate = item.date.replace(/-/g, ".")
   const isZh = locale === "zh"
+  const title = getNewsTitle(item, locale)
+  const excerpt = getNewsExcerpt(item, locale)
 
   return (
     <motion.article
@@ -42,7 +44,7 @@ export function NewsItemCard({ item, locale, index }: NewsItemCardProps) {
             >
               <Image
                 src={item.image}
-                alt={item.title}
+                alt={title}
                 fill
                 className="object-contain transition-transform duration-500 group-hover:scale-[1.015]"
               />
@@ -63,8 +65,15 @@ export function NewsItemCard({ item, locale, index }: NewsItemCardProps) {
 
               {/* Title */}
               <h3 className="text-[18px] lg:text-[20px] font-medium leading-[1.35] text-[#111111] group-hover:text-[#155EEF] transition-colors duration-200">
-                {item.title}
+                {title}
               </h3>
+
+              {/* Excerpt */}
+              {excerpt && (
+                <p className="mt-2 text-[14px] leading-[1.6] text-[#6B7280] line-clamp-2">
+                  {excerpt}
+                </p>
+              )}
             </div>
 
             {/* Arrow */}

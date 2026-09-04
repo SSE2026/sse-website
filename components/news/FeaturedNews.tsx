@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import type { NewsItem } from "@/data/news"
-import { getCategoryLabel } from "@/data/news"
+import { getCategoryLabel, getNewsTitle, getNewsExcerpt } from "@/data/news"
 
 interface FeaturedNewsProps {
   item: NewsItem
@@ -15,6 +15,8 @@ interface FeaturedNewsProps {
 export function FeaturedNews({ item, locale }: FeaturedNewsProps) {
   const isZh = locale === "zh"
   const formattedDate = item.date.replace(/-/g, ".")
+  const title = getNewsTitle(item, locale)
+  const excerpt = getNewsExcerpt(item, locale)
 
   return (
     <section className="bg-white border-b border-[#E5E7EB]">
@@ -40,15 +42,22 @@ export function FeaturedNews({ item, locale }: FeaturedNewsProps) {
 
               {/* Title - Primary focus */}
               <h2
-                className="text-[26px] lg:text-[32px] font-medium leading-[1.35] text-[#111111] mb-8"
+                className="text-[26px] lg:text-[32px] font-medium leading-[1.35] text-[#111111] mb-4"
                 style={{
                   wordBreak: "keep-all",
                   overflowWrap: "break-word",
                   wordWrap: "break-word",
                 }}
               >
-                {item.title}
+                {title}
               </h2>
+
+              {/* Excerpt */}
+              {excerpt && (
+                <p className="text-[15px] leading-[1.7] text-[#4B5563] mb-8">
+                  {excerpt}
+                </p>
+              )}
 
               {/* Read More Link - Minimal */}
               <Link
@@ -85,7 +94,7 @@ export function FeaturedNews({ item, locale }: FeaturedNewsProps) {
                 >
                   <Image
                     src={item.image}
-                    alt={item.title}
+                    alt={title}
                     fill
                     className="object-contain transition-transform duration-500 group-hover:scale-[1.015]"
                     priority
