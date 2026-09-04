@@ -80,7 +80,7 @@ export async function PATCH(
     }
 
     const response = await fetch(
-      `${baseUrl}${API_PREFIX}/admin/content/${page}/${locale}`,
+      `${baseUrl}${API_PREFIX}/admin/content/${page}?locale=${encodeURIComponent(locale)}`,
       {
         method: "PATCH",
         headers: {
