@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { AlertCircle, Loader2 } from "lucide-react";
 import type { ProductCategory } from "@/types/admin-product";
 import { ProductForm } from "@/components/admin/ProductForm";
+import { adminFetch } from "@/lib/api/admin-fetch";
 
 export default function NewProductPage() {
   const searchParams = useSearchParams();
@@ -17,7 +18,7 @@ export default function NewProductPage() {
     const ctl = new AbortController();
     (async () => {
       try {
-        const res = await fetch("/api/admin/products/categories?locale=en", {
+        const res = await adminFetch("/api/admin/products/categories?locale=en", {
           signal: ctl.signal,
           cache: "no-store",
         });

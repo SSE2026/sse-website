@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { adminFetch } from "@/lib/api/admin-fetch";
 import {
   AlertCircle,
   ArrowDown,
@@ -81,7 +82,7 @@ export default function InquiriesPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/admin/inquiries?${queryString}`, { signal, cache: "no-store" });
+        const res = await adminFetch(`/api/admin/inquiries?${queryString}`, { signal, cache: "no-store" });
         const json = await res.json();
         if (!res.ok) {
           setError((json as { error?: string }).error || `Failed to load (${res.status})`);
@@ -120,7 +121,7 @@ export default function InquiriesPage() {
     setDeletingId(it.id);
     setDeleteError(null);
     try {
-      const res = await fetch(`/api/admin/inquiries/${it.id}`, { method: "DELETE" });
+      const res = await adminFetch(`/api/admin/inquiries/${it.id}`, { method: "DELETE" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setDeleteError((data as { error?: string }).error || "删除失败");

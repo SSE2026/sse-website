@@ -13,6 +13,7 @@ import {
 import type { ProductListItem, ProductsListResponse } from "@/types/admin-product";
 import { VariantManager, type VariantRow } from "@/components/admin/VariantManager";
 import { cn } from "@/lib/utils";
+import { adminFetch } from "@/lib/api/admin-fetch";
 
 interface SeriesDetail {
   id: string;
@@ -37,7 +38,7 @@ export default function ProductsListPage() {
     setLoadingSeries(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/products?limit=100", { signal, cache: "no-store" });
+      const res = await adminFetch("/api/admin/products?limit=100", { signal, cache: "no-store" });
       const data: ProductsListResponse | { success: false; error: string } = await res.json();
       if (!res.ok || (data as { success?: boolean }).success === false) {
         setError((data as { error?: string }).error || "Failed to load series");
@@ -68,7 +69,7 @@ export default function ProductsListPage() {
       setLoadingDetail(true);
       setError(null);
       try {
-        const res = await fetch(`/api/admin/products/${id}`, { cache: "no-store" });
+        const res = await adminFetch(`/api/admin/products/${id}`, { cache: "no-store" });
         const json = await res.json();
         if (!res.ok) {
           setError((json as { error?: string }).error || "Failed to load series");

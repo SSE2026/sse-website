@@ -10,6 +10,7 @@ import type {
 import { ProductForm } from "@/components/admin/ProductForm";
 import { VariantManager } from "@/components/admin/VariantManager";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { adminFetch } from "@/lib/api/admin-fetch";
 
 export default function EditProductPage({
   params,
@@ -31,8 +32,8 @@ export default function EditProductPage({
     (async () => {
       try {
         const [prodRes, catRes] = await Promise.all([
-          fetch(`/api/admin/products/${id}`, { signal: ctl.signal, cache: "no-store" }),
-          fetch("/api/admin/products/categories?locale=en", {
+          adminFetch(`/api/admin/products/${id}`, { signal: ctl.signal, cache: "no-store" }),
+          adminFetch("/api/admin/products/categories?locale=en", {
             signal: ctl.signal,
             cache: "no-store",
           }),
@@ -74,7 +75,7 @@ export default function EditProductPage({
   const onDelete = async () => {
     setDeleting(true);
     try {
-      const res = await fetch(`/api/admin/products/${id}/delete`, {
+      const res = await adminFetch(`/api/admin/products/${id}/delete`, {
         method: "POST",
       });
       if (!res.ok) {

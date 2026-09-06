@@ -30,6 +30,8 @@ function ErrorContent() {
         return "凭证登录失败。";
       case "session_required":
         return "请先登录。";
+      case "session_expired":
+        return "登录已过期或会话已失效，请重新登录。";
       default:
         return "发生未知错误，请重试。";
     }

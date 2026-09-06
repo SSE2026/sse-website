@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 import { StatusBadge } from "@/components/admin/StatusBadge";
+import { adminFetch } from "@/lib/api/admin-fetch";
 
 const INQUIRY_STATUSES = ["NEW","CONTACTED","QUALIFIED","QUOTING","SAMPLE","TESTING","NEGOTIATION","WON","LOST"] as const;
 const STATUS_LABELS: Record<string, string> = {
@@ -76,7 +77,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/inquiries/${id}`, { signal, cache: "no-store" });
+      const res = await adminFetch(`/api/admin/inquiries/${id}`, { signal, cache: "no-store" });
       const json = await res.json();
       if (!res.ok) {
         setError((json as { error?: string }).error || "Failed to load");
@@ -104,7 +105,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
     setSavingStatus(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/inquiries/${id}/status`, {
+      const res = await adminFetch(`/api/admin/inquiries/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: next }),
@@ -127,7 +128,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
     setAddingActivity(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/inquiries/${id}/activities`, {
+      const res = await adminFetch(`/api/admin/inquiries/${id}/activities`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: activityForm.type, title: activityForm.title.trim(), content: activityForm.content.trim() || undefined }),

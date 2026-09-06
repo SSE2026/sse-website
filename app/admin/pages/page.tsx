@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AlertCircle, FileText, Loader2 } from "lucide-react";
 import { PAGE_DEFS } from "@/lib/cms/pages";
+import { adminFetch } from "@/lib/api/admin-fetch";
 
 interface PageRow {
   page: string;
@@ -21,7 +22,7 @@ export default function PagesListPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/admin/content", { signal: ctl.signal, cache: "no-store" });
+        const res = await adminFetch("/api/admin/content", { signal: ctl.signal, cache: "no-store" });
         const json = await res.json();
         if (!res.ok) {
           setError((json as { error?: string }).error || "Failed to load pages");

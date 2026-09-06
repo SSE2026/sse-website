@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AlertCircle, ArrowLeft, Loader2, Save } from "lucide-react";
 import { getPageDef, flattenContent, unflattenContent } from "@/lib/cms/pages";
 import { MediaUploader } from "@/components/admin/MediaUploader";
+import { adminFetch } from "@/lib/api/admin-fetch";
 
 interface LocaleContent {
   locale: string;
@@ -36,7 +37,7 @@ export default function PageEditor({ params }: { params: Promise<{ page: string 
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/admin/content/${page}`, { signal: ctl.signal, cache: "no-store" });
+        const res = await adminFetch(`/api/admin/content/${page}`, { signal: ctl.signal, cache: "no-store" });
         const json = await res.json();
         if (!res.ok) {
           setError((json as { error?: string }).error || "Failed to load");
@@ -108,7 +109,7 @@ export default function PageEditor({ params }: { params: Promise<{ page: string 
         newContent = unflattenContent(sectionFlat, section.key, newContent);
       }
 
-      const res = await fetch(`/api/admin/content/${page}`, {
+      const res = await adminFetch(`/api/admin/content/${page}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ locale: activeLocale, content: newContent, published: true }),
@@ -120,7 +121,7 @@ export default function PageEditor({ params }: { params: Promise<{ page: string 
       }
       setSaved(true);
       // Refresh locales so updatedAt is current
-      const fresh = await fetch(`/api/admin/content/${page}`, { cache: "no-store" });
+      const fresh = await adminFetch(`/api/admin/content/${page}`, { cache: "no-store" });
       if (fresh.ok) {
         const j = await fresh.json();
         const body = (j?.data ?? j) as { locales?: LocaleContent[] };

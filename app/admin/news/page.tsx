@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { adminFetch } from "@/lib/api/admin-fetch";
 import {
   AlertCircle,
   ArrowDown,
@@ -67,7 +68,7 @@ export default function NewsAdminPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/admin/news?${queryString}`, { signal, cache: "no-store" });
+        const res = await adminFetch(`/api/admin/news?${queryString}`, { signal, cache: "no-store" });
         const json = await res.json();
         if (!res.ok) {
           setError((json as { error?: string }).error || `Failed to load news (${res.status})`);
@@ -101,7 +102,7 @@ export default function NewsAdminPage() {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      const res = await fetch(`/api/admin/news/${deleteTarget.id}`, { method: "DELETE" });
+      const res = await adminFetch(`/api/admin/news/${deleteTarget.id}`, { method: "DELETE" });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setError((data as { error?: string }).error || "Delete failed");

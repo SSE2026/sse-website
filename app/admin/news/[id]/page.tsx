@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
+import { adminFetch } from "@/lib/api/admin-fetch";
 
 interface BlogCategory { id: string; slug: string; }
 interface BlogPost {
@@ -44,7 +45,7 @@ export default function NewsEditPage({ params }: { params: Promise<{ id: string 
     (async () => {
       // 加载分类
       try {
-        const catRes = await fetch("/api/admin/news/categories?locale=en", { signal: ctl.signal, cache: "no-store" });
+        const catRes = await adminFetch("/api/admin/news/categories?locale=en", { signal: ctl.signal, cache: "no-store" });
         if (catRes.ok) {
           const data = await catRes.json();
           const body = (data?.data ?? data) as { items?: BlogCategory[] } | BlogCategory[] | undefined;
@@ -55,7 +56,7 @@ export default function NewsEditPage({ params }: { params: Promise<{ id: string 
 
       if (isNew) return;
       try {
-        const res = await fetch(`/api/admin/news/${id}`, { signal: ctl.signal, cache: "no-store" });
+        const res = await adminFetch(`/api/admin/news/${id}`, { signal: ctl.signal, cache: "no-store" });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
           setError((data as { error?: string }).error || `Failed to load (${res.status})`);
