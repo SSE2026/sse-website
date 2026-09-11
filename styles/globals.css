@@ -245,6 +245,23 @@ body {
   animation: shimmer 4s linear infinite;
 }
 
+/* Text Shimmer - 科技蓝版本（纯蓝 + 纯白高光，无过渡灰） */
+.text-shimmer-blue {
+  background: linear-gradient(
+    110deg,
+    #3B82F6 0%,
+    #3B82F6 35%,
+    #FFFFFF 50%,
+    #3B82F6 65%,
+    #3B82F6 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
 /* Text Shimmer - 公司 logo 三色版（蓝/红/绿）保持光效 */
 .text-shimmer-logo {
   background: linear-gradient(
