@@ -202,16 +202,8 @@ export default function ProductDetailPage() {
               />
             </div>
 
-            {/* Left-side subtle gradient for text legibility */}
             <div
-              className="absolute inset-y-0 left-0 w-1/2 z-[5] pointer-events-none"
-              style={{
-                background: "linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, transparent 100%)",
-              }}
-            />
-
-            <div
-              className="relative max-w-7xl pl-8 pr-6 md:pl-16 lg:pl-24 z-10"
+              className="relative max-w-7xl pl-2 pr-2 md:pl-4 lg:pl-4 z-10"
               style={{
                 minHeight: "100vh",
                 display: "flex",
@@ -219,7 +211,7 @@ export default function ProductDetailPage() {
               }}
             >
               {/* Plain text on left - no card, no animation (instant render) */}
-              <div className="flex flex-col gap-5 max-w-[480px]">
+              <div className="flex flex-col gap-5 max-w-[280px]">
                 {/* Title */}
                 <h1
                   className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-[1.1]"
