@@ -206,7 +206,7 @@ export default function ProductDetailPage() {
             <div
               className="absolute inset-y-0 left-0 w-1/2 z-[5] pointer-events-none"
               style={{
-                background: "linear-gradient(to right, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 40%, transparent 100%)",
+                background: "linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, transparent 100%)",
               }}
             />
 
@@ -226,21 +226,28 @@ export default function ProductDetailPage() {
                   style={{
                     fontFamily: "var(--font-space-grotesk)",
                     color: "#FFFFFF",
+                    textShadow: "0 2px 16px rgba(0,0,0,0.6), 0 1px 4px rgba(0,0,0,0.5)",
                   }}
                 >
                   {locale === "zh" ? (
                     <>
-                      <span className="text-shimmer-blue">突破</span>能量极限
+                      突破能量极限
                       <br />
-                      <span className="text-shimmer-blue">重塑</span>电动边界
+                      <span className="gradient-text-animated">重塑电动边界</span>
                     </>
                   ) : (
                     <>
-                      <span className="text-shimmer-blue">Breaking</span>{" "}
-                      Energy Limits
+                      Breaking Energy
                       <br />
-                      <span className="text-shimmer-blue">Reshaping</span>{" "}
-                      Electric Future
+                      Limits
+                      <br />
+                      <span className="gradient-text-animated">
+                        Reshaping Electric
+                      </span>
+                      <br />
+                      <span className="gradient-text-animated">
+                        Future
+                      </span>
                     </>
                   )}
                 </h1>
