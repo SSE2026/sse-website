@@ -211,7 +211,7 @@ export default function ProductDetailPage() {
               }}
             >
               {/* Plain text on left - no card, no animation (instant render) */}
-              <div className="flex flex-col gap-5 max-w-[280px]">
+              <div className="flex flex-col gap-5 max-w-[360px]">
                 {/* Title */}
                 <h1
                   className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-[1.1]"
@@ -229,16 +229,10 @@ export default function ProductDetailPage() {
                     </>
                   ) : (
                     <>
-                      Breaking Energy
-                      <br />
-                      Limits
+                      Breaking Energy Limits
                       <br />
                       <span className="gradient-text-animated">
-                        Reshaping Electric
-                      </span>
-                      <br />
-                      <span className="gradient-text-animated">
-                        Future
+                        Reshaping Electric Future
                       </span>
                     </>
                   )}
