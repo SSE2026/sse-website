@@ -10,11 +10,12 @@ import { CursorFollower } from "@/components/ui/animations";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
+import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 
 export default function HomePage() {
-  const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
   const currentMessages = messages[locale];
 
   return (

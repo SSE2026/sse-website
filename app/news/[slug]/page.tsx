@@ -6,13 +6,14 @@ import { Header } from "@/components/layout/header";
 import { getNewsBySlug } from "@/data/news";
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
+import { resolveInitialLocale } from "@/lib/locale";
 
 export default function NewsDetailClient() {
   const params = useParams<{ slug: string }>();
   const slug = params?.slug ?? "";
   const item = getNewsBySlug(slug);
 
-  const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Default to a tall value so even before the first postMessage the
   // full article is visible (article 22 is ~12000px tall).

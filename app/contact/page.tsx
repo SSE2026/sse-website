@@ -13,6 +13,7 @@ import WhatsAppModal from "@/components/contact/WhatsAppModal";
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
 import { useCmsContent } from "@/lib/cms/use-cms";
+import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 
@@ -23,7 +24,7 @@ const inquiryTags = {
 };
 
 export default function ContactPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState(0);
   const [submitted, setSubmitted] = useState(false);

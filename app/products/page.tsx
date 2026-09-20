@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
+import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 
@@ -89,7 +90,7 @@ function fmt(v: number | null | undefined, unit: string) {
 }
 
 export default function ProductsPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
   const currentMessages = messages[locale];
 
   const cms = useCmsContent("products", locale) as {

@@ -13,12 +13,13 @@ import { useCmsContent } from "@/lib/cms/use-cms";
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
 import { newsItems, categories, type Category } from "@/data/news";
+import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 const ITEMS_PER_PAGE = 5;
 
 export default function NewsPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
   const [activeCategory, setActiveCategory] = useState<Category>("ALL");
   const [currentPage, setCurrentPage] = useState(1);
 

@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/footer";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
+import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 
@@ -121,7 +122,7 @@ const milestones: Milestone[] = [
 ];
 
 export default function HistoryPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
   const [activeYear, setActiveYear] = useState<string>("2026");

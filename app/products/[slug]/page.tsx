@@ -13,6 +13,7 @@ import { ArrowRight } from "lucide-react";
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
 import { products, productSeries, Product } from "@/data/products";
+import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 
@@ -42,7 +43,7 @@ const SERIES_CONFIG = [
 ] as const;
 
 export default function ProductDetailPage() {
-  const [locale, setLocale] = useState<"en" | "zh">("en");
+  const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
   const [activeTab, setActiveTab] = useState("360p");
   const currentMessages = messages[locale];
   const isZh = locale === "zh";

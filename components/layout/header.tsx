@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { setLocaleCookie } from "@/lib/locale";
 
 interface HeaderProps {
   translations: {
@@ -145,7 +146,11 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => onLocaleChange(locale === "en" ? "zh" : "en")}
+                onClick={() => {
+                  const next = locale === "en" ? "zh" : "en";
+                  setLocaleCookie(next);
+                  onLocaleChange(next);
+                }}
                 className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
               >
                 <Globe className="w-4 h-4" />
@@ -274,7 +279,9 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                 >
                   <button
                     onClick={() => {
-                      onLocaleChange(locale === "en" ? "zh" : "en");
+                      const next = locale === "en" ? "zh" : "en";
+                      setLocaleCookie(next);
+                      onLocaleChange(next);
                       setIsMobileMenuOpen(false);
                     }}
                     className="flex items-center justify-center gap-2 w-full px-4 py-3 text-base font-medium text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
