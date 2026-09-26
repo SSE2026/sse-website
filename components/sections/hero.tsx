@@ -56,13 +56,12 @@ function splitTitle(title: string): { first: string; rest: string } {
 }
 
 // ============================================
-// Right-side video carousel card
+// Right-side video carousel card (smaller / square)
 // ============================================
 function VideoCarouselCard() {
   const [active, setActive] = useState(0);
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
 
-  // Auto-rotate slides
   useEffect(() => {
     const id = setInterval(() => {
       setActive((i) => (i + 1) % CAROUSEL_VIDEOS.length);
@@ -70,7 +69,6 @@ function VideoCarouselCard() {
     return () => clearInterval(id);
   }, []);
 
-  // Play the active video, pause the others
   useEffect(() => {
     refs.current.forEach((v, i) => {
       if (!v) return;
@@ -84,7 +82,7 @@ function VideoCarouselCard() {
   }, [active]);
 
   return (
-    <div className="relative w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]">
+    <div className="relative w-full max-w-[420px] mx-auto aspect-square rounded-2xl overflow-hidden border border-white/10 bg-[#0a0a0a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]">
       {CAROUSEL_VIDEOS.map((slide, i) => (
         <video
           key={slide.src}
@@ -101,21 +99,19 @@ function VideoCarouselCard() {
         />
       ))}
 
-      {/* Pagination dots */}
-      <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
+      <div className="absolute bottom-3 left-0 right-0 z-20 flex justify-center gap-2">
         {CAROUSEL_VIDEOS.map((_, i) => (
           <button
             key={i}
             onClick={() => setActive(i)}
             aria-label={`Video ${i + 1}`}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === active ? "w-7 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
+              i === active ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
             }`}
           />
         ))}
       </div>
 
-      {/* Subtle vignette to add depth */}
       <div
         className="absolute inset-0 pointer-events-none z-[5]"
         style={{
@@ -182,136 +178,144 @@ export function Hero({ translations }: HeroProps) {
       ];
 
   return (
-    <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
-      {/* Content layer — top padding minimized so CTAs sit in the first viewport */}
-      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-6 md:pt-10 pb-10 md:pb-14">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
-          {/* LEFT: text content */}
-          <div className="lg:col-span-7 flex flex-col">
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="text-[36px] md:text-[48px] lg:text-[56px] font-bold leading-[1.1] tracking-tight"
-              style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-            >
-              <span className="block">
-                <span className="text-shimmer-blue">{line1First}</span>
-                <span className="text-white">{line1Rest}</span>
-              </span>
-              <span className="block">
-                <span className="text-shimmer-amber">{line2First}</span>
-                <span className="text-white">{line2Rest}</span>
-              </span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="mt-5 md:mt-6 text-[14px] md:text-[15px] text-gray-100 leading-[1.65] max-w-[58ch]"
-              style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-            >
-              {subtitle}
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] md:text-[14px] text-white"
-              style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-            >
-              {tagValues.map((label, i) => (
-                <span key={i} className="inline-flex items-center gap-3">
-                  {i > 0 && (
-                    <span className="w-1 h-1 rounded-full bg-white/50" />
-                  )}
-                  <span>{label}</span>
-                </span>
-              ))}
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              className="mt-6 md:mt-7 flex flex-wrap gap-3 md:gap-4"
-            >
-              <Link
-                href="/cases"
-                className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
-                style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-              >
-                {ctaExplore}
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
-                style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-              >
-                {ctaContact}
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-          </div>
-
-          {/* RIGHT: video carousel card */}
-          <div className="lg:col-span-5">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            >
-              <VideoCarouselCard />
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Bottom: 4 scenario cards → /contact (below the first viewport) */}
-        <div className="mt-10 md:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-          {scenarios.map((scenario, i) => (
-            <motion.div
-              key={scenario.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.6,
-                delay: 0.5 + i * 0.08,
-                ease: "easeOut",
-              }}
-            >
-              <Link
-                href="/contact"
-                className="group flex items-start justify-between gap-3 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm hover:bg-white/[0.12] hover:border-white/30 p-4 md:p-5 transition-all duration-300"
-              >
-                <div className="flex flex-col gap-1.5 min-w-0">
-                  <span
-                    className="text-[10px] md:text-[11px] font-mono text-white/60 tracking-wider"
-                    style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-                  >
-                    {scenario.number}
+    <>
+      {/* ============= Hero (one viewport) ============= */}
+      <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
+        <div className="h-full flex items-center">
+          <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+              {/* LEFT: text content (8/12) */}
+              <div className="lg:col-span-8 flex flex-col">
+                <motion.h1
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, ease: "easeOut" }}
+                  className="text-[32px] md:text-[44px] lg:text-[52px] font-bold leading-[1.1] tracking-tight"
+                  style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
+                >
+                  <span className="block">
+                    <span className="text-shimmer-blue">{line1First}</span>
+                    <span className="text-white">{line1Rest}</span>
                   </span>
-                  <div
-                    className="text-[14px] md:text-base font-semibold text-white truncate"
+                  <span className="block">
+                    <span className="text-shimmer-amber">{line2First}</span>
+                    <span className="text-white">{line2Rest}</span>
+                  </span>
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+                  className="mt-5 md:mt-6 text-[14px] md:text-[15px] text-gray-100 leading-[1.65] max-w-[60ch]"
+                  style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                >
+                  {subtitle}
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+                  className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] md:text-[14px] text-white"
+                  style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                >
+                  {tagValues.map((label, i) => (
+                    <span key={i} className="inline-flex items-center gap-3">
+                      {i > 0 && (
+                        <span className="w-1 h-1 rounded-full bg-white/50" />
+                      )}
+                      <span>{label}</span>
+                    </span>
+                  ))}
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+                  className="mt-6 md:mt-7 flex flex-wrap gap-3 md:gap-4"
+                >
+                  <Link
+                    href="/cases"
+                    className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
                     style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                   >
-                    {scenario.label}
-                  </div>
-                  <div
-                    className="text-[11px] md:text-[12px] text-white/60"
+                    {ctaExplore}
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
                     style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                   >
-                    {scenario.subLabel}
-                  </div>
-                </div>
-                <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white/60 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform flex-shrink-0 mt-1" />
-              </Link>
-            </motion.div>
-          ))}
+                    {ctaContact}
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                </motion.div>
+              </div>
+
+              {/* RIGHT: video carousel (4/12) */}
+              <div className="lg:col-span-4">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+                >
+                  <VideoCarouselCard />
+                </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* ============= 4 scenario cards (separate section below the fold) ============= */}
+      <section className="bg-black text-white border-t border-white/10">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-8 md:py-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            {scenarios.map((scenario, i) => (
+              <motion.div
+                key={scenario.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.1 + i * 0.06,
+                  ease: "easeOut",
+                }}
+              >
+                <Link
+                  href="/contact"
+                  className="group flex items-start justify-between gap-3 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm hover:bg-white/[0.12] hover:border-white/30 p-4 md:p-5 transition-all duration-300"
+                >
+                  <div className="flex flex-col gap-1.5 min-w-0">
+                    <span
+                      className="text-[10px] md:text-[11px] font-mono text-white/60 tracking-wider"
+                      style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
+                    >
+                      {scenario.number}
+                    </span>
+                    <div
+                      className="text-[14px] md:text-base font-semibold text-white truncate"
+                      style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                    >
+                      {scenario.label}
+                    </div>
+                    <div
+                      className="text-[11px] md:text-[12px] text-white/60"
+                      style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                    >
+                      {scenario.subLabel}
+                    </div>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white/60 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform flex-shrink-0 mt-1" />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
