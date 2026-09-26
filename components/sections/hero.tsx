@@ -56,7 +56,7 @@ function splitTitle(title: string): { first: string; rest: string } {
 }
 
 // ============================================
-// Right-side video carousel card (smaller / square)
+// Right-side video carousel card (edge-less square)
 // ============================================
 function VideoCarouselCard() {
   const [active, setActive] = useState(0);
@@ -116,7 +116,7 @@ function VideoCarouselCard() {
 }
 
 // ============================================
-// Hero Component
+// Hero Component (bold editorial layout)
 // ============================================
 export function Hero({ translations }: HeroProps) {
   const t = useTranslations("hero");
@@ -171,93 +171,87 @@ export function Hero({ translations }: HeroProps) {
 
   return (
     <>
-      {/* ============= Hero (one viewport) ============= */}
+      {/* ============= Hero (bold editorial) ============= */}
       <section className="relative w-full overflow-hidden bg-black text-white">
-        <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-24 md:pt-28 pb-10 md:pb-14">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-              {/* LEFT: text content (8/12) */}
-              <div className="lg:col-span-8 flex flex-col">
-                <motion.h1
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, ease: "easeOut" }}
-                  className="text-[32px] md:text-[44px] lg:text-[52px] font-bold leading-[1.1] tracking-tight"
-                  style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-                >
-                  <span className="block">
-                    <span className="text-shimmer-blue">{line1First}</span>
-                    <span className="text-white">{line1Rest}</span>
+        <div className="relative z-[2] w-full max-w-[1400px] mx-auto px-6 md:px-10 lg:px-16 pt-24 md:pt-32 pb-10 md:pb-14">
+          {/* BOLD: title spans the full width, oversized type */}
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="text-[44px] md:text-[68px] lg:text-[88px] xl:text-[104px] font-black leading-[1.02] tracking-[-0.03em] max-w-[14ch]"
+            style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
+          >
+            <span className="block">
+              <span className="text-shimmer-blue">{line1First}</span>
+              <span className="text-white">{line1Rest}</span>
+            </span>
+            <span className="block">
+              <span className="text-shimmer-amber">{line2First}</span>
+              <span className="text-white">{line2Rest}</span>
+            </span>
+          </motion.h1>
+
+          {/* Below: subtitle + tags + CTAs on left, video on right */}
+          <div className="mt-12 md:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
+              className="lg:col-span-7 flex flex-col"
+            >
+              <p
+                className="text-[16px] md:text-[18px] lg:text-[19px] text-gray-100 leading-[1.6] max-w-[44ch]"
+                style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+              >
+                {subtitle}
+              </p>
+
+              <div
+                className="mt-6 md:mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-white"
+                style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+              >
+                {tagValues.map((label, i) => (
+                  <span key={i} className="inline-flex items-center gap-3">
+                    {i > 0 && (
+                      <span className="w-1 h-1 rounded-full bg-white/50" />
+                    )}
+                    <span>{label}</span>
                   </span>
-                  <span className="block">
-                    <span className="text-shimmer-amber">{line2First}</span>
-                    <span className="text-white">{line2Rest}</span>
-                  </span>
-                </motion.h1>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-                  className="mt-5 md:mt-6 text-[14px] md:text-[15px] text-gray-100 leading-[1.65] max-w-[60ch]"
-                  style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-                >
-                  {subtitle}
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-                  className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] md:text-[14px] text-white"
-                  style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-                >
-                  {tagValues.map((label, i) => (
-                    <span key={i} className="inline-flex items-center gap-3">
-                      {i > 0 && (
-                        <span className="w-1 h-1 rounded-full bg-white/50" />
-                      )}
-                      <span>{label}</span>
-                    </span>
-                  ))}
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-                  className="mt-6 md:mt-7 flex flex-wrap gap-3 md:gap-4"
-                >
-                  <Link
-                    href="/cases"
-                    className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
-                    style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-                  >
-                    {ctaExplore}
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
-                    style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-                  >
-                    {ctaContact}
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                </motion.div>
+                ))}
               </div>
 
-              {/* RIGHT: video carousel (4/12) */}
-              <div className="lg:col-span-4">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.96, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+              <div className="mt-8 md:mt-10 flex flex-wrap gap-3 md:gap-4">
+                <Link
+                  href="/cases"
+                  className="inline-flex items-center gap-2 px-7 md:px-8 py-3.5 md:py-4 bg-[#3B82F6] text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
+                  style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                 >
-                  <VideoCarouselCard />
-                </motion.div>
+                  {ctaExplore}
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-2 px-7 md:px-8 py-3.5 md:py-4 border border-white/30 text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
+                  style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                >
+                  {ctaContact}
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
               </div>
+            </motion.div>
+
+            <div className="lg:col-span-5">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
+              >
+                <VideoCarouselCard />
+              </motion.div>
             </div>
           </div>
+        </div>
       </section>
 
       {/* ============= 4 scenario cards (separate section below the fold) ============= */}
