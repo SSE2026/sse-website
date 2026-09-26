@@ -15,7 +15,7 @@ const TAG_KEYS = [
   "fastCharging",
 ] as const;
 
-const DRONE_IMAGE_SRC = "/images/scenes/屏幕截图_2026-08-10_131748.png";
+const DRONE_IMAGE_SRC = "/images/scenes/drone-low-altitude.png";
 
 // ============================================
 // Types
