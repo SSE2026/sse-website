@@ -42,6 +42,7 @@ type ScenarioItem = {
 type HeroI18n = {
   titleLine1?: string;
   titleLine2?: string;
+  sectionTitle?: string;
   subtitle?: string;
   ctaExplore?: string;
   ctaContact?: string;
@@ -56,7 +57,7 @@ function splitTitle(title: string): { first: string; rest: string } {
 }
 
 // ============================================
-// Edge-less 4:3 video card
+// Video carousel — fills whatever box it is given
 // ============================================
 function VideoCarouselCard() {
   const [active, setActive] = useState(0);
@@ -82,7 +83,7 @@ function VideoCarouselCard() {
   }, [active]);
 
   return (
-    <div className="relative w-[240px] md:w-[280px] aspect-[4/3] overflow-hidden">
+    <div className="relative w-full h-full min-h-[280px] overflow-hidden">
       {CAROUSEL_VIDEOS.map((slide, i) => (
         <video
           key={slide.src}
@@ -101,14 +102,14 @@ function VideoCarouselCard() {
         />
       ))}
 
-      <div className="absolute bottom-3 left-0 right-0 z-20 flex justify-center gap-2">
+      <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
         {CAROUSEL_VIDEOS.map((_, i) => (
           <button
             key={i}
             onClick={() => setActive(i)}
             aria-label={`Video ${i + 1}`}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === active ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
+              i === active ? "w-7 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
             }`}
           />
         ))}
@@ -118,7 +119,7 @@ function VideoCarouselCard() {
 }
 
 // ============================================
-// Hero Component (calm 7/5 split)
+// Hero
 // ============================================
 export function Hero({ translations }: HeroProps) {
   const t = useTranslations("hero");
@@ -127,6 +128,7 @@ export function Hero({ translations }: HeroProps) {
 
   const titleLine1 = tr.titleLine1 ?? t("titleLine1");
   const titleLine2 = tr.titleLine2 ?? t("titleLine2");
+  const sectionTitle = tr.sectionTitle ?? t("sectionTitle");
   const subtitle = tr.subtitle ?? t("subtitle");
   const ctaExplore = tr.ctaExplore ?? t("ctaExplore");
   const ctaContact = tr.ctaContact ?? t("ctaContact");
@@ -173,19 +175,19 @@ export function Hero({ translations }: HeroProps) {
 
   return (
     <>
-      {/* ============= Hero (calm editorial) ============= */}
-      <section className="relative w-full bg-black text-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 pt-16 md:pt-20 pb-10 md:pb-14">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-end">
-            {/* LEFT: title + subtitle + tags + CTAs (8/12) */}
+      {/* ============= Hero — owns the first viewport ============= */}
+      <section className="relative w-full bg-black text-white lg:min-h-[calc(100vh-80px)] lg:flex lg:items-center">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 py-14 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-stretch">
+            {/* LEFT — title / subtitle / tags / CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="lg:col-span-8 flex flex-col"
+              className="lg:col-span-7 flex flex-col justify-center"
             >
               <h1
-                className="text-[32px] md:text-[44px] lg:text-[56px] font-bold leading-[1.1] tracking-[-0.01em]"
+                className="text-[32px] md:text-[44px] lg:text-[56px] font-bold leading-[1.12] tracking-[-0.01em]"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 <span className="block">
@@ -198,32 +200,31 @@ export function Hero({ translations }: HeroProps) {
                 </span>
               </h1>
 
-              {/* Subtitle: smaller so the title stands out */}
               <p
-                className="mt-5 md:mt-6 text-[13px] md:text-[14px] lg:text-[14px] text-gray-300 leading-[1.7] max-w-[58ch] font-light"
+                className="mt-7 md:mt-8 text-[13px] md:text-[14px] text-gray-300 leading-[1.75] max-w-[56ch] font-light"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {subtitle}
               </p>
 
               <div
-                className="mt-4 md:mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] md:text-[14px] text-white/80"
+                className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] md:text-[14px] text-white/80"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {tagValues.map((label, i) => (
                   <span key={i} className="inline-flex items-center gap-3">
-                    {i > 0 && (
-                      <span className="w-1 h-1 rounded-full bg-white/40" />
-                    )}
+                    {i > 0 && <span className="w-1 h-1 rounded-full bg-white/40" />}
                     <span>{label}</span>
                   </span>
                 ))}
               </div>
 
-              <div className="mt-5 md:mt-6 flex flex-wrap gap-3">
+              {/* Extra space before the CTAs so the action reads as a
+                  separate beat, not just another bullet */}
+              <div className="mt-9 md:mt-11 flex flex-wrap gap-3">
                 <Link
                   href="/cases"
-                  className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-[#3B82F6] text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
+                  className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_36px_-8px_rgba(59,130,246,0.55)]"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaExplore}
@@ -231,7 +232,7 @@ export function Hero({ translations }: HeroProps) {
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 border border-white/30 text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaContact}
@@ -240,13 +241,15 @@ export function Hero({ translations }: HeroProps) {
               </div>
             </motion.div>
 
-            {/* RIGHT: video carousel (4/12) — bottom-aligned to CTAs so
-                it doesn't float up into the title area */}
-            <div className="lg:col-span-4 flex items-end justify-end">
+            {/* RIGHT — video fills the full height of the text column,
+                so it reads as a block beside the copy rather than a
+                floating sticker */}
+            <div className="lg:col-span-5">
               <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
+                initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                className="h-full"
               >
                 <VideoCarouselCard />
               </motion.div>
@@ -255,16 +258,15 @@ export function Hero({ translations }: HeroProps) {
         </div>
       </section>
 
-      {/* ============= 4 scenario cards (own section with breathing room) ============= */}
-      <section className="bg-black text-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-10 md:pb-14">
-          {/* Section header: eases the transition from hero */}
-          <div className="mb-6 md:mb-8 flex items-baseline justify-between">
+      {/* ============= Application scenarios ============= */}
+      <section className="bg-black text-white border-t border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-14 md:py-20">
+          <div className="mb-8 md:mb-10 flex items-baseline justify-between">
             <h2
-              className="text-[16px] md:text-[18px] lg:text-[20px] font-semibold text-white"
+              className="text-[18px] md:text-[20px] font-semibold text-white"
               style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
             >
-              {t("sectionTitle")}
+              {sectionTitle}
             </h2>
             <span
               className="text-[11px] md:text-[12px] tracking-[0.25em] uppercase text-white/40"
