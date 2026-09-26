@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -16,14 +16,7 @@ const TAG_KEYS = [
   "fastCharging",
 ] as const;
 
-const VIDEO_SLIDE_DURATION_MS = 5000;
-
-// Three product/hero videos to rotate through in the right-side card.
-const CAROUSEL_VIDEOS = [
-  { src: "/videos/homepage-hero-new.webm" },
-  { src: "/videos/product-hero-new.mp4" },
-  { src: "/videos/cases-hero.mp4" },
-];
+const HERO_VIDEO_SRC = "/videos/vertical-takeoff.mp4";
 
 // ============================================
 // Types
@@ -57,64 +50,28 @@ function splitTitle(title: string): { first: string; rest: string } {
 }
 
 // ============================================
-// Right-side video carousel card
+// Right-side video card (single looping video)
 // ============================================
-function VideoCarouselCard() {
-  const [active, setActive] = useState(0);
-  const refs = useRef<(HTMLVideoElement | null)[]>([]);
+function VideoCard() {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Auto-rotate slides
   useEffect(() => {
-    const id = setInterval(() => {
-      setActive((i) => (i + 1) % CAROUSEL_VIDEOS.length);
-    }, VIDEO_SLIDE_DURATION_MS);
-    return () => clearInterval(id);
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
   }, []);
-
-  // Play the active video, pause the others
-  useEffect(() => {
-    refs.current.forEach((v, i) => {
-      if (!v) return;
-      if (i === active) {
-        v.currentTime = 0;
-        v.play().catch(() => {});
-      } else {
-        v.pause();
-      }
-    });
-  }, [active]);
 
   return (
     <div className="relative w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]">
-      {CAROUSEL_VIDEOS.map((slide, i) => (
-        <video
-          key={slide.src}
-          ref={(el) => {
-            refs.current[i] = el;
-          }}
-          src={slide.src}
-          muted
-          playsInline
-          loop
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-            i === active ? "opacity-100 z-10" : "opacity-0 z-0"
-          }`}
-        />
-      ))}
-
-      {/* Pagination dots */}
-      <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
-        {CAROUSEL_VIDEOS.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setActive(i)}
-            aria-label={`Video ${i + 1}`}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === active ? "w-7 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
-            }`}
-          />
-        ))}
-      </div>
+      <video
+        ref={videoRef}
+        src={HERO_VIDEO_SRC}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      />
 
       {/* Subtle vignette to add depth */}
       <div
@@ -258,14 +215,14 @@ export function Hero({ translations }: HeroProps) {
             </motion.div>
           </div>
 
-          {/* RIGHT: video carousel card */}
+          {/* RIGHT: video card */}
           <div className="lg:col-span-5">
             <motion.div
               initial={{ opacity: 0, scale: 0.96, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             >
-              <VideoCarouselCard />
+              <VideoCard />
             </motion.div>
           </div>
         </div>
