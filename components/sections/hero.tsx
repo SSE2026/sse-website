@@ -118,10 +118,10 @@ export function Hero({ translations }: HeroProps) {
 
   return (
     <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
-      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-12 pt-16 md:pt-24 pb-10 md:pb-14">
+      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16 pt-20 md:pt-28 pb-12 md:pb-16">
         {/* Two-column main content. items-end aligns the right column with the
             bottom of the left column's CTAs. */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end">
           {/* LEFT: text content */}
           <div className="lg:col-span-7 flex flex-col">
             {/* Main title — first 2 chars / first word get the shimmer logo */}
@@ -129,7 +129,7 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="text-[40px] md:text-[56px] lg:text-[72px] font-extrabold leading-[1.05] tracking-tight"
+              className="text-[36px] md:text-[52px] lg:text-[64px] font-bold leading-[1.1] tracking-tight"
               style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
             >
               <span className="block">
@@ -147,7 +147,7 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="mt-6 md:mt-8 text-[15px] md:text-[16px] text-gray-300 leading-relaxed max-w-2xl"
+              className="mt-8 md:mt-10 text-[16px] md:text-[17px] text-gray-300 leading-[1.7] max-w-[58ch]"
               style={{ fontFamily: "var(--font-inter, sans-serif)" }}
             >
               {subtitle}
@@ -158,7 +158,7 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="mt-7 md:mt-9 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-gray-100"
+              className="mt-8 md:mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-gray-100"
               style={{ fontFamily: "var(--font-inter, sans-serif)" }}
             >
               {tagValues.map((label, i) => (
@@ -176,7 +176,7 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              className="mt-8 md:mt-10 flex flex-wrap gap-3 md:gap-4"
+              className="mt-10 md:mt-14 flex flex-wrap gap-3 md:gap-4"
             >
               <Link
                 href="/cases"
@@ -204,7 +204,7 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
-              className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden border border-white/10"
+              className="relative aspect-[5/4] w-full rounded-2xl overflow-hidden border border-white/10"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -217,7 +217,7 @@ export function Hero({ translations }: HeroProps) {
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
                 <div className="flex items-end gap-4">
                   <span
-                    className="text-[60px] md:text-[80px] leading-none font-extrabold text-white/15"
+                    className="text-[48px] md:text-[64px] leading-none font-bold text-white/15"
                     style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
                   >
                     {sceneNumber}
@@ -243,7 +243,7 @@ export function Hero({ translations }: HeroProps) {
         </div>
 
         {/* Bottom: 4 scenario cards → /contact */}
-        <div className="mt-12 md:mt-20 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="mt-16 md:mt-28 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {scenarios.map((scenario, i) => (
             <motion.div
               key={scenario.id}
