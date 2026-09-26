@@ -90,9 +90,11 @@ function VideoCarouselCard() {
             refs.current[i] = el;
           }}
           src={slide.src}
+          autoPlay
           muted
           playsInline
           loop
+          preload="auto"
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
             i === active ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
