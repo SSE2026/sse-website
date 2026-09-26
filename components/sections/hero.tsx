@@ -15,7 +15,7 @@ const TAG_KEYS = [
   "fastCharging",
 ] as const;
 
-const DRONE_IMAGE_SRC = "/images/scenes/drone-low-altitude.png";
+const HERO_BG_IMAGE_SRC = "/images/hero-product-panorama.png";
 
 // ============================================
 // Types
@@ -39,18 +39,9 @@ type HeroI18n = {
   ctaExplore?: string;
   ctaContact?: string;
   tags?: Partial<Record<(typeof TAG_KEYS)[number], string>>;
-  scene?: {
-    number?: string;
-    title?: string;
-    titleEn?: string;
-    caption?: string;
-  };
   scenarios?: ScenarioItem[];
 };
 
-// Split title into [first, rest] for shimmer.
-// Chinese (no space): first 2 chars get the shimmer.
-// English (has space): first word gets the shimmer.
 function splitTitle(title: string): { first: string; rest: string } {
   const idx = title.indexOf(" ");
   if (idx > 0) return { first: title.slice(0, idx), rest: title.slice(idx) };
@@ -70,11 +61,6 @@ export function Hero({ translations }: HeroProps) {
   const subtitle = tr.subtitle ?? t("subtitle");
   const ctaExplore = tr.ctaExplore ?? t("ctaExplore");
   const ctaContact = tr.ctaContact ?? t("ctaContact");
-
-  const sceneNumber = tr.scene?.number ?? t("scene.number");
-  const sceneTitle = tr.scene?.title ?? t("scene.title");
-  const sceneTitleEn = tr.scene?.titleEn ?? t("scene.titleEn");
-  const sceneCaption = tr.scene?.caption ?? t("scene.caption");
 
   const tagValues = TAG_KEYS.map(
     (key) => tr.tags?.[key] ?? t(`tags.${key}`),
@@ -118,132 +104,109 @@ export function Hero({ translations }: HeroProps) {
 
   return (
     <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
-      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16 pt-20 md:pt-28 pb-12 md:pb-16">
-        {/* Two-column main content. items-end aligns the right column with the
-            bottom of the left column's CTAs. */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end">
-          {/* LEFT: text content */}
-          <div className="lg:col-span-7 flex flex-col">
-            {/* Main title — first 2 chars / first word get the shimmer logo */}
+      {/* Full-bleed background image (panoramic product shot) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={HERO_BG_IMAGE_SRC}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+
+      {/* Dark gradient overlay — stronger at left to keep title readable */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.25) 65%, rgba(0,0,0,0.4) 100%), linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.0) 30%, rgba(0,0,0,0.0) 70%, rgba(0,0,0,0.85) 100%)",
+        }}
+      />
+
+      {/* Content layer */}
+      <div className="relative z-[2] w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-24 md:pt-36 pb-16 md:pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* LEFT: dramatic oversized title + subtitle + tags + CTAs */}
+          <div className="lg:col-span-8 flex flex-col">
+            {/* Main title — massive, two lines, "突破"/"重塑" get single-color
+                shimmers (tech blue + amber) using logo colors */}
             <motion.h1
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="text-[36px] md:text-[52px] lg:text-[64px] font-bold leading-[1.1] tracking-tight"
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-[44px] md:text-[72px] lg:text-[104px] font-black leading-[1.02] tracking-[-0.02em]"
               style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
             >
               <span className="block">
-                <span className="text-shimmer-logo">{line1First}</span>
+                <span className="text-shimmer-blue">{line1First}</span>
                 <span className="text-white">{line1Rest}</span>
               </span>
               <span className="block">
-                <span className="text-shimmer-logo">{line2First}</span>
+                <span className="text-shimmer-amber">{line2First}</span>
                 <span className="text-white">{line2Rest}</span>
               </span>
             </motion.h1>
 
-            {/* Subtitle */}
+            {/* Subtitle — wider, more breathing */}
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="mt-8 md:mt-10 text-[16px] md:text-[17px] text-gray-300 leading-[1.7] max-w-[58ch]"
+              transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+              className="mt-10 md:mt-14 text-[18px] md:text-[20px] lg:text-[22px] text-gray-100 leading-[1.55] max-w-[36ch] font-light"
               style={{ fontFamily: "var(--font-inter, sans-serif)" }}
             >
               {subtitle}
             </motion.p>
 
-            {/* Performance tags */}
+            {/* Performance tags — larger, more spaced */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="mt-8 md:mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-gray-100"
+              transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
+              className="mt-10 md:mt-14 flex flex-wrap items-center gap-x-4 gap-y-3 text-[15px] md:text-[16px] text-white"
               style={{ fontFamily: "var(--font-inter, sans-serif)" }}
             >
               {tagValues.map((label, i) => (
-                <span key={i} className="inline-flex items-center gap-3">
+                <span key={i} className="inline-flex items-center gap-4">
                   {i > 0 && (
-                    <span className="w-1 h-1 rounded-full bg-gray-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-white/50" />
                   )}
                   <span>{label}</span>
                 </span>
               ))}
             </motion.div>
 
-            {/* CTAs — bottom of this column is the alignment reference */}
+            {/* CTAs — bigger, more impact */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              className="mt-10 md:mt-14 flex flex-wrap gap-3 md:gap-4"
+              transition={{ duration: 0.8, delay: 0.45, ease: "easeOut" }}
+              className="mt-12 md:mt-16 flex flex-wrap gap-4"
             >
               <Link
                 href="/cases"
-                className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#2563EB] text-white text-sm md:text-[15px] font-semibold rounded-lg hover:bg-[#1D4ED8] transition-colors"
+                className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#3B82F6] text-white text-base md:text-lg font-semibold rounded-xl hover:bg-[#2563EB] transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]"
                 style={{ fontFamily: "var(--font-inter, sans-serif)" }}
               >
                 {ctaExplore}
-                <ArrowUpRight className="w-4 h-4" />
+                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-sm md:text-[15px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
+                className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 border-2 border-white/40 text-white text-base md:text-lg font-semibold rounded-xl hover:bg-white/10 hover:border-white/70 transition-all"
                 style={{ fontFamily: "var(--font-inter, sans-serif)" }}
               >
                 {ctaContact}
-                <ArrowUpRight className="w-4 h-4" />
+                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
             </motion.div>
           </div>
 
-          {/* RIGHT: drone image. items-end on the parent grid aligns this
-              column's bottom with the CTAs' bottom on the left. */}
-          <div className="lg:col-span-5 self-end">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
-              className="relative aspect-[5/4] w-full rounded-2xl overflow-hidden border border-white/10"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={DRONE_IMAGE_SRC}
-                alt="Low-altitude aviation drone"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-
-              {/* Scene info overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
-                <div className="flex items-end gap-4">
-                  <span
-                    className="text-[48px] md:text-[64px] leading-none font-bold text-white/15"
-                    style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-                  >
-                    {sceneNumber}
-                  </span>
-                  <div className="flex-1 pb-1">
-                    <div
-                      className="text-[15px] md:text-base font-semibold text-white"
-                      style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-                    >
-                      {sceneTitle}
-                    </div>
-                    <div className="text-[10px] md:text-[11px] tracking-[0.22em] uppercase text-gray-400 mt-1">
-                      {sceneTitleEn}
-                    </div>
-                    <div className="text-[10px] md:text-[11px] text-gray-500 mt-2 leading-relaxed">
-                      {sceneCaption}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+          {/* RIGHT — intentionally empty so the panoramic image shows through */}
+          <div className="hidden lg:block lg:col-span-4" aria-hidden="true" />
         </div>
 
         {/* Bottom: 4 scenario cards → /contact */}
-        <div className="mt-16 md:mt-28 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="mt-20 md:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {scenarios.map((scenario, i) => (
             <motion.div
               key={scenario.id}
@@ -251,35 +214,35 @@ export function Hero({ translations }: HeroProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: 0.6,
-                delay: 0.5 + i * 0.08,
+                delay: 0.55 + i * 0.08,
                 ease: "easeOut",
               }}
             >
               <Link
                 href="/contact"
-                className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/25 p-5 md:p-6 transition-all duration-300"
+                className="group flex items-start justify-between gap-3 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm hover:bg-white/[0.12] hover:border-white/30 p-5 md:p-6 transition-all duration-300"
               >
                 <div className="flex flex-col gap-2 min-w-0">
                   <span
-                    className="text-[10px] md:text-[11px] font-mono text-gray-500 tracking-wider"
+                    className="text-[11px] md:text-xs font-mono text-white/60 tracking-wider"
                     style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
                   >
                     {scenario.number}
                   </span>
                   <div
-                    className="text-[15px] md:text-base font-semibold text-white truncate"
+                    className="text-[16px] md:text-lg font-semibold text-white truncate"
                     style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                   >
                     {scenario.label}
                   </div>
                   <div
-                    className="text-[12px] md:text-[13px] text-gray-400"
+                    className="text-[12px] md:text-sm text-white/60"
                     style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                   >
                     {scenario.subLabel}
                   </div>
                 </div>
-                <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-gray-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform flex-shrink-0 mt-1" />
+                <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white/60 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform flex-shrink-0 mt-1" />
               </Link>
             </motion.div>
           ))}
