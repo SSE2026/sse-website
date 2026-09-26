@@ -82,7 +82,7 @@ function VideoCarouselCard() {
   }, [active]);
 
   return (
-    <div className="relative w-full max-w-[320px] aspect-[4/3] overflow-hidden">
+    <div className="relative w-[280px] md:w-[320px] aspect-[4/3] overflow-hidden">
       {CAROUSEL_VIDEOS.map((slide, i) => (
         <video
           key={slide.src}
