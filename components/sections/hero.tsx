@@ -82,7 +82,7 @@ function VideoCarouselCard() {
   }, [active]);
 
   return (
-    <div className="relative w-full max-w-[360px] mx-auto aspect-square overflow-hidden">
+    <div className="relative w-full max-w-[360px] mx-auto aspect-[4/3] overflow-hidden">
       {CAROUSEL_VIDEOS.map((slide, i) => (
         <video
           key={slide.src}
@@ -174,14 +174,17 @@ export function Hero({ translations }: HeroProps) {
       {/* ============= Hero (bold editorial) ============= */}
       <section className="relative w-full overflow-hidden bg-black text-white">
         <div className="relative z-[2] w-full max-w-[1400px] mx-auto px-6 md:px-10 lg:px-16 pt-24 md:pt-32 pb-10 md:pb-14">
-          {/* BOLD but balanced: title spans full width, but kept within
-              reasonable line height so CTAs land in the first viewport */}
+          {/* BOLD but balanced: title spans full width. Switched
+              from Space Grotesk to Noto Sans SC for a more
+              refined Chinese/Latin editorial feel; dropped weight
+              from extrabold to bold so the bigger Chinese glyphs
+              don't crowd the line. */}
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="text-[36px] md:text-[52px] lg:text-[68px] xl:text-[80px] font-extrabold leading-[1.04] tracking-[-0.025em] max-w-[16ch]"
-            style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
+            className="text-[34px] md:text-[48px] lg:text-[60px] xl:text-[72px] font-bold leading-[1.1] tracking-[-0.015em] max-w-[18ch]"
+            style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
           >
             <span className="block">
               <span className="text-shimmer-blue">{line1First}</span>
@@ -194,25 +197,26 @@ export function Hero({ translations }: HeroProps) {
           </motion.h1>
 
           {/* Below: subtitle + tags + CTAs on left, video on right.
-              Video sits at top of its column so it doesn't push the
-              CTAs below the fold. */}
+              Video uses aspect-[4/3] (shorter than square) and
+              col-span-4 (narrower than the text) so it doesn't
+              push the CTAs below the fold. */}
           <div className="mt-8 md:mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
-              className="lg:col-span-7 flex flex-col"
+              className="lg:col-span-8 flex flex-col"
             >
               <p
-                className="text-[15px] md:text-[16px] lg:text-[17px] text-gray-100 leading-[1.6] max-w-[46ch]"
-                style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                className="text-[15px] md:text-[16px] lg:text-[17px] text-gray-100 leading-[1.7] max-w-[52ch]"
+                style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {subtitle}
               </p>
 
               <div
                 className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-white"
-                style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {tagValues.map((label, i) => (
                   <span key={i} className="inline-flex items-center gap-3">
@@ -228,7 +232,7 @@ export function Hero({ translations }: HeroProps) {
                 <Link
                   href="/cases"
                   className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
-                  style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                  style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaExplore}
                   <ArrowUpRight className="w-4 h-4" />
@@ -236,7 +240,7 @@ export function Hero({ translations }: HeroProps) {
                 <Link
                   href="/contact"
                   className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
-                  style={{ fontFamily: "var(--font-inter, sans-serif)" }}
+                  style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaContact}
                   <ArrowUpRight className="w-4 h-4" />
@@ -244,7 +248,7 @@ export function Hero({ translations }: HeroProps) {
               </div>
             </motion.div>
 
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.96, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
