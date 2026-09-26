@@ -82,7 +82,7 @@ function VideoCarouselCard() {
   }, [active]);
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto aspect-square rounded-2xl overflow-hidden border border-white/10 bg-[#0a0a0a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]">
+    <div className="relative w-full max-w-[420px] mx-auto aspect-square overflow-hidden">
       {CAROUSEL_VIDEOS.map((slide, i) => (
         <video
           key={slide.src}
@@ -111,14 +111,6 @@ function VideoCarouselCard() {
           />
         ))}
       </div>
-
-      <div
-        className="absolute inset-0 pointer-events-none z-[5]"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%)",
-        }}
-      />
     </div>
   );
 }
