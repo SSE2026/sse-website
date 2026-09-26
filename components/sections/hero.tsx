@@ -82,7 +82,7 @@ function VideoCarouselCard() {
   }, [active]);
 
   return (
-    <div className="relative w-[280px] md:w-[320px] aspect-[4/3] overflow-hidden">
+    <div className="relative w-[240px] md:w-[280px] aspect-[4/3] overflow-hidden">
       {CAROUSEL_VIDEOS.map((slide, i) => (
         <video
           key={slide.src}
@@ -176,16 +176,16 @@ export function Hero({ translations }: HeroProps) {
       {/* ============= Hero (calm editorial) ============= */}
       <section className="relative w-full bg-black text-white">
         <div className="max-w-7xl mx-auto px-6 md:px-10 pt-16 md:pt-20 pb-10 md:pb-14">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-            {/* LEFT: title + subtitle + tags + CTAs (7/12) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-end">
+            {/* LEFT: title + subtitle + tags + CTAs (8/12) */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="lg:col-span-7 flex flex-col"
+              className="lg:col-span-8 flex flex-col"
             >
               <h1
-                className="text-[30px] md:text-[40px] lg:text-[52px] font-bold leading-[1.1] tracking-[-0.01em]"
+                className="text-[32px] md:text-[44px] lg:text-[56px] font-bold leading-[1.1] tracking-[-0.01em]"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 <span className="block">
@@ -198,31 +198,32 @@ export function Hero({ translations }: HeroProps) {
                 </span>
               </h1>
 
+              {/* Subtitle: smaller so the title stands out */}
               <p
-                className="mt-5 md:mt-6 text-[15px] md:text-[16px] text-gray-100 leading-[1.7] max-w-[54ch]"
+                className="mt-5 md:mt-6 text-[13px] md:text-[14px] lg:text-[14px] text-gray-300 leading-[1.7] max-w-[58ch] font-light"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {subtitle}
               </p>
 
               <div
-                className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] text-white"
+                className="mt-4 md:mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] md:text-[14px] text-white/80"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {tagValues.map((label, i) => (
                   <span key={i} className="inline-flex items-center gap-3">
                     {i > 0 && (
-                      <span className="w-1 h-1 rounded-full bg-white/50" />
+                      <span className="w-1 h-1 rounded-full bg-white/40" />
                     )}
                     <span>{label}</span>
                   </span>
                 ))}
               </div>
 
-              <div className="mt-6 md:mt-7 flex flex-wrap gap-3">
+              <div className="mt-5 md:mt-6 flex flex-wrap gap-3">
                 <Link
                   href="/cases"
-                  className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-[#3B82F6] text-white text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
+                  className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-[#3B82F6] text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaExplore}
@@ -230,7 +231,7 @@ export function Hero({ translations }: HeroProps) {
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 border border-white/30 text-white text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
+                  className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 border border-white/30 text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaContact}
@@ -239,8 +240,9 @@ export function Hero({ translations }: HeroProps) {
               </div>
             </motion.div>
 
-            {/* RIGHT: video carousel (5/12) */}
-            <div className="lg:col-span-5 flex items-start justify-end">
+            {/* RIGHT: video carousel (4/12) — bottom-aligned to CTAs so
+                it doesn't float up into the title area */}
+            <div className="lg:col-span-4 flex items-end justify-end">
               <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -253,9 +255,25 @@ export function Hero({ translations }: HeroProps) {
         </div>
       </section>
 
-      {/* ============= 4 scenario cards (own section, border-top divider) ============= */}
-      <section className="bg-black text-white border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-8 md:py-12">
+      {/* ============= 4 scenario cards (own section with breathing room) ============= */}
+      <section className="bg-black text-white">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-10 md:pb-14">
+          {/* Section header: eases the transition from hero */}
+          <div className="mb-6 md:mb-8 flex items-baseline justify-between">
+            <h2
+              className="text-[16px] md:text-[18px] lg:text-[20px] font-semibold text-white"
+              style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+            >
+              {t("sectionTitle")}
+            </h2>
+            <span
+              className="text-[11px] md:text-[12px] tracking-[0.25em] uppercase text-white/40"
+              style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
+            >
+              04 Scenarios
+            </span>
+          </div>
+
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {scenarios.map((scenario, i) => (
               <motion.div
