@@ -83,7 +83,10 @@ function VideoCarouselCard() {
   }, [active]);
 
   return (
-    <div className="relative w-full h-full min-h-[280px] overflow-hidden">
+    // The three source videos are 720x1280 (9:16 portrait), so the
+    // container matches that ratio — otherwise object-cover crops the
+    // top and bottom off each clip.
+    <div className="relative h-[440px] md:h-[520px] aspect-[9/16] mx-auto lg:mx-0 overflow-hidden">
       {CAROUSEL_VIDEOS.map((slide, i) => (
         <video
           key={slide.src}
@@ -101,7 +104,6 @@ function VideoCarouselCard() {
           }`}
         />
       ))}
-
       <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
         {CAROUSEL_VIDEOS.map((_, i) => (
           <button
@@ -177,8 +179,8 @@ export function Hero({ translations }: HeroProps) {
     <>
       {/* ============= Hero — owns the first viewport ============= */}
       <section className="relative w-full bg-black text-white lg:min-h-[calc(100vh-80px)] lg:flex lg:items-center">
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 py-14 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-stretch">
+        <div className="w-full max-w-6xl mx-auto px-8 md:px-14 lg:px-20 py-14 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* LEFT — title / subtitle / tags / CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -192,28 +194,42 @@ export function Hero({ translations }: HeroProps) {
               >
                 <span className="block">
                   <span className="text-shimmer-blue">{line1First}</span>
+                  <span
+                    aria-hidden="true"
+                    className="mx-[0.16em] align-middle text-[0.34em] leading-none text-white/50"
+                  >
+                    ●
+                  </span>
                   <span className="text-white">{line1Rest}</span>
                 </span>
                 <span className="block">
                   <span className="text-shimmer-amber">{line2First}</span>
+                  <span
+                    aria-hidden="true"
+                    className="mx-[0.16em] align-middle text-[0.34em] leading-none text-white/50"
+                  >
+                    ●
+                  </span>
                   <span className="text-white">{line2Rest}</span>
                 </span>
               </h1>
 
+              {/* Subtitle: kept small and low-contrast so the headline
+                  stays the dominant element */}
               <p
-                className="mt-7 md:mt-8 text-[13px] md:text-[14px] text-gray-300 leading-[1.75] max-w-[56ch] font-light"
+                className="mt-7 md:mt-8 text-[12px] md:text-[13px] text-white/45 leading-[1.85] max-w-[50ch]"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {subtitle}
               </p>
 
               <div
-                className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] md:text-[14px] text-white/80"
+                className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] md:text-[13px] text-white/70"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {tagValues.map((label, i) => (
                   <span key={i} className="inline-flex items-center gap-3">
-                    {i > 0 && <span className="w-1 h-1 rounded-full bg-white/40" />}
+                    {i > 0 && <span className="w-1 h-1 rounded-full bg-white/30" />}
                     <span>{label}</span>
                   </span>
                 ))}
@@ -241,15 +257,12 @@ export function Hero({ translations }: HeroProps) {
               </div>
             </motion.div>
 
-            {/* RIGHT — video fills the full height of the text column,
-                so it reads as a block beside the copy rather than a
-                floating sticker */}
-            <div className="lg:col-span-5">
+            {/* RIGHT — portrait 9:16 video, centered in its column */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
               <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                className="h-full"
               >
                 <VideoCarouselCard />
               </motion.div>
