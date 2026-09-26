@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -16,7 +16,13 @@ const TAG_KEYS = [
   "fastCharging",
 ] as const;
 
-const HERO_VIDEO_SRC = "/videos/vertical-takeoff.mp4";
+const VIDEO_SLIDE_DURATION_MS = 5000;
+
+const CAROUSEL_VIDEOS = [
+  { src: "/videos/vertical-takeoff.mp4" },
+  { src: "/videos/deepsea-deepspace-exploration.mp4" },
+  { src: "/videos/embodied-ai-robot-operation.mp4" },
+];
 
 // ============================================
 // Types
@@ -50,28 +56,64 @@ function splitTitle(title: string): { first: string; rest: string } {
 }
 
 // ============================================
-// Right-side video card (single looping video)
+// Right-side video carousel card
 // ============================================
-function VideoCard() {
-  const videoRef = useRef<HTMLVideoElement>(null);
+function VideoCarouselCard() {
+  const [active, setActive] = useState(0);
+  const refs = useRef<(HTMLVideoElement | null)[]>([]);
 
+  // Auto-rotate slides
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
+    const id = setInterval(() => {
+      setActive((i) => (i + 1) % CAROUSEL_VIDEOS.length);
+    }, VIDEO_SLIDE_DURATION_MS);
+    return () => clearInterval(id);
   }, []);
+
+  // Play the active video, pause the others
+  useEffect(() => {
+    refs.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === active) {
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      } else {
+        v.pause();
+      }
+    });
+  }, [active]);
 
   return (
     <div className="relative w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]">
-      <video
-        ref={videoRef}
-        src={HERO_VIDEO_SRC}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+      {CAROUSEL_VIDEOS.map((slide, i) => (
+        <video
+          key={slide.src}
+          ref={(el) => {
+            refs.current[i] = el;
+          }}
+          src={slide.src}
+          muted
+          playsInline
+          loop
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            i === active ? "opacity-100 z-10" : "opacity-0 z-0"
+          }`}
+        />
+      ))}
+
+      {/* Pagination dots */}
+      <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
+        {CAROUSEL_VIDEOS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            aria-label={`Video ${i + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === active ? "w-7 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
+            }`}
+          />
+        ))}
+      </div>
 
       {/* Subtle vignette to add depth */}
       <div
@@ -141,8 +183,8 @@ export function Hero({ translations }: HeroProps) {
 
   return (
     <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
-      {/* Content layer */}
-      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-20 md:pt-28 pb-12 md:pb-16">
+      {/* Content layer — top padding minimized so CTAs sit in the first viewport */}
+      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-6 md:pt-10 pb-10 md:pb-14">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
           {/* LEFT: text content */}
           <div className="lg:col-span-7 flex flex-col">
@@ -150,7 +192,7 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="text-[36px] md:text-[52px] lg:text-[64px] font-bold leading-[1.1] tracking-tight"
+              className="text-[36px] md:text-[48px] lg:text-[56px] font-bold leading-[1.1] tracking-tight"
               style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
             >
               <span className="block">
@@ -167,7 +209,7 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="mt-8 md:mt-10 text-[15px] md:text-[17px] text-gray-100 leading-[1.65] max-w-[58ch]"
+              className="mt-5 md:mt-6 text-[14px] md:text-[15px] text-gray-100 leading-[1.65] max-w-[58ch]"
               style={{ fontFamily: "var(--font-inter, sans-serif)" }}
             >
               {subtitle}
@@ -177,7 +219,7 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="mt-7 md:mt-9 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-white"
+              className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] md:text-[14px] text-white"
               style={{ fontFamily: "var(--font-inter, sans-serif)" }}
             >
               {tagValues.map((label, i) => (
@@ -194,11 +236,11 @@ export function Hero({ translations }: HeroProps) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              className="mt-8 md:mt-10 flex flex-wrap gap-3 md:gap-4"
+              className="mt-6 md:mt-7 flex flex-wrap gap-3 md:gap-4"
             >
               <Link
                 href="/cases"
-                className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
+                className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
                 style={{ fontFamily: "var(--font-inter, sans-serif)" }}
               >
                 {ctaExplore}
@@ -206,7 +248,7 @@ export function Hero({ translations }: HeroProps) {
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-3.5 border border-white/30 text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
+                className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
                 style={{ fontFamily: "var(--font-inter, sans-serif)" }}
               >
                 {ctaContact}
@@ -215,20 +257,20 @@ export function Hero({ translations }: HeroProps) {
             </motion.div>
           </div>
 
-          {/* RIGHT: video card */}
+          {/* RIGHT: video carousel card */}
           <div className="lg:col-span-5">
             <motion.div
               initial={{ opacity: 0, scale: 0.96, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             >
-              <VideoCard />
+              <VideoCarouselCard />
             </motion.div>
           </div>
         </div>
 
-        {/* Bottom: 4 scenario cards → /contact */}
-        <div className="mt-12 md:mt-20 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        {/* Bottom: 4 scenario cards → /contact (below the first viewport) */}
+        <div className="mt-10 md:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {scenarios.map((scenario, i) => (
             <motion.div
               key={scenario.id}
