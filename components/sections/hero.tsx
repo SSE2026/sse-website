@@ -104,36 +104,38 @@ export function Hero({ translations }: HeroProps) {
 
   return (
     <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
-      {/* Full-bleed background image (panoramic product shot) */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={HERO_BG_IMAGE_SRC}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-
-      {/* Dark gradient overlay — stronger at left to keep title readable */}
-      <div
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.25) 65%, rgba(0,0,0,0.4) 100%), linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.0) 30%, rgba(0,0,0,0.0) 70%, rgba(0,0,0,0.85) 100%)",
-        }}
-      />
+      {/* Background image — fits the screen with breathing room (inset padding)
+          and rounded corners instead of stretching edge-to-edge */}
+      <div className="absolute inset-3 md:inset-6 lg:inset-8 z-0 overflow-hidden rounded-2xl md:rounded-3xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HERO_BG_IMAGE_SRC}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Dark gradient overlay — stronger at left to keep title readable */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.25) 65%, rgba(0,0,0,0.4) 100%), linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.0) 30%, rgba(0,0,0,0.0) 70%, rgba(0,0,0,0.75) 100%)",
+          }}
+        />
+      </div>
 
       {/* Content layer */}
-      <div className="relative z-[2] w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-24 md:pt-36 pb-16 md:pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* LEFT: dramatic oversized title + subtitle + tags + CTAs */}
+      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-20 md:pt-28 pb-12 md:pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
+          {/* LEFT: text content */}
           <div className="lg:col-span-8 flex flex-col">
-            {/* Main title — massive, two lines, "突破"/"重塑" get single-color
-                shimmers (tech blue + amber) using logo colors */}
+            {/* Main title — two lines; "突破"/"重塑" get single-color shimmers
+                (tech blue + amber) using logo colors */}
             <motion.h1
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-[44px] md:text-[72px] lg:text-[104px] font-black leading-[1.02] tracking-[-0.02em]"
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="text-[36px] md:text-[52px] lg:text-[64px] font-bold leading-[1.1] tracking-tight"
               style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
             >
               <span className="block">
@@ -146,57 +148,57 @@ export function Hero({ translations }: HeroProps) {
               </span>
             </motion.h1>
 
-            {/* Subtitle — wider, more breathing */}
+            {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
-              className="mt-10 md:mt-14 text-[18px] md:text-[20px] lg:text-[22px] text-gray-100 leading-[1.55] max-w-[36ch] font-light"
+              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+              className="mt-8 md:mt-10 text-[15px] md:text-[17px] text-gray-100 leading-[1.65] max-w-[58ch]"
               style={{ fontFamily: "var(--font-inter, sans-serif)" }}
             >
               {subtitle}
             </motion.p>
 
-            {/* Performance tags — larger, more spaced */}
+            {/* Performance tags */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
-              className="mt-10 md:mt-14 flex flex-wrap items-center gap-x-4 gap-y-3 text-[15px] md:text-[16px] text-white"
+              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+              className="mt-7 md:mt-9 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-white"
               style={{ fontFamily: "var(--font-inter, sans-serif)" }}
             >
               {tagValues.map((label, i) => (
-                <span key={i} className="inline-flex items-center gap-4">
+                <span key={i} className="inline-flex items-center gap-3">
                   {i > 0 && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                    <span className="w-1 h-1 rounded-full bg-white/50" />
                   )}
                   <span>{label}</span>
                 </span>
               ))}
             </motion.div>
 
-            {/* CTAs — bigger, more impact */}
+            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.45, ease: "easeOut" }}
-              className="mt-12 md:mt-16 flex flex-wrap gap-4"
+              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+              className="mt-8 md:mt-10 flex flex-wrap gap-3 md:gap-4"
             >
               <Link
                 href="/cases"
-                className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#3B82F6] text-white text-base md:text-lg font-semibold rounded-xl hover:bg-[#2563EB] transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]"
+                className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
                 style={{ fontFamily: "var(--font-inter, sans-serif)" }}
               >
                 {ctaExplore}
-                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/contact"
-                className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 border-2 border-white/40 text-white text-base md:text-lg font-semibold rounded-xl hover:bg-white/10 hover:border-white/70 transition-all"
+                className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-3.5 border border-white/30 text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
                 style={{ fontFamily: "var(--font-inter, sans-serif)" }}
               >
                 {ctaContact}
-                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-4 h-4" />
               </Link>
             </motion.div>
           </div>
@@ -206,7 +208,7 @@ export function Hero({ translations }: HeroProps) {
         </div>
 
         {/* Bottom: 4 scenario cards → /contact */}
-        <div className="mt-20 md:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="mt-12 md:mt-20 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {scenarios.map((scenario, i) => (
             <motion.div
               key={scenario.id}
@@ -214,29 +216,29 @@ export function Hero({ translations }: HeroProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: 0.6,
-                delay: 0.55 + i * 0.08,
+                delay: 0.5 + i * 0.08,
                 ease: "easeOut",
               }}
             >
               <Link
                 href="/contact"
-                className="group flex items-start justify-between gap-3 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm hover:bg-white/[0.12] hover:border-white/30 p-5 md:p-6 transition-all duration-300"
+                className="group flex items-start justify-between gap-3 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm hover:bg-white/[0.12] hover:border-white/30 p-4 md:p-5 transition-all duration-300"
               >
-                <div className="flex flex-col gap-2 min-w-0">
+                <div className="flex flex-col gap-1.5 min-w-0">
                   <span
-                    className="text-[11px] md:text-xs font-mono text-white/60 tracking-wider"
+                    className="text-[10px] md:text-[11px] font-mono text-white/60 tracking-wider"
                     style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
                   >
                     {scenario.number}
                   </span>
                   <div
-                    className="text-[16px] md:text-lg font-semibold text-white truncate"
+                    className="text-[14px] md:text-base font-semibold text-white truncate"
                     style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                   >
                     {scenario.label}
                   </div>
                   <div
-                    className="text-[12px] md:text-sm text-white/60"
+                    className="text-[11px] md:text-[12px] text-white/60"
                     style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                   >
                     {scenario.subLabel}
