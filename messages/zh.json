@@ -78,24 +78,52 @@
     }
   },
   "hero": {
-    "title": "突破能量极限，重塑电动边界",
-    "titleLine1": "突破能量极限",
-    "titleLine2": "重塑电动边界",
-    "subtitle": "深安锂能面向低空经济、具身智能、深空深海及高端特种装备，以高比能、高功率、高安全、超快充和全气候的电池技术，持续拓展新一代移动智能装备的性能与应用边界。",
+    "eyebrow": "高性能固态电池 · 为下一程蓄能",
+    "topRightTag": "ENERGY IN ACTION",
+    "topRightLink": "应用场景参考",
+    "titleLine1": "突破能量极限，",
+    "titleLine2": "重塑电动边界。",
+    "subtitle": "深安锂能专注于高性能固态电池，面向低空经济、具身智能、深空深海及高端特种装备，以高能量密度、高功率、高安全性和超快充的电池技术，持续拓展新一代智能装备的性能与应用边界。",
     "tags": {
-      "highEnergy": "高比能",
+      "highEnergy": "高能量密度",
       "highPower": "高功率",
-      "safety": "高安全",
-      "fastCharging": "超快充",
-      "allClimate": "全气候"
+      "highSafety": "高安全性",
+      "fastCharging": "超快充"
     },
-    "scenarios": {
-      "lowAltitude": "低空经济",
-      "embodiedAI": "具身智能",
-      "deepSpaceAndSea": "深空深海",
-      "specialEquipment": "高端特种装备"
+    "ctaExplore": "探索应用场景",
+    "ctaContact": "联系工程师",
+    "scene": {
+      "number": "01",
+      "title": "为更远航程蓄能",
+      "titleEn": "LOW-ALTITUDE AVIATION",
+      "caption": "场景示意：DeltaQuad · PX4 User Guide / CC BY 4.0"
     },
-    "ctaText": "联系我们"
+    "scenarios": [
+      {
+        "id": "lowAltitude",
+        "number": "01",
+        "label": "低空经济",
+        "subLabel": "轻量化、长航时"
+      },
+      {
+        "id": "embodiedAI",
+        "number": "02",
+        "label": "具身智能",
+        "subLabel": "持久行动、动态功率"
+      },
+      {
+        "id": "deepSpaceAndSea",
+        "number": "03",
+        "label": "深空深海",
+        "subLabel": "长时供电、系统协同"
+      },
+      {
+        "id": "specialEquipment",
+        "number": "04",
+        "label": "高端特种装备",
+        "subLabel": "高负载、高抗补能"
+      }
+    ]
   },
   "about": {
     "companyTitle": "深安锂能",

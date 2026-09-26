@@ -78,24 +78,52 @@
     }
   },
   "hero": {
-    "title": "Breaking Energy Limits, Reshaping Electric Boundaries",
-    "titleLine1": "Breaking Energy Limits",
-    "titleLine2": "Reshaping Electric Boundaries",
-    "subtitle": "Swift Safe Energy serves the low-altitude economy, embodied AI, deep-space and deep-sea, and high-end specialty equipment — with high energy density, high power, ultra-safe, ultra-fast-charging, all-climate battery technology — continuously expanding the performance and application boundaries of next-generation mobile intelligent equipment.",
+    "eyebrow": "Solid-State Battery · Powering the Next Mile",
+    "topRightTag": "ENERGY IN ACTION",
+    "topRightLink": "Scenario Reference",
+    "titleLine1": "Breaking Energy Limits,",
+    "titleLine2": "Reshaping Electric Boundaries.",
+    "subtitle": "Swift Safe Energy focuses on high-performance solid-state batteries, serving the low-altitude economy, embodied AI, deep-space and deep-sea, and high-end specialty equipment — with high energy density, high power, ultra-safe, ultra-fast-charging battery technology — continuously expanding the performance and application boundaries of next-generation intelligent equipment.",
     "tags": {
       "highEnergy": "High Energy Density",
       "highPower": "High Power",
-      "safety": "Ultra Safety",
-      "fastCharging": "Ultra-Fast Charging",
-      "allClimate": "All-Climate"
+      "highSafety": "Ultra Safety",
+      "fastCharging": "Ultra-Fast Charging"
     },
-    "scenarios": {
-      "lowAltitude": "Low-Altitude Economy",
-      "embodiedAI": "Embodied AI",
-      "deepSpaceAndSea": "Deep-Space & Deep-Sea",
-      "specialEquipment": "High-End Specialty Equipment"
+    "ctaExplore": "Explore Scenarios",
+    "ctaContact": "Contact Engineering",
+    "scene": {
+      "number": "01",
+      "title": "Powering Longer Missions",
+      "titleEn": "LOW-ALTITUDE AVIATION",
+      "caption": "Scene reference: DeltaQuad · PX4 User Guide / CC BY 4.0"
     },
-    "ctaText": "Contact Us"
+    "scenarios": [
+      {
+        "id": "lowAltitude",
+        "number": "01",
+        "label": "Low-Altitude Economy",
+        "subLabel": "Lightweight, Long Endurance"
+      },
+      {
+        "id": "embodiedAI",
+        "number": "02",
+        "label": "Embodied AI",
+        "subLabel": "Sustained Action, Dynamic Power"
+      },
+      {
+        "id": "deepSpaceAndSea",
+        "number": "03",
+        "label": "Deep-Space & Deep-Sea",
+        "subLabel": "Long-Duration Supply, System Synergy"
+      },
+      {
+        "id": "specialEquipment",
+        "number": "04",
+        "label": "High-End Specialty Equipment",
+        "subLabel": "High Load, Resilient Replenishment"
+      }
+    ]
   },
   "about": {
     "companyTitle": "Swift Safe Energy (Shenzhen) Technology Co., Ltd.",
