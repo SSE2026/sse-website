@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -16,7 +15,6 @@ const TAG_KEYS = [
   "fastCharging",
 ] as const;
 
-const HERO_VIDEO_SRC = "/videos/homepage-hero-new.webm";
 const DRONE_IMAGE_SRC = "/images/scenes/drone-low-altitude.png";
 
 // ============================================
@@ -35,9 +33,6 @@ type ScenarioItem = {
 };
 
 type HeroI18n = {
-  eyebrow?: string;
-  topRightTag?: string;
-  topRightLink?: string;
   titleLine1?: string;
   titleLine2?: string;
   subtitle?: string;
@@ -66,15 +61,10 @@ function splitTitle(title: string): { first: string; rest: string } {
 // Hero Component
 // ============================================
 export function Hero({ translations }: HeroProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   const t = useTranslations("hero");
   const tr = ((translations as { hero?: HeroI18n } | undefined)?.hero ??
     {}) as HeroI18n;
 
-  const eyebrow = tr.eyebrow ?? t("eyebrow");
-  const topRightTag = tr.topRightTag ?? t("topRightTag");
-  const topRightLink = tr.topRightLink ?? t("topRightLink");
   const titleLine1 = tr.titleLine1 ?? t("titleLine1");
   const titleLine2 = tr.titleLine2 ?? t("titleLine2");
   const subtitle = tr.subtitle ?? t("subtitle");
@@ -93,7 +83,6 @@ export function Hero({ translations }: HeroProps) {
   const { first: line1First, rest: line1Rest } = splitTitle(titleLine1);
   const { first: line2First, rest: line2Rest } = splitTitle(titleLine2);
 
-  // Resolve scenarios: prefer translations prop, fall back to useTranslations().raw
   const rawScenarios = (tr.scenarios ?? (t.raw("scenarios") as unknown)) as
     | ScenarioItem[]
     | undefined;
@@ -127,73 +116,15 @@ export function Hero({ translations }: HeroProps) {
         },
       ];
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  }, []);
-
   return (
     <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
-      {/* Background video - full bleed */}
-      <video
-        ref={videoRef}
-        src={HERO_VIDEO_SRC}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-
-      {/* Dark gradient overlay for legibility */}
-      <div
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.85) 100%)",
-        }}
-      />
-
-      {/* Content */}
-      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-12 pt-24 md:pt-28 pb-10 md:pb-14">
-        {/* Top bar: eyebrow (left) + brand mark + scenario link (right) */}
-        <div className="flex items-center justify-between gap-4 mb-10 md:mb-14">
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 text-sm md:text-[15px] font-medium text-[#F59E0B]"
-            style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
-            {eyebrow}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="hidden sm:flex items-center gap-6"
-          >
-            <span className="text-[11px] md:text-xs tracking-[0.25em] uppercase text-gray-400">
-              {topRightTag}
-            </span>
-            <Link
-              href="/cases"
-              className="text-sm md:text-[15px] text-gray-300 underline underline-offset-4 decoration-gray-500 hover:decoration-white transition-colors"
-              style={{ fontFamily: "var(--font-inter, sans-serif)" }}
-            >
-              {topRightLink}
-            </Link>
-          </motion.div>
-        </div>
-
-        {/* Main content: two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+      <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-12 pt-16 md:pt-24 pb-10 md:pb-14">
+        {/* Two-column main content. items-end aligns the right column with the
+            bottom of the left column's CTAs. */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
           {/* LEFT: text content */}
           <div className="lg:col-span-7 flex flex-col">
-            {/* Main title — two lines, first 2 chars (or first word) get the shimmer logo effect */}
+            {/* Main title — first 2 chars / first word get the shimmer logo */}
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -222,7 +153,7 @@ export function Hero({ translations }: HeroProps) {
               {subtitle}
             </motion.p>
 
-            {/* Performance tags (4 bullet-separated labels) */}
+            {/* Performance tags */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -240,7 +171,7 @@ export function Hero({ translations }: HeroProps) {
               ))}
             </motion.div>
 
-            {/* CTA buttons */}
+            {/* CTAs — bottom of this column is the alignment reference */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -266,8 +197,9 @@ export function Hero({ translations }: HeroProps) {
             </motion.div>
           </div>
 
-          {/* RIGHT: drone image with scene info overlay */}
-          <div className="lg:col-span-5 relative">
+          {/* RIGHT: drone image. items-end on the parent grid aligns this
+              column's bottom with the CTAs' bottom on the left. */}
+          <div className="lg:col-span-5 self-end">
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -281,7 +213,7 @@ export function Hero({ translations }: HeroProps) {
                 className="absolute inset-0 w-full h-full object-cover"
               />
 
-              {/* Scene info overlay (bottom) */}
+              {/* Scene info overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
                 <div className="flex items-end gap-4">
                   <span
