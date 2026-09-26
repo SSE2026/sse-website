@@ -82,7 +82,7 @@ function VideoCarouselCard() {
   }, [active]);
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto aspect-square overflow-hidden">
+    <div className="relative w-full max-w-[360px] mx-auto aspect-square overflow-hidden">
       {CAROUSEL_VIDEOS.map((slide, i) => (
         <video
           key={slide.src}
@@ -174,12 +174,13 @@ export function Hero({ translations }: HeroProps) {
       {/* ============= Hero (bold editorial) ============= */}
       <section className="relative w-full overflow-hidden bg-black text-white">
         <div className="relative z-[2] w-full max-w-[1400px] mx-auto px-6 md:px-10 lg:px-16 pt-24 md:pt-32 pb-10 md:pb-14">
-          {/* BOLD: title spans the full width, oversized type */}
+          {/* BOLD but balanced: title spans full width, but kept within
+              reasonable line height so CTAs land in the first viewport */}
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="text-[44px] md:text-[68px] lg:text-[88px] xl:text-[104px] font-black leading-[1.02] tracking-[-0.03em] max-w-[14ch]"
+            className="text-[36px] md:text-[52px] lg:text-[68px] xl:text-[80px] font-extrabold leading-[1.04] tracking-[-0.025em] max-w-[16ch]"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
             <span className="block">
@@ -192,8 +193,10 @@ export function Hero({ translations }: HeroProps) {
             </span>
           </motion.h1>
 
-          {/* Below: subtitle + tags + CTAs on left, video on right */}
-          <div className="mt-12 md:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+          {/* Below: subtitle + tags + CTAs on left, video on right.
+              Video sits at top of its column so it doesn't push the
+              CTAs below the fold. */}
+          <div className="mt-8 md:mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -201,14 +204,14 @@ export function Hero({ translations }: HeroProps) {
               className="lg:col-span-7 flex flex-col"
             >
               <p
-                className="text-[16px] md:text-[18px] lg:text-[19px] text-gray-100 leading-[1.6] max-w-[44ch]"
+                className="text-[15px] md:text-[16px] lg:text-[17px] text-gray-100 leading-[1.6] max-w-[46ch]"
                 style={{ fontFamily: "var(--font-inter, sans-serif)" }}
               >
                 {subtitle}
               </p>
 
               <div
-                className="mt-6 md:mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-white"
+                className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[14px] md:text-[15px] text-white"
                 style={{ fontFamily: "var(--font-inter, sans-serif)" }}
               >
                 {tagValues.map((label, i) => (
@@ -221,10 +224,10 @@ export function Hero({ translations }: HeroProps) {
                 ))}
               </div>
 
-              <div className="mt-8 md:mt-10 flex flex-wrap gap-3 md:gap-4">
+              <div className="mt-6 md:mt-7 flex flex-wrap gap-3 md:gap-4">
                 <Link
                   href="/cases"
-                  className="inline-flex items-center gap-2 px-7 md:px-8 py-3.5 md:py-4 bg-[#3B82F6] text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
+                  className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_30px_-8px_rgba(59,130,246,0.5)]"
                   style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                 >
                   {ctaExplore}
@@ -232,7 +235,7 @@ export function Hero({ translations }: HeroProps) {
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-7 md:px-8 py-3.5 md:py-4 border border-white/30 text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-[14px] md:text-[15px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
                   style={{ fontFamily: "var(--font-inter, sans-serif)" }}
                 >
                   {ctaContact}
