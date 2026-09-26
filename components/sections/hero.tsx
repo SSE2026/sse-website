@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -15,7 +16,14 @@ const TAG_KEYS = [
   "fastCharging",
 ] as const;
 
-const HERO_BG_IMAGE_SRC = "/images/hero-product-panorama.png";
+const VIDEO_SLIDE_DURATION_MS = 5000;
+
+// Three product/hero videos to rotate through in the right-side card.
+const CAROUSEL_VIDEOS = [
+  { src: "/videos/homepage-hero-new.webm" },
+  { src: "/videos/product-hero-new.mp4" },
+  { src: "/videos/cases-hero.mp4" },
+];
 
 // ============================================
 // Types
@@ -46,6 +54,78 @@ function splitTitle(title: string): { first: string; rest: string } {
   const idx = title.indexOf(" ");
   if (idx > 0) return { first: title.slice(0, idx), rest: title.slice(idx) };
   return { first: title.slice(0, 2), rest: title.slice(2) };
+}
+
+// ============================================
+// Right-side video carousel card
+// ============================================
+function VideoCarouselCard() {
+  const [active, setActive] = useState(0);
+  const refs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  // Auto-rotate slides
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActive((i) => (i + 1) % CAROUSEL_VIDEOS.length);
+    }, VIDEO_SLIDE_DURATION_MS);
+    return () => clearInterval(id);
+  }, []);
+
+  // Play the active video, pause the others
+  useEffect(() => {
+    refs.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === active) {
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      } else {
+        v.pause();
+      }
+    });
+  }, [active]);
+
+  return (
+    <div className="relative w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]">
+      {CAROUSEL_VIDEOS.map((slide, i) => (
+        <video
+          key={slide.src}
+          ref={(el) => {
+            refs.current[i] = el;
+          }}
+          src={slide.src}
+          muted
+          playsInline
+          loop
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            i === active ? "opacity-100 z-10" : "opacity-0 z-0"
+          }`}
+        />
+      ))}
+
+      {/* Pagination dots */}
+      <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
+        {CAROUSEL_VIDEOS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            aria-label={`Video ${i + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === active ? "w-7 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Subtle vignette to add depth */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[5]"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%)",
+        }}
+      />
+    </div>
+  );
 }
 
 // ============================================
@@ -104,33 +184,11 @@ export function Hero({ translations }: HeroProps) {
 
   return (
     <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
-      {/* Background image — fits the screen with breathing room (inset padding)
-          and rounded corners instead of stretching edge-to-edge */}
-      <div className="absolute inset-3 md:inset-6 lg:inset-8 z-0 overflow-hidden rounded-2xl md:rounded-3xl">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={HERO_BG_IMAGE_SRC}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Dark gradient overlay — stronger at left to keep title readable */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.25) 65%, rgba(0,0,0,0.4) 100%), linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.0) 30%, rgba(0,0,0,0.0) 70%, rgba(0,0,0,0.75) 100%)",
-          }}
-        />
-      </div>
-
       {/* Content layer */}
       <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-20 md:pt-28 pb-12 md:pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
           {/* LEFT: text content */}
-          <div className="lg:col-span-8 flex flex-col">
-            {/* Main title — two lines; "突破"/"重塑" get single-color shimmers
-                (tech blue + amber) using logo colors */}
+          <div className="lg:col-span-7 flex flex-col">
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -148,7 +206,6 @@ export function Hero({ translations }: HeroProps) {
               </span>
             </motion.h1>
 
-            {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -159,7 +216,6 @@ export function Hero({ translations }: HeroProps) {
               {subtitle}
             </motion.p>
 
-            {/* Performance tags */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -177,7 +233,6 @@ export function Hero({ translations }: HeroProps) {
               ))}
             </motion.div>
 
-            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -203,8 +258,16 @@ export function Hero({ translations }: HeroProps) {
             </motion.div>
           </div>
 
-          {/* RIGHT — intentionally empty so the panoramic image shows through */}
-          <div className="hidden lg:block lg:col-span-4" aria-hidden="true" />
+          {/* RIGHT: video carousel card */}
+          <div className="lg:col-span-5">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            >
+              <VideoCarouselCard />
+            </motion.div>
+          </div>
         </div>
 
         {/* Bottom: 4 scenario cards → /contact */}
