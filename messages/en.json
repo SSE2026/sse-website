@@ -81,19 +81,21 @@
     "title": "Breaking Energy Limits, Reshaping Electric Boundaries",
     "titleLine1": "Breaking Energy Limits",
     "titleLine2": "Reshaping Electric Boundaries",
-    "subtitle": "High energy density, ultra-safe solid-state battery solutions",
-    "explore": "Explore Technology",
-    "contact": "Contact Us",
-    "keywords": {
-      "lowAltitude": "Low-Altitude Flight",
-      "embodiedAI": "Embodied AI",
-      "deepSea": "Deep-Sea Equipment"
+    "subtitle": "Swift Safe Energy serves the low-altitude economy, embodied AI, deep-space and deep-sea, and high-end specialty equipment — with high energy density, high power, ultra-safe, ultra-fast-charging, all-climate battery technology — continuously expanding the performance and application boundaries of next-generation mobile intelligent equipment.",
+    "tags": {
+      "highEnergy": "High Energy Density",
+      "highPower": "High Power",
+      "safety": "Ultra Safety",
+      "fastCharging": "Ultra-Fast Charging",
+      "allClimate": "All-Climate"
     },
-    "stats": {
-      "energyDensity": "Wh/kg",
-      "cycleLife": "Cycle Life (Cycles)",
-      "patents": "Authorized Patents"
-    }
+    "scenarios": {
+      "lowAltitude": "Low-Altitude Economy",
+      "embodiedAI": "Embodied AI",
+      "deepSpaceAndSea": "Deep-Space & Deep-Sea",
+      "specialEquipment": "High-End Specialty Equipment"
+    },
+    "ctaText": "Contact Us"
   },
   "about": {
     "companyTitle": "Swift Safe Energy (Shenzhen) Technology Co., Ltd.",

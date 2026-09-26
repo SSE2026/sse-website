@@ -81,19 +81,21 @@
     "title": "突破能量极限，重塑电动边界",
     "titleLine1": "突破能量极限",
     "titleLine2": "重塑电动边界",
-    "subtitle": "高比能、高安全固态电池解决方案",
-    "explore": "探索技术",
-    "contact": "联系我们",
-    "keywords": {
-      "lowAltitude": "低空飞行",
-      "embodiedAI": "具身智能",
-      "deepSea": "深海装备"
+    "subtitle": "深安锂能面向低空经济、具身智能、深空深海及高端特种装备，以高比能、高功率、高安全、超快充和全气候的电池技术，持续拓展新一代移动智能装备的性能与应用边界。",
+    "tags": {
+      "highEnergy": "高比能",
+      "highPower": "高功率",
+      "safety": "高安全",
+      "fastCharging": "超快充",
+      "allClimate": "全气候"
     },
-    "stats": {
-      "energyDensity": "Wh/kg",
-      "cycleLife": "循环寿命 (Cycles)",
-      "patents": "授权专利"
-    }
+    "scenarios": {
+      "lowAltitude": "低空经济",
+      "embodiedAI": "具身智能",
+      "deepSpaceAndSea": "深空深海",
+      "specialEquipment": "高端特种装备"
+    },
+    "ctaText": "联系我们"
   },
   "about": {
     "companyTitle": "深安锂能",
