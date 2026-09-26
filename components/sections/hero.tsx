@@ -180,10 +180,9 @@ export function Hero({ translations }: HeroProps) {
   return (
     <>
       {/* ============= Hero (one viewport) ============= */}
-      <section className="relative w-full min-h-[calc(100vh-80px)] overflow-hidden bg-black text-white">
-        <div className="h-full flex items-center">
-          <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+      <section className="relative w-full overflow-hidden bg-black text-white">
+        <div className="relative z-[2] w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-24 md:pt-28 pb-10 md:pb-14">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               {/* LEFT: text content (8/12) */}
               <div className="lg:col-span-8 flex flex-col">
                 <motion.h1
@@ -267,7 +266,6 @@ export function Hero({ translations }: HeroProps) {
               </div>
             </div>
           </div>
-        </div>
       </section>
 
       {/* ============= 4 scenario cards (separate section below the fold) ============= */}
