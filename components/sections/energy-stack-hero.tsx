@@ -128,13 +128,11 @@ export function EnergyStackHero({
       className="relative w-full overflow-hidden bg-black text-white"
       style={{ minHeight: "calc(100vh - 80px)" }}
     >
-      {/* Video — portrait, anchored to the right with breathing room
-          top/bottom so the 9:16 frame is fully visible (no object-cover
-          crop) and does not run edge-to-edge. */}
-      <div
-        className="absolute top-8 bottom-8 right-0 overflow-hidden"
-        style={{ aspectRatio: "9 / 16" }}
-      >
+      {/* Video — covers the right region of the banner, full height.
+          Source clips are 2560x1440 (16:9 landscape), so the window is a
+          landscape block rather than a portrait slot; object-cover crops
+          horizontally which keeps the centre of frame. */}
+      <div className="absolute inset-y-0 right-0 w-full lg:w-[56%] overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <video
           ref={videoRef}
@@ -146,23 +144,25 @@ export function EnergyStackHero({
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/* Feather the video's left edge into the black brand column */}
+        {/* Feather the video's own left edge so the window does not read
+            as a pasted-on rectangle of its own */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(90deg, #000 0%, rgba(0,0,0,0.85) 8%, rgba(0,0,0,0.35) 18%, transparent 32%)",
+              "linear-gradient(90deg, #000 0%, rgba(0,0,0,0.82) 10%, rgba(0,0,0,0.35) 22%, transparent 40%)",
           }}
         />
       </div>
 
-      {/* Whole-section feather: keeps the far-left pure black for the
-          brand copy and lets the video emerge gradually. */}
+      {/* Whole-section feather — pure black on the left for the brand
+          copy, dissolving into the video so there is no hard vertical
+          seam between the two. */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(90deg, #000 0%, #000 42%, rgba(0,0,0,0.72) 52%, rgba(0,0,0,0.25) 62%, transparent 72%)",
+            "linear-gradient(90deg, #000 0%, #000 36%, rgba(0,0,0,0.86) 43%, rgba(0,0,0,0.5) 49%, transparent 58%)",
         }}
       />
 
@@ -173,7 +173,7 @@ export function EnergyStackHero({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="max-w-[620px] flex flex-col justify-center min-h-[calc(100vh-80px-200px)]"
+          className="max-w-[540px] flex flex-col justify-center min-h-[calc(100vh-80px-200px)]"
         >
           <div
             className="text-[10px] md:text-[11px] tracking-[0.32em] uppercase text-white/55 mb-6 md:mb-8"
