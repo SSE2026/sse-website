@@ -144,13 +144,15 @@ export function EnergyStackHero({
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/* Feather the video's own left edge so the window does not read
-            as a pasted-on rectangle of its own */}
+        {/* Feather the video's own left edge. Several source clips carry
+            a light/empty margin down their left side, so the ramp is
+            deliberately long — it has to swallow that margin, not just
+            soften a hard seam. */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(90deg, #000 0%, rgba(0,0,0,0.82) 10%, rgba(0,0,0,0.35) 22%, transparent 40%)",
+              "linear-gradient(90deg, #000 0%, rgba(0,0,0,0.93) 18%, rgba(0,0,0,0.75) 36%, rgba(0,0,0,0.5) 52%, rgba(0,0,0,0.22) 68%, transparent 82%)",
           }}
         />
       </div>
@@ -162,7 +164,7 @@ export function EnergyStackHero({
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(90deg, #000 0%, #000 36%, rgba(0,0,0,0.86) 43%, rgba(0,0,0,0.5) 49%, transparent 58%)",
+            "linear-gradient(90deg, #000 0%, #000 40%, rgba(0,0,0,0.92) 48%, rgba(0,0,0,0.68) 57%, rgba(0,0,0,0.35) 66%, transparent 78%)",
         }}
       />
 
@@ -223,28 +225,23 @@ export function EnergyStackHero({
 
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/cases"
+              href="/contact"
               className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_36px_-8px_rgba(59,130,246,0.55)]"
               style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
             >
-              {(heroRaw.ctaExplore as string) ?? "立即登能"}
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 border border-white/30 text-white text-[14px] font-semibold rounded-lg hover:bg-white/5 transition-colors"
-              style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-            >
-              {(heroRaw.ctaContact as string) ?? "联系我们"}
+              {(heroRaw.ctaExplore as string) ?? "立即探索"}
             </Link>
           </div>
         </motion.div>
       </div>
 
       {/* Bottom bar: tab switcher (left) + scenario caption (right).
-          Caption is absolutely positioned so it does not compete with the
-          tabs for width. */}
-      <div className="absolute bottom-6 md:bottom-8 left-0 right-0 z-10">
-        <div className="relative mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16 flex items-end gap-8">
+          Pinned to bottom-0 so the tab strip's lower edge lines up with
+          the video window's lower edge (both sit on the section edge).
+          Caption is absolutely positioned so it does not compete with
+          the tabs for width. */}
+      <div className="absolute bottom-0 left-0 right-0 z-10">
+        <div className="relative mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16 pb-0 flex items-end gap-8">
           {/* Tabs — label follows the page locale, no numeric prefix.
               The active tab's progress is drawn around the pill border. */}
           <div className="flex flex-wrap gap-2 md:gap-2.5">
