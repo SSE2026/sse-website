@@ -8,11 +8,12 @@ import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import HeroCarousel from "@/components/ui/hero-carousel/HeroCarousel";
+import { AERORIDE_SLIDES_EN, AERORIDE_SLIDES_ZH } from "@/components/ui/hero-carousel/aeroride-slides";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
-import { products, productSeries, Product } from "@/data/products";
+import { products, Product } from "@/data/products";
 import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
@@ -183,93 +184,12 @@ export default function ProductDetailPage() {
         />
 
         <main>
-          {/* Video Hero - Full screen with video as background, no mask */}
-          <section
-            className="relative overflow-hidden"
-            style={{
-              backgroundColor: "#F5F5F7",
-              minHeight: "100vh",
-            }}
-          >
-            {/* Full-screen background video - no mask, no crop, right-aligned */}
-            <div className="absolute inset-0 flex items-center justify-end bg-[#0a0a0a]">
-              <video
-                src="/videos/product-hero-new.mp4"
-                muted
-                playsInline
-                autoPlay
-                preload="auto"
-                className="w-full h-full object-contain object-right"
-              />
-            </div>
-
-            <div
-              className="relative max-w-7xl pl-2 pr-2 md:pl-4 lg:pl-4 z-10"
-              style={{
-                minHeight: "100vh",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              {/* Plain text on left - no card, no animation (instant render) */}
-              <div className="flex flex-col gap-5 max-w-[360px]">
-                {/* Title */}
-                <h1
-                  className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-[1.1]"
-                  style={{
-                    fontFamily: "var(--font-space-grotesk)",
-                    color: "#FFFFFF",
-                    textShadow: "0 2px 16px rgba(0,0,0,0.6), 0 1px 4px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  {locale === "zh" ? (
-                    <>
-                      突破能量极限
-                      <br />
-                      <span className="gradient-text-animated">重塑电动边界</span>
-                    </>
-                  ) : (
-                    <>
-                      Breaking Energy Limits
-                      <br />
-                      <span className="gradient-text-animated">
-                        Reshaping Electric Future
-                      </span>
-                    </>
-                  )}
-                </h1>
-
-                {/* Description */}
-                <p
-                  className="text-xs md:text-sm leading-relaxed"
-                  style={{
-                    color: "rgba(255,255,255,0.92)",
-                    textShadow: "0 1px 8px rgba(0,0,0,0.6)",
-                  }}
-                >
-                  {locale === "zh" ? (
-                    <>专为无人机、具身智能、深海探测设备打造边界动力方案</>
-                  ) : (
-                    <>
-                      Boundary power solutions for UAVs, embodied AI,
-                      <br />
-                      and deep-sea exploration devices.
-                    </>
-                  )}
-                </p>
-
-                {/* CTA Button */}
-                <div>
-                  <Link href="/contact">
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#0a0a0a] font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all shadow-lg">
-                      {locale === "zh" ? "即刻咨询" : "Contact Us"}
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </section>
+          {/* Hero — Aeroride showcase carousel, moved over from the home
+              page's second screen. */}
+          <HeroCarousel
+            slides={locale === "zh" ? AERORIDE_SLIDES_ZH : AERORIDE_SLIDES_EN}
+            autoPlayInterval={3000}
+          />
 
           {/* Product Series Section */}
           <section

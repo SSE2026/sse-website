@@ -71,7 +71,7 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
     <>
       {/* Header - Tesla Style Glassmorphism */}
       <motion.header
-        initial={{ y: -20, opacity: 0 }}
+        initial={false}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className={cn(

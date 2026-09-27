@@ -151,8 +151,8 @@ export function EnergyStackHero({
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-black text-white mt-[72px]"
-      style={{ minHeight: "calc(100vh - 72px)" }}
+      className="relative w-full overflow-hidden bg-black text-white"
+      style={{ minHeight: "calc(100vh - 80px)" }}
     >
       {/* Video — covers the right region of the banner, full height.
           Source clips are 2560x1440 (16:9 landscape), so the window is a
@@ -206,7 +206,7 @@ export function EnergyStackHero({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="max-w-[540px] flex flex-col justify-center min-h-[calc(100vh-72px-160px)]"
+          className="max-w-[540px] flex flex-col justify-center min-h-[calc(100vh-80px-160px)]"
         >
           <h1
             className="text-[34px] md:text-[44px] lg:text-[56px] font-bold leading-[1.08] tracking-[-0.015em] mb-6 md:mb-8"
