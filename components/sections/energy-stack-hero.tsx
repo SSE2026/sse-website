@@ -144,27 +144,28 @@ export function EnergyStackHero({
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/* Feather the video's own left edge. Several source clips carry
-            a light/empty margin down their left side, so the ramp is
-            deliberately long — it has to swallow that margin, not just
-            soften a hard seam. */}
+        {/* Feather the video's own left edge. Long enough to swallow the
+            light margin some source clips carry down their left side,
+            but short enough that the frame's subject stays visible —
+            fully clear by ~56% of the video's width. */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(90deg, #000 0%, rgba(0,0,0,0.93) 18%, rgba(0,0,0,0.75) 36%, rgba(0,0,0,0.5) 52%, rgba(0,0,0,0.22) 68%, transparent 82%)",
+              "linear-gradient(90deg, #000 0%, rgba(0,0,0,0.9) 12%, rgba(0,0,0,0.66) 26%, rgba(0,0,0,0.34) 40%, rgba(0,0,0,0.12) 49%, transparent 56%)",
           }}
         />
       </div>
 
       {/* Whole-section feather — pure black on the left for the brand
           copy, dissolving into the video so there is no hard vertical
-          seam between the two. */}
+          seam between the two. Clears by ~62% so it stops darkening the
+          video well before the frame's centre. */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(90deg, #000 0%, #000 40%, rgba(0,0,0,0.92) 48%, rgba(0,0,0,0.68) 57%, rgba(0,0,0,0.35) 66%, transparent 78%)",
+            "linear-gradient(90deg, #000 0%, #000 40%, rgba(0,0,0,0.9) 46%, rgba(0,0,0,0.55) 52%, rgba(0,0,0,0.2) 57%, transparent 62%)",
         }}
       />
 
