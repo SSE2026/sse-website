@@ -38,7 +38,6 @@ COPY --from=builder --chown=nodejs:nodejs /app/package.json ./package.json
 USER nodejs
 EXPOSE 3001
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/v1/health || exit 1
+# CloudBase 自带健康探针，不要 Dockerfile 里写 HEALTHCHECK（会冲突）
 
 CMD ["node", "server.js"]

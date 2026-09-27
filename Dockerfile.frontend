@@ -35,8 +35,6 @@ COPY --from=builder /app/package.json ./package.json
 USER nextjs
 EXPOSE 3000
 
-# 健康检查（CloudBase 会按这个判断容器是否就绪）
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+# CloudBase 自带健康探针，不要 Dockerfile 里写 HEALTHCHECK（会冲突）
 
 CMD ["npm", "start"]
