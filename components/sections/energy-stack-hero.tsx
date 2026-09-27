@@ -19,38 +19,40 @@ const STACK_VIDEOS: { id: string; src: string }[] = [
 const ACTIVE_TAB_INDEX = 3; // 04 Mining Vehicles is the default selected
 const CYCLE_DURATION_MS = 6000;
 
+type StackScenario = {
+  id: string;
+  index: string;
+  en: string;
+  zh: string;
+  captionZh: string;
+  captionEn: string;
+  videoSrc: string;
+};
+
 export function EnergyStackHero({
   translations,
+  locale = "zh",
 }: {
   translations?: { hero?: Record<string, unknown> };
+  locale?: string;
 }) {
   const t = useTranslations("hero");
+  const isZh = locale === "zh";
   const heroRaw = useMemo(
     () => (translations?.hero ?? {}) as Record<string, unknown>,
     [translations],
   );
 
-  type StackScenario = {
-    id: string;
-    index: string;
-    indexLabel: string;
-    en: string;
-    zh: string;
-    captionZh: string;
-    captionEn: string;
-    videoSrc: string;
-  };
-
   const scenarios = useMemo<StackScenario[]>(() => {
     const stackRaw = heroRaw.energyStack as
-      | { scenarios?: Omit<StackScenario, "videoSrc">[]; captionPrefixZh?: string; captionPrefixEn?: string }
+      | { scenarios?: Omit<StackScenario, "videoSrc">[] }
       | undefined;
     const list = stackRaw?.scenarios ?? [];
     const fallback: StackScenario[] = [
-      { id: "lowaltitude", index: "01", indexLabel: "01 / DRONES", en: "Drones", zh: "低空经济", captionZh: "为低空飞行器提供高比能动力，让飞行更远、更强、更自由", captionEn: "High-energy-density propulsion for farther, stronger, freer flight.", videoSrc: STACK_VIDEOS[0].src },
-      { id: "embodied",    index: "02", indexLabel: "02 / ROBOTICS", en: "Robotics", zh: "具身智能", captionZh: "为下一代智能移动装备提供高性能能源", captionEn: "High-performance energy for next-gen mobile intelligent platforms.", videoSrc: STACK_VIDEOS[1].src },
-      { id: "deepsea",     index: "03", indexLabel: "03 / EXPLORATION", en: "Exploration", zh: "深空深海", captionZh: "面向极端环境的高安全、高可靠能源系统", captionEn: "High-safety, high-reliability energy for extreme environments.", videoSrc: STACK_VIDEOS[2].src },
-      { id: "special",     index: "04", indexLabel: "04 / MINING VEHICLES", en: "Mining Vehicles", zh: "特种装备", captionZh: "为高负载、高机动装备提供持续动力", captionEn: "Providing continuous power for high-load, high-mobility vehicles.", videoSrc: STACK_VIDEOS[3].src },
+      { id: "lowaltitude", index: "01", en: "Drones", zh: "低空经济", captionZh: "为低空飞行器提供高比能动力，让飞行更远、更强、更自由", captionEn: "High-energy-density propulsion for farther, stronger, freer flight.", videoSrc: STACK_VIDEOS[0].src },
+      { id: "embodied",    index: "02", en: "Robotics", zh: "具身智能", captionZh: "为下一代智能移动装备提供高性能能源", captionEn: "High-performance energy for next-gen mobile intelligent platforms.", videoSrc: STACK_VIDEOS[1].src },
+      { id: "deepsea",     index: "03", en: "Exploration", zh: "深空深海", captionZh: "面向极端环境的高安全、高可靠能源系统", captionEn: "High-safety, high-reliability energy for extreme environments.", videoSrc: STACK_VIDEOS[2].src },
+      { id: "special",     index: "04", en: "Mining Vehicles", zh: "特种装备", captionZh: "为高负载、高机动装备提供持续动力", captionEn: "Providing continuous power for high-load, high-mobility vehicles.", videoSrc: STACK_VIDEOS[3].src },
     ];
     const src = list.length === 4 ? list : fallback;
     return src.map((s, i) => {
@@ -58,7 +60,6 @@ export function EnergyStackHero({
       return {
         id: s.id,
         index: s.index,
-        indexLabel: s.indexLabel,
         en: s.en,
         zh: s.zh,
         captionZh: s.captionZh,
@@ -68,12 +69,10 @@ export function EnergyStackHero({
     });
   }, [heroRaw]);
 
-  const captionPrefixZh = (heroRaw.energyStack as { captionPrefixZh?: string } | undefined)?.captionPrefixZh ?? "场景";
-  const captionPrefixEn = (heroRaw.energyStack as { captionPrefixEn?: string } | undefined)?.captionPrefixEn ?? "Scenario";
-
   const [activeIdx, setActiveIdx] = useState(ACTIVE_TAB_INDEX);
   const [progress, setProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+
   const iconFor = (id: string) => {
     if (id === "lowaltitude") return Plane;
     if (id === "embodied") return Bot;
@@ -82,8 +81,6 @@ export function EnergyStackHero({
   };
 
   // Auto-cycle: progress 0→100 over CYCLE_DURATION_MS, then advance.
-  // The whole chain is in one timer so the previous cycle's timer
-  // never races with the next one.
   useEffect(() => {
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -103,15 +100,12 @@ export function EnergyStackHero({
     return () => { cancelled = true; if (timer) clearTimeout(timer); };
   }, [activeIdx, scenarios.length]);
 
-  // Play the active clip. Pause + rewind the rest on rotate.
-  // No currentTime=0 right before play() (Chromium ignores play()
-  // when a seek is still in flight).
+  // Play the active clip. Rewind on rotate happens in the same effect.
   useEffect(() => {
-    if (videoRef.current) {
-      try { videoRef.current.currentTime = 0; } catch { /* noop */ }
-      const p = videoRef.current.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
-    }
+    if (!videoRef.current) return;
+    const v = videoRef.current;
+    const p = v.play();
+    if (p && typeof p.catch === "function") p.catch(() => {});
   }, [activeIdx]);
 
   // Chromium pauses video-only media in hidden tabs to save power;
@@ -134,32 +128,46 @@ export function EnergyStackHero({
       className="relative w-full overflow-hidden bg-black text-white"
       style={{ minHeight: "calc(100vh - 80px)" }}
     >
-      {/* Background video — full bleed, fills the whole section. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <video
-        ref={videoRef}
-        src={active.videoSrc}
-        autoPlay
-        muted
-        playsInline
-        loop
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+      {/* Video — portrait, anchored to the right with breathing room
+          top/bottom so the 9:16 frame is fully visible (no object-cover
+          crop) and does not run edge-to-edge. */}
+      <div
+        className="absolute top-8 bottom-8 right-0 overflow-hidden"
+        style={{ aspectRatio: "9 / 16" }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <video
+          ref={videoRef}
+          src={active.videoSrc}
+          autoPlay
+          muted
+          playsInline
+          loop
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Feather the video's left edge into the black brand column */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(90deg, #000 0%, rgba(0,0,0,0.85) 8%, rgba(0,0,0,0.35) 18%, transparent 32%)",
+          }}
+        />
+      </div>
 
-      {/* Feather mask — pure black on the left, fading into transparent
-          so the video bleeds seamlessly into the brand area. The brand
-          copy lives inside the opaque band (~50% of the width). */}
+      {/* Whole-section feather: keeps the far-left pure black for the
+          brand copy and lets the video emerge gradually. */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(90deg, #000 0%, #000 40%, rgba(0,0,0,0.6) 60%, transparent 75%)",
+            "linear-gradient(90deg, #000 0%, #000 42%, rgba(0,0,0,0.72) 52%, rgba(0,0,0,0.25) 62%, transparent 72%)",
         }}
       />
 
-      {/* Brand content — vertically centered on the left, kept inside
-          the opaque band so white text stays readable. */}
+      {/* Brand content — vertically centered on the left, inside the
+          opaque band so white text stays readable. */}
       <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16 py-10 md:py-14">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -194,7 +202,7 @@ export function EnergyStackHero({
             className="text-[14px] md:text-[16px] text-white/80 leading-[1.6] mb-6 md:mb-8"
             style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
           >
-            {heroRaw.subtitle as string ?? "高性能固态电池 · 为下一程蓄能"}
+            {(heroRaw.subtitle as string) ?? "高性能固态电池 · 为下一程蓄能"}
           </p>
 
           <div
@@ -232,14 +240,14 @@ export function EnergyStackHero({
         </motion.div>
       </div>
 
-      {/* Bottom bar: tab switcher (left) + scenario caption (right). Caption
-              is absolutely positioned so it does NOT compete with the
-              tabs for flex space — tabs therefore get the full 1fr and
-              never wrap on the desktop sizes. */}
+      {/* Bottom bar: tab switcher (left) + scenario caption (right).
+          Caption is absolutely positioned so it does not compete with the
+          tabs for width. */}
       <div className="absolute bottom-6 md:bottom-8 left-0 right-0 z-10">
         <div className="relative mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16 flex items-end gap-8">
-          {/* Tabs */}
-          <div className="flex flex-wrap gap-2 md:gap-2">
+          {/* Tabs — label follows the page locale, no numeric prefix.
+              The active tab's progress is drawn around the pill border. */}
+          <div className="flex flex-wrap gap-2 md:gap-2.5">
             {scenarios.map((s, i) => {
               const isActive = i === activeIdx;
               const Icon = iconFor(s.id);
@@ -248,49 +256,42 @@ export function EnergyStackHero({
                   key={s.id}
                   onClick={() => setActiveIdx(i)}
                   aria-pressed={isActive}
-                  aria-label={`${s.index} ${s.en}`}
+                  aria-label={isZh ? s.zh : s.en}
                   className={[
-                    "relative group inline-flex items-center gap-2 px-3 py-2 md:px-3.5 md:py-2 rounded-full",
-                    "text-left transition-colors backdrop-blur-sm",
+                    "relative inline-flex items-center gap-2 px-3.5 py-2 md:px-4 md:py-2.5 rounded-full",
+                    "transition-colors backdrop-blur-sm cursor-pointer",
                     isActive
-                      ? "bg-white/8 border border-[#3B82F6] shadow-[0_0_18px_-4px_rgba(59,130,246,0.7)]"
-                      : "bg-white/4 border border-white/12 hover:border-white/30 hover:bg-white/8",
+                      ? "bg-white/8 text-white"
+                      : "bg-white/4 border border-white/12 text-white/65 hover:border-white/30 hover:bg-white/8 hover:text-white",
                   ].join(" ")}
                 >
                   <Icon
                     className={
                       "w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0 " +
-                      (isActive ? "text-[#3B82F6]" : "text-white/55 group-hover:text-white/80")
+                      (isActive ? "text-[#3B82F6]" : "text-white/45")
                     }
                   />
                   <span
-                    className="text-[10px] md:text-[11px] font-mono tracking-wider text-white/55"
-                    style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-                  >
-                    {s.index}
-                  </span>
-                  <span
-                    className="text-[12px] md:text-[13px] font-medium leading-none"
+                    className="text-[12px] md:text-[13px] font-medium leading-none whitespace-nowrap"
                     style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                   >
-                    {s.en}
-                  </span>
-                  <span
-                    className={
-                      "hidden xl:inline text-[11px] leading-none " +
-                      (isActive ? "text-white/55" : "text-white/35")
-                    }
-                    style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                  >
-                    · {s.zh}
+                    {isZh ? s.zh : s.en}
                   </span>
 
-                  {/* Active progress bar */}
+                  {/* Border progress ring — a conic gradient masked to
+                      the pill's 1.5px border band. progress is 0-100. */}
                   {isActive && (
                     <span
-                      className="absolute -bottom-px left-0 h-[2px] bg-[#3B82F6] rounded-full"
-                      style={{ width: `${progress}%` }}
                       aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 rounded-full"
+                      style={{
+                        padding: "1.5px",
+                        background: `conic-gradient(#3B82F6 ${progress * 3.6}deg, rgba(255,255,255,0.10) 0deg)`,
+                        WebkitMask:
+                          "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                        WebkitMaskComposite: "xor",
+                        maskComposite: "exclude",
+                      }}
                     />
                   )}
                 </button>
@@ -298,17 +299,16 @@ export function EnergyStackHero({
             })}
           </div>
 
-          {/* Scenario caption — absolute so tabs get the full row width. */}
+          {/* Scenario caption — locale-driven, no numeric prefix.
+              Sits over the video, so a soft shadow keeps it legible. */}
           <div
-            className="hidden lg:block absolute right-6 lg:right-10 bottom-0 max-w-[420px] text-right text-[10px] md:text-[11px] leading-[1.7] text-white/55"
-            style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+            className="hidden lg:block absolute right-6 lg:right-10 bottom-0 max-w-[440px] text-right text-[13px] md:text-[14px] leading-[1.6] text-white/90"
+            style={{
+              fontFamily: "var(--font-noto-sc, sans-serif)",
+              textShadow: "0 1px 14px rgba(0,0,0,0.95), 0 0 3px rgba(0,0,0,0.9)",
+            }}
           >
-            <div className="mb-1">
-              {captionPrefixZh} {active.index}: {active.zh} - {active.captionZh}
-            </div>
-            <div className="text-white/40">
-              {captionPrefixEn} {active.index}: {active.en} - {active.captionEn}
-            </div>
+            {isZh ? active.captionZh : active.captionEn}
           </div>
         </div>
       </div>

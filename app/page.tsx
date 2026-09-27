@@ -73,7 +73,7 @@ export default function HomePage() {
         />
         <main>
           {/* New editorial hero: 9:16 Energy Stack */}
-          <EnergyStackHero translations={currentMessages} />
+          <EnergyStackHero translations={currentMessages} locale={locale} />
 
           {/* Second section: original Aeroride hero (video + stats carousel) */}
           <HeroCarousel
