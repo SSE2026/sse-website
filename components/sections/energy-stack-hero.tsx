@@ -124,6 +124,10 @@ export function EnergyStackHero({
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [activeIdx]);
 
+  // Desktop = 3 columns side by side; below lg the grid collapses to a
+  // single stacked column. Done with CSS (`lg:` variants) rather than a
+  // JS media query so there is no mobile->desktop flash on first paint.
+
   const active = scenarios[activeIdx];
 
   return (
@@ -133,17 +137,13 @@ export function EnergyStackHero({
     >
       {/* Three columns. `display` and `grid-template-columns` are set
           inline rather than via utility classes so the column geometry
-          cannot be lost to a stale CSS build. */}
+          cannot be lost to a stale CSS build. Below lg it collapses to
+          a single stacked column. */}
       <div
-        className="relative z-[2] items-center w-full max-w-[1440px] mx-auto px-6 md:px-10 lg:px-16 pt-16 md:pt-20 pb-12 md:pb-16 gap-10"
-        style={{
-          display: "grid",
-          minHeight: "calc(100vh - 80px)",
-          gridTemplateColumns: "minmax(0,1fr) 300px auto",
-        }}
+        className="relative z-[2] items-center w-full max-w-[1440px] mx-auto px-6 md:px-10 lg:px-16 pt-16 md:pt-20 pb-12 md:pb-16 gap-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px_auto] lg:min-h-[calc(100vh-80px)]"
       >
         {/* LEFT — brand */}
-        <div className="flex flex-col justify-center max-w-[480px]">
+        <div className="flex flex-col justify-center max-w-[480px] order-1 lg:order-none">
           <motion.div
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
@@ -195,7 +195,7 @@ export function EnergyStackHero({
 
         {/* MIDDLE — fixed text panel. Stays put; only the inner
             text animates in sync with the active video. */}
-        <div className="flex flex-col justify-center min-w-[260px]">
+        <div className="flex flex-col justify-center min-w-[260px] order-3 lg:order-none">
           <div
             className="mb-4 text-[10px] md:text-[11px] tracking-[0.32em] uppercase text-white/35"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
@@ -241,7 +241,7 @@ export function EnergyStackHero({
         {/* RIGHT — Energy Stack. Fixed-width container (VIDEO_W ×
             VIDEO_H × 1.78 for stack depth). All four videos inside
             use the same anchor so swapping active doesn't jump. */}
-        <div className="relative flex-shrink-0">
+        <div className="relative flex-shrink-0 order-2 lg:order-none">
           <div
             style={{
               position: "relative",
@@ -275,7 +275,9 @@ export function EnergyStackHero({
                     height: VIDEO_H,
                     transformOrigin: "0 0",
                   }}
-                  className="rounded-[6px] overflow-hidden border border-white/10"
+                  className={`rounded-[6px] overflow-hidden border border-white/10 ${
+                    isActive ? "" : "hidden lg:block"
+                  }`}
                 >
                   <video
                     ref={(el) => { videoRefs.current[i] = el; }}
@@ -316,7 +318,7 @@ function ActiveNode({ phase }: { phase: "settle" | "guide-in" | "show" | "guide-
       initial={false}
       animate={{ opacity: phase === "settle" ? 0 : 1, scale: phase === "settle" ? 0.6 : 1 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="absolute top-1/2 -left-[5px] -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#3B82F6] shadow-[0_0_18px_2px_rgba(59,130,246,0.55)]"
+      className="hidden lg:block absolute top-1/2 -left-[5px] -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#3B82F6] shadow-[0_0_18px_2px_rgba(59,130,246,0.55)]"
     />
   );
 }
@@ -328,7 +330,7 @@ function GuideLine({ phase }: { phase: "settle" | "guide-in" | "show" | "guide-o
       initial={false}
       animate={{ width: widthMap[phase] }}
       transition={{ duration: phase === "guide-out" ? 0.5 : 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="pointer-events-none absolute top-1/2 -translate-y-1/2 right-[calc(100%-2px)] h-px bg-gradient-to-l from-white/40 to-transparent"
+      className="hidden lg:block pointer-events-none absolute top-1/2 -translate-y-1/2 right-[calc(100%-2px)] h-px bg-gradient-to-l from-white/40 to-transparent"
     />
   );
 }
