@@ -151,7 +151,7 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                   setLocaleCookie(next);
                   onLocaleChange(next);
                 }}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm bg-white text-[#0A0A0A] hover:bg-white/85 rounded-md transition-all duration-200 cursor-pointer shadow-[0_2px_10px_-4px_rgba(0,0,0,0.45)]"
               >
                 <Globe className="w-4 h-4" />
                 <span className="uppercase font-medium hidden sm:inline">{locale}</span>

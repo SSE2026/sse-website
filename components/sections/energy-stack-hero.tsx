@@ -29,6 +29,15 @@ type StackScenario = {
   videoSrc: string;
 };
 
+// Split a title line so the leading part can take the shimmer treatment:
+// Chinese has no spaces so we take the first two glyphs; English we take
+// the first word.
+function splitTitle(title: string): { first: string; rest: string } {
+  const idx = title.indexOf(" ");
+  if (idx > 0) return { first: title.slice(0, idx), rest: title.slice(idx) };
+  return { first: title.slice(0, 2), rest: title.slice(2) };
+}
+
 export function EnergyStackHero({
   translations,
   locale = "zh",
@@ -42,6 +51,13 @@ export function EnergyStackHero({
     () => (translations?.hero ?? {}) as Record<string, unknown>,
     [translations],
   );
+
+  // Title copy comes from i18n so the English locale actually shows
+  // English — it used to be hardcoded Chinese here.
+  const title1 = (heroRaw.titleLine1 as string) ?? t("titleLine1");
+  const title2 = (heroRaw.titleLine2 as string) ?? t("titleLine2");
+  const { first: line1First, rest: line1Rest } = splitTitle(title1);
+  const { first: line2First, rest: line2Rest } = splitTitle(title2);
 
   const scenarios = useMemo<StackScenario[]>(() => {
     const stackRaw = heroRaw.energyStack as
@@ -152,7 +168,7 @@ export function EnergyStackHero({
   return (
     <section
       className="relative w-full overflow-hidden bg-black text-white"
-      style={{ minHeight: "calc(100vh - 80px)" }}
+      style={{ minHeight: "100vh" }}
     >
       {/* Video — covers the right region of the banner, full height.
           Source clips are 2560x1440 (16:9 landscape), so the window is a
@@ -206,21 +222,19 @@ export function EnergyStackHero({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="max-w-[540px] flex flex-col justify-center min-h-[calc(100vh-80px-160px)]"
+          className="max-w-[540px] flex flex-col justify-center min-h-[calc(100vh-180px)]"
         >
           <h1
             className="text-[34px] md:text-[44px] lg:text-[56px] font-bold leading-[1.08] tracking-[-0.015em] mb-6 md:mb-8"
             style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
           >
             <span className="block">
-              <span className="text-shimmer-blue">突破</span>
-              {" "}
-              <span className="text-white">能量极限</span>
+              <span className="text-shimmer-blue">{line1First}</span>
+              <span className="text-white whitespace-pre-wrap">{line1Rest}</span>
             </span>
             <span className="block">
-              <span className="text-shimmer-amber">重塑</span>
-              {" "}
-              <span className="text-white">电动边界</span>
+              <span className="text-shimmer-amber">{line2First}</span>
+              <span className="text-white whitespace-pre-wrap">{line2Rest}</span>
             </span>
           </h1>
 
