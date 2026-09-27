@@ -124,7 +124,40 @@
         "label": "High-End Specialty Equipment",
         "subLabel": "High Load, Resilient Replenishment"
       }
-    ]
+    ],
+    "energyStack": {
+      "eyebrowLine": "ENERGY STACK",
+      "scenarios": [
+        {
+          "id": "lowaltitude",
+          "index": "01",
+          "indexLabel": "01 / LOW-ALTITUDE ENERGY",
+          "title": "Low-Altitude Energy",
+          "subtitle": "High energy density propulsion for farther, stronger, freer flight"
+        },
+        {
+          "id": "embodied",
+          "index": "02",
+          "indexLabel": "02 / EMBODIED INTELLIGENCE",
+          "title": "Embodied Intelligence",
+          "subtitle": "High-performance energy for next-gen mobile intelligent platforms"
+        },
+        {
+          "id": "deepsea",
+          "index": "03",
+          "indexLabel": "03 / DEEP-SEA SYSTEMS",
+          "title": "Deep-Sea Systems",
+          "subtitle": "High-safety, high-reliability energy for extreme environments"
+        },
+        {
+          "id": "special",
+          "index": "04",
+          "indexLabel": "04 / SPECIALIZED EQUIPMENT",
+          "title": "Specialized Equipment",
+          "subtitle": "Sustained power for high-load, high-mobility platforms"
+        }
+      ]
+    }
   },
   "about": {
     "companyTitle": "Swift Safe Energy (Shenzhen) Technology Co., Ltd.",

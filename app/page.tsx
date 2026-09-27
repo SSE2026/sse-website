@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/sections/hero";
+import { EnergyStackHero } from "@/components/sections/energy-stack-hero";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
 import HeroCarousel, { HeroSlide } from "@/components/ui/hero-carousel/HeroCarousel";
@@ -71,9 +72,8 @@ export default function HomePage() {
           forceLightText={true}
         />
         <main>
-          {/* First section: editorial hero with panoramic bg, oversized title,
-              subtitle + tags + 2 CTAs + bottom 4 scenario cards */}
-          <Hero translations={currentMessages} locale={locale} />
+          {/* New editorial hero: 9:16 Energy Stack */}
+          <EnergyStackHero translations={currentMessages} />
 
           {/* Second section: original Aeroride hero (video + stats carousel) */}
           <HeroCarousel

@@ -124,7 +124,40 @@
         "label": "高端特种装备",
         "subLabel": "高负载、高抗补能"
       }
-    ]
+    ],
+    "energyStack": {
+      "eyebrowLine": "ENERGY STACK",
+      "scenarios": [
+        {
+          "id": "lowaltitude",
+          "index": "01",
+          "indexLabel": "01 / LOW-ALTITUDE ENERGY",
+          "title": "低空能源",
+          "subtitle": "高比能动力，让飞行更远、更强、更自由"
+        },
+        {
+          "id": "embodied",
+          "index": "02",
+          "indexLabel": "02 / EMBODIED INTELLIGENCE",
+          "title": "具身智能",
+          "subtitle": "为下一代智能移动装备提供高性能能源"
+        },
+        {
+          "id": "deepsea",
+          "index": "03",
+          "indexLabel": "03 / DEEP-SEA SYSTEMS",
+          "title": "深海设备",
+          "subtitle": "面向极端环境的高安全、高可靠能源系统"
+        },
+        {
+          "id": "special",
+          "index": "04",
+          "indexLabel": "04 / SPECIALIZED EQUIPMENT",
+          "title": "特种装备",
+          "subtitle": "为高负载、高机动装备提供持续动力"
+        }
+      ]
+    }
   },
   "about": {
     "companyTitle": "深安锂能",
