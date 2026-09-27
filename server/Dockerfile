@@ -6,11 +6,10 @@
 
 FROM node:20-alpine AS deps
 WORKDIR /app
-COPY package.json package-lock.json* .npmrc ./
-# 显式安装 express（dev-server.js 需要；server/package.json 未声明）
+COPY package.json package-lock.json* ./
+# 显式安装 express（server.js 需要；server/package.json 未声明）
 RUN npm ci --no-audit --no-fund && \
-    npm install --no-save --no-audit --no-fund express@4 && \
-    npm install --no-save --no-audit --no-fund dotenv@16
+    npm install --no-save --no-audit --no-fund express@4
 
 FROM node:20-alpine AS builder
 WORKDIR /app
