@@ -71,7 +71,7 @@ export function EnergyStackHero({
 
   const [activeIdx, setActiveIdx] = useState(ACTIVE_TAB_INDEX);
   const [progress, setProgress] = useState(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const iconFor = (id: string) => {
     if (id === "lowaltitude") return Plane;
@@ -100,12 +100,37 @@ export function EnergyStackHero({
     return () => { cancelled = true; if (timer) clearTimeout(timer); };
   }, [activeIdx, scenarios.length]);
 
-  // Play the active clip. Rewind on rotate happens in the same effect.
+  // All four clips stay mounted and buffered; only the active one plays
+  // and the rest are rewound. Swapping is therefore an opacity change,
+  // not a fresh src load — reassigning a single <video> element's src is
+  // what produced the flash on every rotation.
+  //
+  // The rewind is deferred until the crossfade has finished. Doing it
+  // eagerly snapped the outgoing clip to frame 0 while it was still
+  // visible, which read as a flicker on every rotation.
+  const prevActiveRef = useRef(activeIdx);
   useEffect(() => {
-    if (!videoRef.current) return;
-    const v = videoRef.current;
-    const p = v.play();
-    if (p && typeof p.catch === "function") p.catch(() => {});
+    const prev = prevActiveRef.current;
+    prevActiveRef.current = activeIdx;
+
+    videoRefs.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === activeIdx) {
+        const p = v.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+      } else if (!v.paused) {
+        v.pause();
+      }
+    });
+
+    if (prev === activeIdx) return;
+    const t = setTimeout(() => {
+      const outgoing = videoRefs.current[prev];
+      if (outgoing && prev !== activeIdx) {
+        try { outgoing.currentTime = 0; } catch { /* noop */ }
+      }
+    }, 650);
+    return () => clearTimeout(t);
   }, [activeIdx]);
 
   // Chromium pauses video-only media in hidden tabs to save power;
@@ -113,13 +138,14 @@ export function EnergyStackHero({
   useEffect(() => {
     const onVisible = () => {
       if (document.visibilityState !== "visible") return;
-      if (!videoRef.current) return;
-      const p = videoRef.current.play();
+      const v = videoRefs.current[activeIdx];
+      if (!v) return;
+      const p = v.play();
       if (p && typeof p.catch === "function") p.catch(() => {});
     };
     document.addEventListener("visibilitychange", onVisible);
     return () => document.removeEventListener("visibilitychange", onVisible);
-  }, []);
+  }, [activeIdx]);
 
   const active = scenarios[activeIdx];
 
@@ -133,17 +159,21 @@ export function EnergyStackHero({
           landscape block rather than a portrait slot; object-cover crops
           horizontally which keeps the centre of frame. */}
       <div className="absolute inset-y-0 right-0 w-full lg:w-[56%] overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <video
-          ref={videoRef}
-          src={active.videoSrc}
-          autoPlay
-          muted
-          playsInline
-          loop
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        {scenarios.map((s, i) => (
+          <video
+            key={s.id}
+            ref={(el) => { videoRefs.current[i] = el; }}
+            src={s.videoSrc}
+            autoPlay
+            muted
+            playsInline
+            loop
+            preload="auto"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out ${
+              i === activeIdx ? "opacity-100 z-10" : "opacity-0 z-0"
+            }`}
+          />
+        ))}
         {/* Feather the video's own left edge. Long enough to swallow the
             light margin some source clips carry down their left side,
             but short enough that the frame's subject stays visible —
