@@ -78,21 +78,21 @@
     }
   },
   "hero": {
-    "eyebrow": "高性能固态电池 · 为下一程蓄能",
+    "eyebrow": "SHEN'AN LITHIUM ENERGY",
     "topRightTag": "ENERGY IN ACTION",
     "topRightLink": "应用场景参考",
-    "titleLine1": "突破能量极限",
-    "titleLine2": "重塑电动边界",
+    "titleLine1": "突破 · 能量极限",
+    "titleLine2": "重塑 · 电动边界",
     "sectionTitle": "应用场景",
-    "subtitle": "深安锂能专注于高性能固态电池，面向低空经济、具身智能、深空深海及高端特种装备，以高能量密度、高功率、高安全性和超快充的电池技术，持续拓展新一代智能装备的性能与应用边界。",
+    "subtitle": "高性能固态电池 · 为下一程蓄能",
     "tags": {
       "highEnergy": "高能量密度",
       "highPower": "高功率",
       "highSafety": "高安全性",
       "fastCharging": "超快充"
     },
-    "ctaExplore": "探索应用场景",
-    "ctaContact": "联系工程师",
+    "ctaExplore": "立即登能",
+    "ctaContact": "联系我们",
     "scene": {
       "number": "01",
       "title": "为更远航程蓄能",
@@ -126,35 +126,44 @@
       }
     ],
     "energyStack": {
-      "eyebrowLine": "ENERGY STACK",
+      "captionPrefixZh": "场景",
+      "captionPrefixEn": "Scenario",
       "scenarios": [
         {
           "id": "lowaltitude",
           "index": "01",
-          "indexLabel": "01 / LOW-ALTITUDE ENERGY",
-          "title": "低空能源",
-          "subtitle": "高比能动力，让飞行更远、更强、更自由"
+          "indexLabel": "01 / DRONES",
+          "en": "Drones",
+          "zh": "低空经济",
+          "captionZh": "为低空飞行器提供高比能动力，让飞行更远、更强、更自由",
+          "captionEn": "High-energy-density propulsion for farther, stronger, freer flight."
         },
         {
           "id": "embodied",
           "index": "02",
-          "indexLabel": "02 / EMBODIED INTELLIGENCE",
-          "title": "具身智能",
-          "subtitle": "为下一代智能移动装备提供高性能能源"
+          "indexLabel": "02 / ROBOTICS",
+          "en": "Robotics",
+          "zh": "具身智能",
+          "captionZh": "为下一代智能移动装备提供高性能能源",
+          "captionEn": "High-performance energy for next-gen mobile intelligent platforms."
         },
         {
           "id": "deepsea",
           "index": "03",
-          "indexLabel": "03 / DEEP-SEA SYSTEMS",
-          "title": "深海设备",
-          "subtitle": "面向极端环境的高安全、高可靠能源系统"
+          "indexLabel": "03 / EXPLORATION",
+          "en": "Exploration",
+          "zh": "深空深海",
+          "captionZh": "面向极端环境的高安全、高可靠能源系统",
+          "captionEn": "High-safety, high-reliability energy for extreme environments."
         },
         {
           "id": "special",
           "index": "04",
-          "indexLabel": "04 / SPECIALIZED EQUIPMENT",
-          "title": "特种装备",
-          "subtitle": "为高负载、高机动装备提供持续动力"
+          "indexLabel": "04 / MINING VEHICLES",
+          "en": "Mining Vehicles",
+          "zh": "特种装备",
+          "captionZh": "为高负载、高机动装备提供持续动力",
+          "captionEn": "Providing continuous power for high-load, high-mobility vehicles."
         }
       ]
     }

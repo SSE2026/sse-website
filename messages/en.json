@@ -78,21 +78,21 @@
     }
   },
   "hero": {
-    "eyebrow": "Solid-State Battery · Powering the Next Mile",
+    "eyebrow": "SHEN'AN LITHIUM ENERGY",
     "topRightTag": "ENERGY IN ACTION",
     "topRightLink": "Scenario Reference",
-    "titleLine1": "Breaking Energy Limits",
-    "titleLine2": "Reshaping Electric Boundaries",
+    "titleLine1": "Breaking · Energy Limits",
+    "titleLine2": "Reshaping · Electric Boundaries",
     "sectionTitle": "Application Scenarios",
-    "subtitle": "Swift Safe Energy focuses on high-performance solid-state batteries, serving the low-altitude economy, embodied AI, deep-space and deep-sea, and high-end specialty equipment — with high energy density, high power, ultra-safe, ultra-fast-charging battery technology — continuously expanding the performance and application boundaries of next-generation intelligent equipment.",
+    "subtitle": "Solid-State Battery · Powering the Next Mile",
     "tags": {
       "highEnergy": "High Energy Density",
       "highPower": "High Power",
       "highSafety": "Ultra Safety",
       "fastCharging": "Ultra-Fast Charging"
     },
-    "ctaExplore": "Explore Scenarios",
-    "ctaContact": "Contact Engineering",
+    "ctaExplore": "Energize Now",
+    "ctaContact": "Contact Us",
     "scene": {
       "number": "01",
       "title": "Powering Longer Missions",
@@ -126,35 +126,44 @@
       }
     ],
     "energyStack": {
-      "eyebrowLine": "ENERGY STACK",
+      "captionPrefixZh": "场景",
+      "captionPrefixEn": "Scenario",
       "scenarios": [
         {
           "id": "lowaltitude",
           "index": "01",
-          "indexLabel": "01 / LOW-ALTITUDE ENERGY",
-          "title": "Low-Altitude Energy",
-          "subtitle": "High energy density propulsion for farther, stronger, freer flight"
+          "indexLabel": "01 / DRONES",
+          "en": "Drones",
+          "zh": "Low-Altitude",
+          "captionZh": "高比能动力，让飞行更远、更强、更自由",
+          "captionEn": "High-energy-density propulsion for farther, stronger, freer flight."
         },
         {
           "id": "embodied",
           "index": "02",
-          "indexLabel": "02 / EMBODIED INTELLIGENCE",
-          "title": "Embodied Intelligence",
-          "subtitle": "High-performance energy for next-gen mobile intelligent platforms"
+          "indexLabel": "02 / ROBOTICS",
+          "en": "Robotics",
+          "zh": "Embodied AI",
+          "captionZh": "为下一代智能移动装备提供高性能能源",
+          "captionEn": "High-performance energy for next-gen mobile intelligent platforms."
         },
         {
           "id": "deepsea",
           "index": "03",
-          "indexLabel": "03 / DEEP-SEA SYSTEMS",
-          "title": "Deep-Sea Systems",
-          "subtitle": "High-safety, high-reliability energy for extreme environments"
+          "indexLabel": "03 / EXPLORATION",
+          "en": "Exploration",
+          "zh": "Deep-Space & Deep-Sea",
+          "captionZh": "面向极端环境的高安全、高可靠能源系统",
+          "captionEn": "High-safety, high-reliability energy for extreme environments."
         },
         {
           "id": "special",
           "index": "04",
-          "indexLabel": "04 / SPECIALIZED EQUIPMENT",
-          "title": "Specialized Equipment",
-          "subtitle": "Sustained power for high-load, high-mobility platforms"
+          "indexLabel": "04 / MINING VEHICLES",
+          "en": "Mining Vehicles",
+          "zh": "Specialized Equipment",
+          "captionZh": "为高负载、高机动装备提供持续动力",
+          "captionEn": "Providing continuous power for high-load, high-mobility vehicles."
         }
       ]
     }
