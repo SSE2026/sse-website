@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 // ============================================
@@ -35,7 +35,10 @@ export function EnergyStackHero({
   translations?: { hero?: Record<string, unknown> };
 }) {
   const t = useTranslations("hero");
-  const heroRaw = (translations?.hero ?? {}) as Record<string, unknown>;
+  const heroRaw = useMemo(
+    () => (translations?.hero ?? {}) as Record<string, unknown>,
+    [translations],
+  );
 
   const scenarios = useMemo(() => {
     const raw = heroRaw.energyStack as
@@ -60,37 +63,65 @@ export function EnergyStackHero({
   const [phase, setPhase] = useState<"settle" | "guide-in" | "show" | "guide-out">("settle");
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
+  // Single self-scheduling chain. Deliberately NOT setInterval + inner
+  // setTimeout: that advanced activeIdx twice per period and left the
+  // text/guide animations racing each other.
   useEffect(() => {
     let cancelled = false;
-    let intervalId: ReturnType<typeof setInterval> | null = null;
-    const run = () => {
-      if (cancelled) return;
-      setPhase("settle");
-      setTimeout(() => { if (!cancelled) setPhase("guide-in"); }, 200);
-      setTimeout(() => { if (!cancelled) setPhase("show"); }, 700);
-      setTimeout(() => { if (!cancelled) setPhase("guide-out"); }, 3500);
-      setTimeout(() => {
-        if (!cancelled) {
-          setPhase("settle");
-          setActiveIdx((i) => (i + 1) % scenarios.length);
-        }
-      }, 4400);
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const at = (ms: number, fn: () => void) => {
+      timers.push(setTimeout(() => { if (!cancelled) fn(); }, ms));
     };
-    run();
-    intervalId = setInterval(run, SCENARIO_DURATION_MS);
-    return () => { cancelled = true; if (intervalId) clearInterval(intervalId); };
-  }, [scenarios.length]);
 
+    const cycle = () => {
+      if (cancelled) return;
+      setPhase("settle");                                        // 0.0s
+      at(200,  () => setPhase("guide-in"));                      // 0.2s
+      at(700,  () => setPhase("show"));                          // 0.7s
+      at(3500, () => setPhase("guide-out"));                     // 3.5s
+      at(4400, () => setActiveIdx((i) => (i + 1) % 4));          // 4.4s rotate
+      at(SCENARIO_DURATION_MS, cycle);                           // 5.0s next
+    };
+
+    cycle();
+    return () => {
+      cancelled = true;
+      timers.forEach(clearTimeout);
+    };
+  }, []);
+
+  // Play the active clip, pause + rewind the rest.
+  // NOTE: do NOT set currentTime immediately before play() — a pending
+  // seek makes play() a no-op in Chromium, which left every layer frozen
+  // at 0. Rewinding happens on deactivate instead, so a clip is already
+  // at its first frame by the time it becomes active.
   useEffect(() => {
-    videoRefs.current.forEach((v, i) => {
-      if (!v) return;
+    videoRefs.current.forEach((el, i) => {
+      if (!el) return;
       if (i === activeIdx) {
-        try { v.currentTime = 0; } catch { /* noop */ }
-        v.play().catch(() => {});
+        const p = el.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
       } else {
-        v.pause();
+        if (!el.paused) el.pause();
+        try { el.currentTime = 0; } catch { /* noop */ }
       }
     });
+  }, [activeIdx]);
+
+  // Chromium suspends video-only media in hidden tabs ("paused to save
+  // power") and will not resume it on its own. Re-assert playback for
+  // the active clip when the page becomes visible again.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      const el = videoRefs.current[activeIdx];
+      if (el) {
+        const p = el.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
   }, [activeIdx]);
 
   const active = scenarios[activeIdx];
@@ -100,11 +131,13 @@ export function EnergyStackHero({
       className="relative w-full overflow-hidden bg-black text-white"
       style={{ minHeight: "calc(100vh - 80px)" }}
     >
-      {/* Use a real CSS Grid (3 columns). Grid is reliable in
-          flexbox layouts where aspect-ratio on children fails. */}
+      {/* Three columns. `display` and `grid-template-columns` are set
+          inline rather than via utility classes so the column geometry
+          cannot be lost to a stale CSS build. */}
       <div
-        className="relative z-[2] grid items-center w-full max-w-[1440px] mx-auto px-6 md:px-10 lg:px-16 pt-16 md:pt-20 pb-12 md:pb-16 gap-10"
+        className="relative z-[2] items-center w-full max-w-[1440px] mx-auto px-6 md:px-10 lg:px-16 pt-16 md:pt-20 pb-12 md:pb-16 gap-10"
         style={{
+          display: "grid",
           minHeight: "calc(100vh - 80px)",
           gridTemplateColumns: "minmax(0,1fr) 300px auto",
         }}
@@ -171,34 +204,37 @@ export function EnergyStackHero({
           </div>
 
           <div className="relative min-h-[140px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={active.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: phase === "guide-out" ? 0 : 1, y: phase === "guide-out" ? -8 : 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+            {/* Keyed remount instead of AnimatePresence mode="wait".
+                With mode="wait" the panel waited on an exit animation
+                that never signalled completion, so the new scenario was
+                never mounted and the copy stayed on 01 forever.
+                Remounting on key change replays the entry animation and
+                is order-independent. */}
+            <motion.div
+              key={active.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: "easeOut" }}
+            >
+              <div
+                className="text-[10px] md:text-[11px] tracking-[0.32em] uppercase text-white/45 mb-3"
+                style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
               >
-                <div
-                  className="text-[10px] md:text-[11px] tracking-[0.32em] uppercase text-white/45 mb-3"
-                  style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-                >
-                  {active.indexLabel}
-                </div>
-                <h2
-                  className="text-[28px] md:text-[34px] lg:text-[40px] font-bold leading-[1.1] tracking-[-0.01em] mb-4"
-                  style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                >
-                  {active.title}
-                </h2>
-                <p
-                  className="text-[13px] md:text-[14px] text-white/55 leading-[1.85] max-w-[280px]"
-                  style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                >
-                  {active.subtitle}
-                </p>
-              </motion.div>
-            </AnimatePresence>
+                {active.indexLabel}
+              </div>
+              <h2
+                className="text-[28px] md:text-[34px] lg:text-[40px] font-bold leading-[1.1] tracking-[-0.01em] mb-4"
+                style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+              >
+                {active.title}
+              </h2>
+              <p
+                className="text-[13px] md:text-[14px] text-white/55 leading-[1.85] max-w-[280px]"
+                style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+              >
+                {active.subtitle}
+              </p>
+            </motion.div>
           </div>
         </div>
 
@@ -248,7 +284,12 @@ export function EnergyStackHero({
                     muted
                     playsInline
                     loop
-                    preload="metadata"
+                    preload="auto"
+                    onEnded={(e) => {
+                      // `loop` should prevent this; if a browser drops
+                      // it, restart without touching currentTime.
+                      e.currentTarget.play().catch(() => {});
+                    }}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                   {isActive && <ActiveNode phase={phase} />}
