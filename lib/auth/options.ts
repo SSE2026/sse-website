@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { AUTH_SECRET } from './secret';
 
 // Use a valid URL format to prevent build-time URL validation errors
 const getApiUrl = (): string => {
@@ -92,5 +93,5 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 7 * 24 * 60 * 60, // 7 days
   },
-  secret: process.env.NEXTAUTH_SECRET || 'dev-secret-for-build-time',
+  secret: AUTH_SECRET,
 };

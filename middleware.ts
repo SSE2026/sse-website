@@ -1,5 +1,6 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import { AUTH_SECRET } from "@/lib/auth/secret";
 
 export default withAuth(
   function middleware(req) {
@@ -21,6 +22,11 @@ export default withAuth(
     return NextResponse.next();
   },
   {
+    // Without a secret the middleware redirects every request to
+    // pages.error with error=Configuration. Share the same resolution as
+    // lib/auth/options.ts so a missing NEXTAUTH_SECRET cannot silently
+    // take the whole site down on preview deployments.
+    secret: AUTH_SECRET,
     callbacks: {
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl;
