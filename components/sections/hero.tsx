@@ -196,7 +196,7 @@ export function Hero({ translations }: HeroProps) {
                   <span className="text-shimmer-blue">{line1First}</span>
                   <span
                     aria-hidden="true"
-                    className="mx-[0.16em] align-middle text-[0.34em] leading-none text-white/50"
+                    className="mx-[0.12em] align-middle text-[0.18em] leading-none text-white/45"
                   >
                     ●
                   </span>
@@ -206,7 +206,7 @@ export function Hero({ translations }: HeroProps) {
                   <span className="text-shimmer-amber">{line2First}</span>
                   <span
                     aria-hidden="true"
-                    className="mx-[0.16em] align-middle text-[0.34em] leading-none text-white/50"
+                    className="mx-[0.12em] align-middle text-[0.18em] leading-none text-white/45"
                   >
                     ●
                   </span>
@@ -214,17 +214,17 @@ export function Hero({ translations }: HeroProps) {
                 </span>
               </h1>
 
-              {/* Subtitle: kept small and low-contrast so the headline
-                  stays the dominant element */}
+              {/* Subtitle: smallest possible visual weight so the
+                  headline stays the dominant element */}
               <p
-                className="mt-7 md:mt-8 text-[12px] md:text-[13px] text-white/45 leading-[1.85] max-w-[50ch]"
+                className="mt-7 md:mt-8 text-[11px] md:text-[12px] text-white/35 leading-[1.9] max-w-[48ch] tracking-[0.01em]"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {subtitle}
               </p>
 
               <div
-                className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] md:text-[13px] text-white/70"
+                className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] md:text-[12px] text-white/55"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {tagValues.map((label, i) => (
