@@ -151,8 +151,8 @@ export function EnergyStackHero({
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-black text-white"
-      style={{ minHeight: "calc(100vh - 80px)" }}
+      className="relative w-full overflow-hidden bg-black text-white mt-[72px]"
+      style={{ minHeight: "calc(100vh - 72px)" }}
     >
       {/* Video — covers the right region of the banner, full height.
           Source clips are 2560x1440 (16:9 landscape), so the window is a
@@ -221,22 +221,19 @@ export function EnergyStackHero({
           >
             <span className="block">
               <span className="text-shimmer-blue">突破</span>
-              <span aria-hidden="true" className="mx-[0.12em] align-middle text-[0.18em] leading-none text-white/45">●</span>
+              {" "}
               <span className="text-white">能量极限</span>
             </span>
             <span className="block">
               <span className="text-shimmer-amber">重塑</span>
-              <span aria-hidden="true" className="mx-[0.12em] align-middle text-[0.18em] leading-none text-white/45">●</span>
+              {" "}
               <span className="text-white">电动边界</span>
             </span>
           </h1>
 
-          <p
-            className="text-[14px] md:text-[16px] text-white/80 leading-[1.6] mb-6 md:mb-8"
-            style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-          >
-            {(heroRaw.subtitle as string) ?? "高性能固态电池 · 为下一程蓄能"}
-          </p>
+          {/* Subtitle removed. The brand block's justify-center still
+              re-flows the remaining items (tags + CTA) to the vertical
+              middle of the section's min-h. */}
 
           <div
             className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] text-white/70 mb-8 md:mb-10"
@@ -257,8 +254,23 @@ export function EnergyStackHero({
           <div className="flex flex-wrap gap-3">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_36px_-8px_rgba(59,130,246,0.55)]"
-              style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+              className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 text-[#1f1f1f] text-[14px] font-semibold rounded-lg transition-all duration-300"
+              style={{
+                fontFamily: "var(--font-noto-sc, sans-serif)",
+                background:
+                  "linear-gradient(135deg, #f2f2f2 0%, #c8c8c8 45%, #fafafa 70%, #b8b8b8 100%)",
+                boxShadow:
+                  "0 1px 0 rgba(255,255,255,0.55) inset, 0 6px 20px -10px rgba(0,0,0,0.7)",
+                border: "1px solid rgba(120,120,120,0.35)",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background =
+                  "linear-gradient(135deg, #d8d8d8 0%, #a8a8a8 45%, #ededed 70%, #9c9c9c 100%)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background =
+                  "linear-gradient(135deg, #f2f2f2 0%, #c8c8c8 45%, #fafafa 70%, #b8b8b8 100%)";
+              }}
             >
               {(heroRaw.ctaExplore as string) ?? "立即探索"}
             </Link>

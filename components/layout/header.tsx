@@ -60,11 +60,11 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
 
   const navItems = [
     { href: "/", label: translations.nav.home, key: "home" },
-    { href: "/about", label: translations.nav.about, key: "about" },
     { href: "/products/cloudchi-360-p", label: translations.nav.products, key: "products" },
     { href: "/technology", label: translations.nav.technology, key: "technology" },
     { href: "/cases", label: translations.nav.cases, key: "cases" },
     { href: "/news", label: translations.nav.news, key: "news" },
+    { href: "/about", label: translations.nav.about, key: "about" },
   ];
 
   return (
