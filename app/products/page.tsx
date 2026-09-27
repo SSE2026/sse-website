@@ -8,13 +8,14 @@ import { FadeIn } from "@/components/animated/fade-in";
 import { ScaleIn } from "@/components/animated/scale-in";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
+import HeroCarousel from "@/components/ui/hero-carousel/HeroCarousel";
+import { AERORIDE_SLIDES_EN, AERORIDE_SLIDES_ZH } from "@/components/ui/hero-carousel/aeroride-slides";
 import Image from "next/image";
-import { ArrowRight, Battery, Zap, Shield, Clock, Cpu, Cylinder, Loader2, AlertCircle } from "lucide-react";
+import { ArrowRight, Zap, Shield, Clock, Cpu, Cylinder, Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useCmsContent } from "@/lib/cms/use-cms";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
@@ -99,7 +100,6 @@ export default function ProductsPage() {
     comparison?: { eyebrow?: string; title?: string; rowsJson?: string; rows?: Array<{ feature: string; liion: string; ss: string }> };
     cta?: { title?: string; desc?: string; button?: string };
   };
-  const heroCms = cms.hero ?? {};
 
   // Series copy overrides from CMS (keyed by series key: power/storage/drone)
   const seriesCms = useMemo(() => {
@@ -191,35 +191,13 @@ export default function ProductsPage() {
           onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
         />
 
-        <main className="pt-20">
-          {/* Hero Section */}
-          <section className="section-padding bg-primary relative overflow-hidden">
-            <div className="absolute inset-0 hero-gradient" />
-            <div className="absolute inset-0 grid-pattern-strong opacity-30" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/15 rounded-full blur-[150px]" />
-
-            <div className="container-padding mx-auto relative">
-              <FadeIn className="text-center max-w-4xl mx-auto">
-                <motion.span
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/60 mb-6"
-                >
-                  <Battery className="w-4 h-4 text-accent" />
-                  {heroCms.badge || (locale === "zh" ? "产品中心" : "Products")}
-                </motion.span>
-
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-6">
-                  {heroCms.title || (locale === "zh" ? "云驰系列" : "Aeroride Series")}
-                </h1>
-                <p className="text-lg md:text-xl text-white/60 max-w-3xl mx-auto">
-                  {heroCms.subtitle || (locale === "zh"
-                    ? "以任务属性定义产品，为边界场景提供差异化动力方案。覆盖无人机、具身智能、水下机器人等多领域应用。"
-                    : "Mission-defined products for demanding boundary applications. Covering UAVs, embodied AI, underwater robots and more.")}
-                </p>
-              </FadeIn>
-            </div>
-          </section>
+        <main>
+          {/* Hero — Aeroride showcase carousel, moved over from the home
+              page's second screen. */}
+          <HeroCarousel
+            slides={locale === "zh" ? AERORIDE_SLIDES_ZH : AERORIDE_SLIDES_EN}
+            autoPlayInterval={3000}
+          />
 
           {/* Products Grid */}
           <section className="section-padding bg-secondary/[0.02]">

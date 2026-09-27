@@ -206,15 +206,8 @@ export function EnergyStackHero({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="max-w-[540px] flex flex-col justify-center min-h-[calc(100vh-80px-200px)]"
+          className="max-w-[540px] flex flex-col justify-center min-h-[calc(100vh-72px-160px)]"
         >
-          <div
-            className="text-[10px] md:text-[11px] tracking-[0.32em] uppercase text-white/55 mb-6 md:mb-8"
-            style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-          >
-            {(heroRaw.eyebrow as string) ?? "SHEN'AN LITHIUM ENERGY"}
-          </div>
-
           <h1
             className="text-[34px] md:text-[44px] lg:text-[56px] font-bold leading-[1.08] tracking-[-0.015em] mb-6 md:mb-8"
             style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
@@ -279,11 +272,12 @@ export function EnergyStackHero({
       </div>
 
       {/* Bottom bar: tab switcher (left) + scenario caption (right).
-          Pinned to bottom-0 so the tab strip's lower edge lines up with
-          the video window's lower edge (both sit on the section edge).
+          Lifted off the very bottom edge — since the section now starts
+          below the header it ends flush with the viewport, so bottom-0
+          left the pills sitting on the screen edge.
           Caption is absolutely positioned so it does not compete with
           the tabs for width. */}
-      <div className="absolute bottom-0 left-0 right-0 z-10">
+      <div className="absolute bottom-8 md:bottom-12 left-0 right-0 z-10">
         <div className="relative mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16 pb-0 flex items-end gap-8">
           {/* Tabs — label follows the page locale, no numeric prefix.
               The active tab's progress is drawn around the pill border. */}

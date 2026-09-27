@@ -61,8 +61,8 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
   const navItems = [
     { href: "/", label: translations.nav.home, key: "home" },
     { href: "/products/cloudchi-360-p", label: translations.nav.products, key: "products" },
-    { href: "/technology", label: translations.nav.technology, key: "technology" },
     { href: "/cases", label: translations.nav.cases, key: "cases" },
+    { href: "/technology", label: translations.nav.technology, key: "technology" },
     { href: "/news", label: translations.nav.news, key: "news" },
     { href: "/about", label: translations.nav.about, key: "about" },
   ];
@@ -78,9 +78,7 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
             ? "bg-white/80 backdrop-blur-xl border-b border-[#E4E4E7]/50"
-            : forceLightText
-              ? "bg-black/40 backdrop-blur-xl border-b border-white/10"
-              : "bg-transparent"
+            : "bg-transparent"
         )}
       >
         <div className="container-padding mx-auto">
