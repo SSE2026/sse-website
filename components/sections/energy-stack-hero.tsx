@@ -222,7 +222,7 @@ export function EnergyStackHero({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="max-w-[540px] flex flex-col justify-end min-h-[calc(100vh-180px)] pb-16 md:pb-20"
+          className="max-w-[540px] flex flex-col justify-center min-h-[calc(100vh-112px)]"
         >
           <h1
             className="text-[34px] md:text-[44px] lg:text-[56px] font-bold leading-[1.08] tracking-[-0.015em] mb-6 md:mb-8"

@@ -2,8 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export function CaseHero({ title, subtitle }: { title?: string; subtitle?: string }) {
+  const t = useTranslations("casesPage.hero");
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -60,8 +62,17 @@ export function CaseHero({ title, subtitle }: { title?: string; subtitle?: strin
         </div>
       )}
 
-      {/* Stats block (-40°C / 150 kg / +63%) removed per request — the
-          hero now ends cleanly after the title/subtitle. */}
+      {/* Tagline sitting on the darkened lower band of the video. mt-auto
+          anchors it to the bottom of the flex column. */}
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="relative z-10 mt-auto w-full max-w-7xl mx-auto px-6 md:px-16 pb-10 md:pb-14 text-center text-base md:text-lg text-white/90"
+        style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+      >
+        {t("tagline")}
+      </motion.p>
     </section>
   );
 }

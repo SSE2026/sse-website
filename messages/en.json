@@ -169,7 +169,7 @@
   },
   "about": {
     "companyTitle": "Swift Safe Energy (Shenzhen) Technology Co., Ltd.",
-    "companyDesc": "Swift Safe Energy (Shenzhen) Technology Co., Ltd. is an advanced energy technology enterprise spun off from Beijing Institute of Technology (BIT). Backed by an academician-led team and top-tier global research resources, the company is headed by national overseas high-level talents and brings together an end-to-end engineering team specializing in battery materials, cells, and system operations.\n\nSwift Safe Energy focuses on the R&D and industrialization of high-energy-density, ultra-safe solid-state batteries with supercharging capabilities. By leveraging silicon/full-silicon anodes, high-safety solid electrolytes, and advanced battery structures, the company has established a full-stack proprietary technology framework spanning \"Materials–Cells–Systems.\" Through its disruptive solution integrating rapid heating and solid-state technology, Swift Safe Energy successfully resolves the long-standing industry trilemma of balancing high energy density, ultra-fast charging, and ultimate safety—delivering efficient, safe, and sustainable next-generation power solutions for cutting-edge sectors such as drones/UAVs, eVTOLs, and heavy-duty industrial equipment."
+    "companyDesc": "Swift Safe Energy (Shenzhen) Technology Co., Ltd., a high-tech innovation enterprise spun off from Beijing Institute of Technology, was co-founded by an Academician-led research team alongside seasoned industry veterans. The company specializes in the R&D and commercialization of next-generation high-energy-density and high-safety advanced batteries.\n\nFocusing on cutting-edge sectors such as the low-altitude economy, embodied AI, deep-space and deep-sea exploration, and high-end special equipment, Swift Safe Energy drives collaborative innovation across material systems, cell architecture, advanced manufacturing, and intelligent battery systems. By delivering battery technologies characterized by higher energy density, superior safety, and enhanced environmental adaptability, the company continuously pushes the performance and application boundaries of next-generation smart equipment. Its flagship products have been delivered in batches to leading market players in uncrewed aerial vehicles (UAVs), electric vertical takeoff and landing (eVTOL) aircraft, robotics, and construction machinery."
   },
   "advantages": {
     "title": "Core Advantages",
@@ -331,6 +331,7 @@
       "title": "CASE STUDIES",
       "headline": "Powering Flight Beyond Limits.",
       "subtitle": "High-Performance Battery Solutions: Pushing the limits of range and payload, built for extreme environments.",
+      "tagline": "Solid-State Battery · Powering the Next Mile",
       "stats": {
         "coldResilient": "Cold Resilient",
         "maxPayload": "Max Payload",

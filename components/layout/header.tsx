@@ -142,21 +142,6 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
 
             {/* Right Side - Tesla Style */}
             <div className="flex items-center gap-3">
-              {/* Language Switcher */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  const next = locale === "en" ? "zh" : "en";
-                  setLocaleCookie(next);
-                  onLocaleChange(next);
-                }}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm bg-white text-[#0A0A0A] hover:bg-white/85 rounded-md transition-all duration-200 cursor-pointer shadow-[0_2px_10px_-4px_rgba(0,0,0,0.45)]"
-              >
-                <Globe className="w-4 h-4" />
-                <span className="uppercase font-medium hidden sm:inline">{locale}</span>
-              </motion.button>
-
               {/* Contact Button - Tesla Blue */}
               <Link href="/contact">
                 <motion.button
@@ -172,6 +157,22 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                   {locale === "zh" ? "联系我们" : "Contact"}
                 </motion.button>
               </Link>
+
+              {/* Language Switcher — py-2.5 so it matches the Contact
+                  button's height exactly */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  const next = locale === "en" ? "zh" : "en";
+                  setLocaleCookie(next);
+                  onLocaleChange(next);
+                }}
+                className="flex items-center gap-1.5 h-10 px-3 text-sm bg-white text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer shadow-[0_2px_10px_-4px_rgba(0,0,0,0.45)]"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="uppercase font-medium hidden sm:inline">{locale}</span>
+              </motion.button>
 
               {/* Mobile Menu Button */}
               <motion.button
