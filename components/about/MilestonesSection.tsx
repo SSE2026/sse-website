@@ -14,73 +14,80 @@ export interface Milestone {
 const milestones: Milestone[] = [
   {
     year: '2014',
-    titleZh: '技术研究启动',
-    titleEn: 'R&D Initiation',
-    descZh: '依托院士团队科研力量，围绕下一代高比能固态电解质与高硅负极体系开启底层技术攻关。',
-    descEn: 'Initiated core R&D on next-gen solid-state electrolytes and high-silicon anodes backed by academician team.',
+    titleZh: '布局固态电池前沿',
+    titleEn: 'Frontier of Solid-State Batteries',
+    descZh: '创始人加入国际顶尖电池研究机构，携手全球领先固态电池企业，攻关核心技术',
+    descEn: 'Founder joined a leading international battery research institute and worked alongside a global solid-state battery leader on core technology.',
   },
   {
     year: '2016',
-    titleZh: 'Nature 正刊发表',
-    titleEn: 'Nature Publication',
-    descZh: '关键电池材料突破性研究成果发表于国际顶级学术期刊《Nature》，奠定技术学术地位。',
-    descEn: 'Breakthrough battery material research published in Nature journal, establishing academic leadership.',
+    titleZh: '全气候电池成果登上《Nature》',
+    titleEn: 'All-Climate Battery Published in Nature',
+    descZh: '突破电池低温应用瓶颈，为后续冬奥会全气候新能源汽车应用奠定理论基础',
+    descEn: 'Broke through the low-temperature operating limit, laying the theoretical foundation for the all-climate new-energy vehicles later deployed at the Winter Olympics.',
+  },
+  {
+    year: '2017',
+    titleZh: '开创电池寿命预测新范式',
+    titleEn: 'A New Paradigm for Battery Life Prediction',
+    descZh: '发布全球首个锂电池全生命周期寿命预测模型，累计引用逾1,200次，获行业广泛应用',
+    descEn: 'Released the world’s first full-lifecycle lithium battery life-prediction model; cited over 1,200 times and widely adopted across the industry.',
   },
   {
     year: '2018',
-    titleZh: '极寒快充技术突破',
-    titleEn: 'Extreme Cold Fast Charge',
-    descZh: '攻克 -40℃ 极寒低温环境下的高倍率快充与循环寿命衰减难题。',
-    descEn: 'Solved high-rate fast charging and cycle life degradation challenges in -40℃ extreme cold environments.',
+    titleZh: '突破−50℃极寒快充',
+    titleEn: 'Fast Charging at −50 °C',
+    descZh: '实现极寒环境下15分钟快充、4,500次循环，研究成果发表于《PNAS》',
+    descEn: 'Achieved 15-minute fast charging and 4,500 cycles in extreme cold; results published in PNAS.',
   },
   {
     year: '2019',
-    titleZh: '全球首发速热 6C 超充',
-    titleEn: 'Global Debut 6C Fast Charge',
-    descZh: '推出业界领先的速热 6C 超快充电池技术，实现分钟级补能与高安全性兼备。',
-    descEn: 'Pioneered industry-leading rapid-heating 6C ultra-fast charging technology with minute-level replenishment.',
+    titleZh: '首创速热6C超充',
+    titleEn: 'First Rapid-Heating 6C Ultra-Fast Charging',
+    descZh: '以速热技术实现10分钟超充，突破传统电池温度管理范式，成果发表于《Joule》',
+    descEn: 'Used rapid-heating technology to deliver 10-minute ultra-fast charging, breaking with conventional thermal management; published in Joule.',
+  },
+  {
+    year: '2020',
+    titleZh: '率先定义eVTOL电池需求',
+    titleEn: 'First to Define eVTOL Battery Requirements',
+    descZh: '发表全球首篇eVTOL电池需求论文，明确“三高一快”性能要求',
+    descEn: 'Published the first paper on eVTOL battery requirements, defining the three-highs-and-one-fast performance criteria.',
   },
   {
     year: '2021',
-    titleZh: '产业化团队组建',
-    titleEn: 'Entity Incorporation',
-    descZh: '院士团队与资深新能源产业化工程专家共同组建实体公司，开启规模化商业落地。',
-    descEn: 'Formed an industrial entity with top battery engineering experts to drive commercial deployment.',
-  },
-  {
-    year: '2022',
-    titleZh: '试制平台建成',
-    titleEn: 'Pilot Line Operational',
-    descZh: '搭建高标准中试生产线，启动先进电芯与模组在无人机及特种装备上的实测验证。',
-    descEn: 'Built high-spec pilot lines to evaluate cells and modules on drones and specialized equipment.',
+    titleZh: '归国创业，推进技术产业化',
+    titleEn: 'Returned to China to Commercialize the Technology',
+    descZh: '创始人全职回国，组建产业化团队，聚焦超快充、高能量密度与固态电池核心技术',
+    descEn: 'Founder returned full-time and built a commercialization team focused on ultra-fast charging, high energy density, and solid-state core technology.',
   },
   {
     year: '2023',
-    titleZh: '百吨级量产工艺开发',
-    titleEn: '100-Ton Mass Production',
-    descZh: '攻克关键材料百吨级稳定制备与规模化涂布工艺，打通实验室到工厂的关键卡点。',
-    descEn: 'Achieved 100-ton scale material synthesis and coating, bridging lab scale to factory manufacturing.',
+    titleZh: '突破固态电解质量产工艺',
+    titleEn: 'Breakthrough in Solid Electrolyte Mass Production',
+    descZh: '攻克氧化物与聚合物固态电解质材料量产工艺瓶颈，实现吨级试制',
+    descEn: 'Overcame mass-production bottlenecks in oxide and polymer solid electrolyte materials, achieving ton-scale pilot production.',
   },
   {
     year: '2024',
-    titleZh: '深圳总部设立',
-    titleEn: 'Shenzhen HQ Launch',
-    descZh: '深安锂能（深圳）总部正式成立，聚焦低空经济、具身智能与高端装备电源市场。',
-    descEn: 'Established Shenzhen HQ targeting low-altitude economy, embodied AI, and advanced equipment markets.',
+    titleZh: '深安锂能成立，开启产业化准备',
+    titleEn: 'Swift Safe Energy Founded, Preparing for Industrialization',
+    descZh: '启动MWh级固态电池试制线与百吨级固态电解质量产线建设，加速科研成果产业化。',
+    descEn: 'Began building an MWh-scale solid-state battery pilot line and a 100-ton solid electrolyte production line to accelerate the path from research to industry.',
   },
   {
     year: '2025',
-    titleZh: '融资规模超 1 亿元',
-    titleEn: '¥100M+ Series Funding',
-    descZh: '完成过亿元战略融资，资本与产业资源加码，加速产能建设与产品交付进程。',
-    descEn: 'Secured over 100M RMB in funding to accelerate gigafactory construction and mass deliveries.',
+    titleZh: '高比能电芯通过头部客户验证',
+    titleEn: 'High-Energy Cells Validated by Leading Customers',
+    descZh: '产品通过中汽研等第三方检测认证，完成行业头部客户送样验证，迈入商业化新阶段。',
+    descEn: 'Products passed third-party testing and certification including CATARC and completed sample validation with leading customers — entering the commercialization stage.',
   },
   {
     year: '2026',
-    titleZh: '0.5GWh 生产基地建设',
-    titleEn: '0.5GWh Base Construction',
-    descZh: '启动 0.5GWh 先进电池规模化生产基地建设，全面开启低空与工业级电源的大批量交付。',
-    descEn: 'Began constructing 0.5GWh production base for high-volume delivery of drone and industrial batteries.',
+    titleZh: '数亿元融资落地，迈向规模制造',
+    titleEn: 'Multi-Hundred-Million Funding, Moving to Scale Manufacturing',
+    descZh: '获得数亿元融资，高比能固态电池取得批量订单，启动0.5GWh高标准产线建设。',
+    descEn: 'Raised several hundred million RMB; high-energy-density solid-state batteries won volume orders and construction began on a 0.5 GWh high-standard production line.',
   },
 ];
 
@@ -92,7 +99,8 @@ interface MilestonesProps {
 
 export default function MilestonesSection({ lang = 'zh', items }: MilestonesProps) {
   const data = items && items.length > 0 ? items : milestones;
-  const [activeIndex, setActiveIndex] = useState(6); // 默认高亮 2023 年
+  // 默认高亮 2023 年（新数组无 2022，2023 落在 index 7）
+  const [activeIndex, setActiveIndex] = useState(7);
 
   useEffect(() => {
     const timer = setInterval(() => {

@@ -68,7 +68,7 @@ export function CaseHero({ title, subtitle }: { title?: string; subtitle?: strin
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="relative z-10 mt-auto w-full max-w-7xl mx-auto px-6 md:px-16 pb-10 md:pb-14 text-center text-base md:text-lg text-white/90"
+        className="relative z-10 mt-auto w-full max-w-7xl mx-auto px-6 md:px-16 pb-4 md:pb-6 text-center text-base md:text-lg text-white/90"
         style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
       >
         {t("tagline")}
