@@ -91,14 +91,14 @@ export function Footer({ translations, locale }: FooterProps) {
               </div>
               <div className="flex items-center gap-3 text-sm text-[#71717A]">
                 <Mail className="w-4 h-4 text-[#52525B]" />
-                <a href="mailto:changhao@ssebatt.com" className="hover:text-white transition-colors">
-                  changhao@ssebatt.com
+                <a href="mailto:zhanwenwei@ssebatt.com" className="hover:text-white transition-colors">
+                  zhanwenwei@ssebatt.com
                 </a>
               </div>
               <div className="flex items-center gap-3 text-sm text-[#71717A]">
                 <Phone className="w-4 h-4 text-[#52525B]" />
-                <a href="tel:+8613651071130" className="hover:text-white transition-colors">
-                  +86 13651071130
+                <a href="tel:+8616620816648" className="hover:text-white transition-colors">
+                  16620816648
                 </a>
               </div>
               <div className="flex items-center gap-3 text-sm text-[#71717A]">
