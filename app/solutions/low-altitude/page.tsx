@@ -28,15 +28,14 @@ function IndustryPageContent({ locale, slug }: { locale: Locale; slug: IndustryS
   const cases: CaseBlockItem[] = t.cases.items.map((c) => ({
     scene: c.scene,
     applications: c.applications,
-    challenges: c.challenges,
-    configs: c.configs,
+    value: c.value,
+    metrics: c.metrics,
+    comparison: c.comparison,
     image: c.image,
     imageAlt: c.imageAlt ?? c.scene,
   }));
 
-  const flowSteps = isZh
-    ? ["需求沟通", "方案设计", "系统定制", "样品验证", "量产导入"]
-    : ["Requirements", "Solution design", "System customisation", "Sample validation", "Production ramp"];
+  const flowSteps = messages[locale].solutions.flow.steps;
 
   return (
     <main className="bg-white">
@@ -49,35 +48,11 @@ function IndustryPageContent({ locale, slug }: { locale: Locale; slug: IndustryS
 
       <IndustryChallenge title={t.painPoints.title} items={t.painPoints.items} />
 
-      <section className="bg-[#FAFAFC] py-12 lg:py-16 px-6 md:px-10 lg:px-16">
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-4">
-            <div
-              className="text-[11px] tracking-[0.32em] uppercase text-[#71717A] mb-4"
-              style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-            >
-              {"// 03 VALUE"}
-            </div>
-            <h2
-              className="text-2xl md:text-3xl font-bold text-[#0A0A0F] leading-tight"
-              style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-            >
-              {t.value.title}
-            </h2>
-            <div className="mt-6 h-px w-12 bg-[#0A0A0F]" />
-          </div>
-          <div className="lg:col-span-8">
-            <p
-              className="text-[16px] md:text-[17px] text-[#0A0A0F] leading-[1.85]"
-              style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-            >
-              {t.value.desc}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <IndustryHighlight title={t.highlights.title} items={t.highlights.items} />
+      <IndustryHighlight
+        title={t.highlights.title}
+        items={t.highlights.items}
+        intro={t.value.desc}
+      />
 
       <CaseBlock title={t.cases.title} cases={cases} />
 
@@ -97,13 +72,13 @@ function IndustryPageContent({ locale, slug }: { locale: Locale; slug: IndustryS
       />
 
       <BusinessCTA
-        title={isZh ? "把场景告诉我们,我们做工程化反馈。" : "Tell us your scenario. We respond with engineering."}
+        title={isZh ? "获取您的专属动力方案" : "Get your dedicated power solution"}
         desc={
           isZh
-            ? "提交您的平台类型、续航/功率目标与边界条件,工程团队 48 小时内给出可行方案。"
-            : "Submit your platform type, endurance/power targets and boundary conditions. Our engineering team responds within 48 hours."
+            ? "提交平台类型、续航与功率目标，工程团队将根据整机工况给出可行方案。"
+            : "Send us your platform type, endurance and power targets — our engineering team will respond with an actionable proposal."
         }
-        buttonLabel={isZh ? "项目咨询" : "Start a Project"}
+        buttonLabel={isZh ? "立即咨询" : "Talk to Engineering"}
         href="/contact"
       />
     </main>

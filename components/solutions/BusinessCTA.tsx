@@ -12,6 +12,11 @@ interface BusinessCTAProps {
   href?: string;
 }
 
+/**
+ * Closing consultation block. Deliberately quiet — one headline, one
+ * line of context, one action — with a wide surround and a hairline
+ * rule tying it back to the page rhythm above.
+ */
 export function BusinessCTA({
   title,
   desc,
@@ -19,51 +24,38 @@ export function BusinessCTA({
   href = "/contact",
 }: BusinessCTAProps) {
   return (
-    <section className="relative bg-white py-20 lg:py-24 px-6 md:px-10 lg:px-16 overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 50%, rgba(37,99,235,0.06) 0%, rgba(255,255,255,0) 60%)",
-        }}
-      />
-
-      <div className="relative max-w-[960px] mx-auto text-center">
+    <section className="bg-white px-6 py-20 md:px-10 md:py-24 lg:px-16 lg:py-28">
+      <div className="mx-auto max-w-[1280px]">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
+          className="flex flex-col items-start gap-9 border-t border-[#E4E4E7] pt-16 lg:flex-row lg:items-end lg:justify-between lg:gap-16"
         >
-          <div
-            className="text-[11px] tracking-[0.32em] uppercase text-[#71717A] mb-5"
-            style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
-          >
-            {"// 07 CTA"}
-          </div>
-          <h2
-            className="text-3xl md:text-[40px] lg:text-[44px] font-bold text-[#0A0A0F] leading-[1.15] max-w-[24ch] mx-auto"
-            style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-          >
-            {title}
-          </h2>
-          <p
-            className="mt-5 text-[15px] md:text-base text-[#3F3F46] leading-relaxed max-w-[52ch] mx-auto"
-            style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-          >
-            {desc}
-          </p>
-          <div className="mt-9">
-            <Link
-              href={href}
-              className="group inline-flex items-center gap-2.5 px-8 py-4 bg-[#0A0A0F] text-white text-[14px] font-semibold rounded-full hover:bg-[#1F1F2A] transition-colors shadow-[0_10px_30px_-14px_rgba(10,10,15,0.6)]"
+          <div className="max-w-[46ch]">
+            <h2
+              className="text-[26px] font-bold leading-[1.25] text-[#0A0A0F] md:text-[32px]"
               style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
             >
-              {buttonLabel}
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
+              {title}
+            </h2>
+            <p
+              className="mt-5 text-[14px] leading-[1.8] text-[#71717A]"
+              style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+            >
+              {desc}
+            </p>
           </div>
+
+          <Link
+            href={href}
+            className="group inline-flex flex-shrink-0 items-center gap-2.5 rounded-full bg-[#0A0A0F] px-8 py-4 text-[14px] font-semibold text-white transition-colors hover:bg-[#1F1F2A]"
+            style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+          >
+            {buttonLabel}
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
         </motion.div>
       </div>
     </section>
