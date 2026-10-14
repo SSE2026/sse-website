@@ -28,7 +28,7 @@ export default function HomePage() {
           translations={currentMessages}
           locale={locale}
           onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
-          forceLightText={true}
+          forceLightText={false}
         />
         <main>
           {/* Editorial hero: 9:16 Energy Stack */}

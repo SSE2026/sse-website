@@ -17,10 +17,10 @@ import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 
-// 咨询类型选项
+// 咨询类型选项 — 新闻中心只保留商务合作 + 新增媒体合作
 const inquiryTags = {
-  zh: ["商务合作", "电芯及模组订制", "样品申请", "技术咨询"],
-  en: ["Business Cooperation", "Cell & Module Design", "Sample Request", "Technical Support"],
+  zh: ["商务合作", "媒体合作", "电芯及模组订制", "技术咨询"],
+  en: ["Business Cooperation", "Media Cooperation", "Cell & Module Design", "Technical Support"],
 };
 
 export default function ContactPage() {

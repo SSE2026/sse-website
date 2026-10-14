@@ -239,7 +239,7 @@ export function Hero({ translations }: HeroProps) {
                   separate beat, not just another bullet */}
               <div className="mt-9 md:mt-11 flex flex-wrap gap-3">
                 <Link
-                  href="/cases"
+                  href="/solutions/low-altitude"
                   className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 bg-[#3B82F6] text-white text-[13px] md:text-[14px] font-semibold rounded-lg hover:bg-[#2563EB] transition-colors shadow-[0_0_36px_-8px_rgba(59,130,246,0.55)]"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X, Globe, ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { setLocaleCookie } from "@/lib/locale";
 
@@ -14,9 +14,18 @@ interface HeaderProps {
       home: string;
       about: string;
       products: string;
+      productsCells: string;
+      productsCellsCloudchi: string;
+      productsCellsPanshi: string;
+      productsPacks: string;
       technology: string;
       cases: string;
-      industries: string;
+      industries?: {
+        lowAltitude: string;
+        embodiedAI: string;
+        marine: string;
+        specialOps: string;
+      };
       news: string;
       contact: string;
     };
@@ -24,29 +33,84 @@ interface HeaderProps {
   };
   locale: string;
   onLocaleChange: (locale: string) => void;
-  forceLightText?: boolean; // Use light text for dark backgrounds (e.g., homepage with dark hero)
+  forceLightText?: boolean;
 }
 
+// ----- Nav tree types -----------------------------------------------------
+// A flat leaf is just { label, href }. A group has children; the first
+// level under "Products" is a label-only header (e.g. "Cells"), whose
+// own children are leaf links (e.g. "Cloudchi", "Panshi").
+type NavLeaf = { label: string; href: string };
+type NavGroupChild = NavLeaf | { label: string; children: NavLeaf[] };
+type NavItem =
+  | { kind: "leaf"; key: string; label: string; href: string }
+  | {
+      kind: "menu";
+      key: string;
+      label: string;
+      href: string;
+      children: NavGroupChild[];
+    };
+
 export function Header({ translations, locale, onLocaleChange, forceLightText = false }: HeaderProps) {
+  const nav = translations.nav;
+
+  const navTree: NavItem[] = [
+    { kind: "leaf", key: "home", label: nav.home, href: "/" },
+    {
+      kind: "menu",
+      key: "products",
+      label: nav.products,
+      href: "/products",
+      children: [
+        {
+          label: nav.productsCells,
+          children: [
+            { label: nav.productsCellsCloudchi, href: "/products/cells/cloudchi" },
+            { label: nav.productsCellsPanshi, href: "/products/cells/panshi" },
+          ],
+        },
+        { label: nav.productsPacks, href: "/products/packs" },
+      ],
+    },
+    // "Solutions" is a flat 4-item dropdown — no intermediate index
+    // page. Each leaf points directly to the industry detail page.
+    {
+      kind: "menu",
+      key: "cases",
+      label: nav.cases,
+      href: "/solutions/low-altitude",
+      children: [
+        { label: nav.industries?.lowAltitude ?? "低空飞行器", href: "/solutions/low-altitude" },
+        { label: nav.industries?.embodiedAI ?? "具身智能机器人", href: "/solutions/embodied-ai" },
+        { label: nav.industries?.marine ?? "海洋装备", href: "/solutions/marine" },
+        { label: nav.industries?.specialOps ?? "特种装备", href: "/solutions/special-ops" },
+      ],
+    },
+    { kind: "leaf", key: "technology", label: nav.technology, href: "/technology" },
+    { kind: "leaf", key: "news", label: nav.news, href: "/news" },
+    { kind: "leaf", key: "about", label: nav.about, href: "/about" },
+  ];
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("");
+  // Hover-driven nav state. Track which top-level item is open AND which
+  // group child (e.g. "Cells") is open so the nested sub-panel can fly out.
+  const [openMenuKey, setOpenMenuKey] = useState<string | null>(null);
+  const [openSubLabel, setOpenSubLabel] = useState<string | null>(null);
+  // Mobile: track which top-level menu item is expanded inline.
+  const [mobileExpandedKey, setMobileExpandedKey] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Sync document.title with current locale
-  useEffect(() => {
-    document.title = locale === "zh" ? "深安锂能官网" : "Swift Safe Energy Official";
-  }, [locale]);
-
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -58,14 +122,23 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
     };
   }, [isMobileMenuOpen]);
 
-  const navItems = [
-    { href: "/", label: translations.nav.home, key: "home" },
-    { href: "/products/cloudchi-360-p", label: translations.nav.products, key: "products" },
-    { href: "/cases", label: translations.nav.cases, key: "cases" },
-    { href: "/technology", label: translations.nav.technology, key: "technology" },
-    { href: "/news", label: translations.nav.news, key: "news" },
-    { href: "/about", label: translations.nav.about, key: "about" },
-  ];
+  // Close hover-menu when cursor leaves the entire nav region.
+  const onNavMouseLeave = () => {
+    setOpenMenuKey(null);
+    setOpenSubLabel(null);
+  };
+
+  const linkBaseClass = cn(
+    "relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200",
+    "hover:bg-[#F4F4F5]"
+  );
+
+  const colorFor = (active: boolean) =>
+    active
+      ? "text-[#0A0A0A] bg-[#F4F4F5]"
+      : forceLightText && !isScrolled
+      ? "text-white"
+      : "text-[#18181B]";
 
   return (
     <>
@@ -105,44 +178,175 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                   {locale === "zh" ? "深安锂能" : "Swift Safe Energy"}
                 </p>
                 <p className={cn(
-                  "text-[10px] transition-colors duration-300",
+                  "text-[10px] transition-colors duration-300 leading-snug max-w-[260px]",
                   forceLightText && !isScrolled ? "text-[#52525B]" : "text-[#A1A1AA]"
                 )}>
-                  {locale === "zh" ? "高比能电池专家" : "High Energy Density Battery Expert"}
+                  {locale === "zh"
+                    ? "高能量密度高安全新型动力电池引领者"
+                    : "Pioneer in High-Energy-Density, High-Safety Next-Gen Power Batteries"}
                 </p>
               </div>
             </Link>
 
-            {/* Desktop Navigation - Clean & Minimal */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {navItems.map((item, index) => (
-                <motion.div
-                  key={item.key}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05, duration: 0.3 }}
-                >
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                      "hover:bg-[#F4F4F5]",
-                      activeLink === item.key
-                        ? "text-[#0A0A0A] bg-[#F4F4F5]"
-                        : forceLightText && !isScrolled ? "text-white" : "text-[#18181B]"
-                    )}
-                    onMouseEnter={() => setActiveLink(item.key)}
-                    onMouseLeave={() => setActiveLink("")}
+            {/* Desktop Navigation */}
+            <nav
+              className="hidden lg:flex items-center gap-1"
+              onMouseLeave={onNavMouseLeave}
+            >
+              {navTree.map((item, index) => {
+                if (item.kind === "leaf") {
+                  return (
+                    <motion.div
+                      key={item.key}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05, duration: 0.3 }}
+                    >
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          linkBaseClass,
+                          activeLink === item.key ? "text-[#0A0A0A] bg-[#F4F4F5]" : colorFor(false)
+                        )}
+                        onMouseEnter={() => {
+                          setActiveLink(item.key);
+                          setOpenMenuKey(null);
+                          setOpenSubLabel(null);
+                        }}
+                      >
+                        {item.label}
+                      </Link>
+                    </motion.div>
+                  );
+                }
+
+                // ---- Menu item (Products with sub-items) ----
+                const isOpen = openMenuKey === item.key;
+                return (
+                  <motion.div
+                    key={item.key}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                    className="relative"
+                    onMouseEnter={() => {
+                      setActiveLink(item.key);
+                      setOpenMenuKey(item.key);
+                    }}
                   >
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        linkBaseClass,
+                        "inline-flex items-center gap-1",
+                        isOpen || activeLink === item.key
+                          ? "text-[#0A0A0A] bg-[#F4F4F5]"
+                          : colorFor(false)
+                      )}
+                    >
+                      {item.label}
+                      <ChevronDown
+                        className={cn(
+                          "w-3.5 h-3.5 transition-transform duration-200",
+                          isOpen ? "rotate-180" : ""
+                        )}
+                      />
+                    </Link>
+
+                    {/* Level-1 dropdown panel (Cells + Packs) */}
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.16, ease: "easeOut" }}
+                          className="absolute left-0 top-full pt-2 z-50"
+                        >
+                          <div
+                            className={cn(
+                              "min-w-[200px] rounded-xl border p-2 shadow-[0_18px_40px_-12px_rgba(15,15,20,0.18)]",
+                              "bg-white/40 backdrop-blur-2xl border-white/50 ring-1 ring-white/30"
+                            )}
+                          >
+                            {item.children.map((child, i) => {
+                              if ("href" in child) {
+                                // Plain leaf (e.g. Battery Packs)
+                                return (
+                                  <Link
+                                    key={i}
+                                    href={child.href}
+                                    className="block px-3 py-2.5 rounded-lg text-sm text-[#18181B] hover:bg-[#F4F4F5] hover:text-[#0A0A0A] transition-colors"
+                                  >
+                                    {child.label}
+                                  </Link>
+                                );
+                              }
+                              // Group (e.g. Cells) with its own nested panel
+                              const subOpen = openSubLabel === child.label;
+                              return (
+                                <div
+                                  key={i}
+                                  className="relative"
+                                  onMouseEnter={() => setOpenSubLabel(child.label)}
+                                  onMouseLeave={() => setOpenSubLabel(null)}
+                                >
+                                  <button
+                                    type="button"
+                                    className={cn(
+                                      "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+                                      subOpen
+                                        ? "bg-[#F4F4F5] text-[#0A0A0A]"
+                                        : "text-[#18181B] hover:bg-[#F4F4F5] hover:text-[#0A0A0A]"
+                                    )}
+                                  >
+                                    <span>{child.label}</span>
+                                    <ChevronRight className="w-3.5 h-3.5" />
+                                  </button>
+
+                                  {/* Level-2 flyout (Cloudchi / Panshi) */}
+                                  <AnimatePresence>
+                                    {subOpen && (
+                                      <motion.div
+                                        initial={{ opacity: 0, x: -6 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -6 }}
+                                        transition={{ duration: 0.16, ease: "easeOut" }}
+                                        className="absolute left-full top-0 ml-2 z-50"
+                                      >
+                                        <div
+                                          className={cn(
+                                            "min-w-[220px] rounded-xl border p-2 shadow-[0_18px_40px_-12px_rgba(15,15,20,0.18)]",
+                                            "bg-white/40 backdrop-blur-2xl border-white/50 ring-1 ring-white/30"
+                                          )}
+                                        >
+                                          {child.children.map((leaf, j) => (
+                                            <Link
+                                              key={j}
+                                              href={leaf.href}
+                                              className="block px-3 py-2.5 rounded-lg text-sm text-[#18181B] hover:bg-[#F4F4F5] hover:text-[#0A0A0A] transition-colors"
+                                            >
+                                              {leaf.label}
+                                            </Link>
+                                          ))}
+                                        </div>
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
             </nav>
 
-            {/* Right Side - Tesla Style */}
+            {/* Right Side */}
             <div className="flex items-center gap-3">
-              {/* Contact Button - Tesla Blue */}
               <Link href="/contact">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -158,8 +362,6 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                 </motion.button>
               </Link>
 
-              {/* Language Switcher — py-2.5 so it matches the Contact
-                  button's height exactly */}
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -174,17 +376,11 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                 <span className="uppercase font-medium hidden sm:inline">{locale}</span>
               </motion.button>
 
-              {/* Mobile Menu Button */}
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={cn(
-                  "lg:hidden p-2 rounded-md transition-all duration-200 cursor-pointer",
-                  isScrolled
-                    ? "text-[#52525B] hover:bg-[#F4F4F5]"
-                    : "text-[#52525B] hover:bg-[#F4F4F5]"
-                )}
+                className="lg:hidden p-2 rounded-md transition-all duration-200 cursor-pointer text-[#52525B] hover:bg-[#F4F4F5]"
                 aria-label="Toggle menu"
               >
                 {isMobileMenuOpen ? (
@@ -202,95 +398,126 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+              transition={{ duration: 0.2 }}
               onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/40 z-40 lg:hidden"
             />
-
-            {/* Menu Content - Slide in from right */}
             <motion.div
-              initial={{ opacity: 0, x: "100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: "100%" }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white z-50 lg:hidden overflow-y-auto"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-white z-50 lg:hidden overflow-y-auto"
             >
-              {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-[#E4E4E7]">
-                <span className="font-semibold text-[#0A0A0A]">
-                  {locale === "zh" ? "菜单" : "Menu"}
-                </span>
-                <button
+                <Image
+                  src="/logo.png"
+                  alt="深安锂能"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain"
+                />
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
+                  className="p-2 rounded-md hover:bg-[#F4F4F5]"
                 >
-                  <X className="w-6 h-6" />
-                </button>
+                  <X className="w-5 h-5" />
+                </motion.button>
               </div>
 
-              {/* Navigation */}
-              <nav className="p-6 flex flex-col gap-1">
-                {navItems.map((item, index) => (
-                  <motion.div
-                    key={item.key}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 + 0.1, duration: 0.3 }}
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 text-base font-medium rounded-md transition-all duration-200",
-                        "text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5]"
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  </motion.div>
-                ))}
+              <nav className="px-6 py-6 space-y-1">
+                {navTree.map((item) => {
+                  if (item.kind === "leaf") {
+                    return (
+                      <Link
+                        key={item.key}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-3 text-base font-medium text-[#18181B] hover:text-[#0A0A0A] border-b border-[#F4F4F5]"
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  }
+                  const expanded = mobileExpandedKey === item.key;
+                  return (
+                    <div key={item.key} className="border-b border-[#F4F4F5]">
+                      <button
+                        type="button"
+                        onClick={() => setMobileExpandedKey(expanded ? null : item.key)}
+                        className="w-full flex items-center justify-between py-3 text-base font-medium text-[#18181B]"
+                      >
+                        <span>{item.label}</span>
+                        <ChevronDown
+                          className={cn(
+                            "w-4 h-4 transition-transform duration-200",
+                            expanded ? "rotate-180" : ""
+                          )}
+                        />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {expanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pb-3 pl-3 space-y-1">
+                              {item.children.map((child, i) => {
+                                if ("href" in child) {
+                                  return (
+                                    <Link
+                                      key={i}
+                                      href={child.href}
+                                      onClick={() => setIsMobileMenuOpen(false)}
+                                      className="block py-2 text-[15px] text-[#52525B] hover:text-[#0A0A0A]"
+                                    >
+                                      {child.label}
+                                    </Link>
+                                  );
+                                }
+                                return (
+                                  <div key={i} className="py-1">
+                                    <div className="text-[12px] uppercase tracking-[0.18em] text-[#A1A1AA] mb-1">
+                                      {child.label}
+                                    </div>
+                                    <div className="space-y-1">
+                                      {child.children.map((leaf, j) => (
+                                        <Link
+                                          key={j}
+                                          href={leaf.href}
+                                          onClick={() => setIsMobileMenuOpen(false)}
+                                          className="block py-1.5 text-[15px] text-[#52525B] hover:text-[#0A0A0A]"
+                                        >
+                                          {leaf.label}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
 
-                {/* Contact Button in Mobile Menu */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navItems.length * 0.05 + 0.1, duration: 0.3 }}
-                  className="mt-4 pt-4 border-t border-[#E4E4E7]"
+                <Link
+                  href="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="mt-6 inline-flex items-center justify-center w-full py-3 bg-[#2563EB] text-white text-sm font-semibold rounded-md hover:bg-[#1D4ED8] transition-colors"
                 >
-                  <Link
-                    href="/contact"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-center gap-2 px-4 py-3 text-base font-semibold bg-[#2563EB] text-white rounded-md hover:bg-[#1D4ED8] transition-all duration-200"
-                  >
-                    {locale === "zh" ? "联系我们" : "Contact Us"}
-                  </Link>
-                </motion.div>
-
-                {/* Language Switcher in Mobile Menu */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navItems.length * 0.05 + 0.15, duration: 0.3 }}
-                  className="mt-3"
-                >
-                  <button
-                    onClick={() => {
-                      const next = locale === "en" ? "zh" : "en";
-                      setLocaleCookie(next);
-                      onLocaleChange(next);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex items-center justify-center gap-2 w-full px-4 py-3 text-base font-medium text-[#52525B] hover:text-[#0A0A0A] hover:bg-[#F4F4F5] rounded-md transition-all duration-200 cursor-pointer"
-                  >
-                    <Globe className="w-5 h-5" />
-                    {locale === "zh" ? "切换至 English" : "切换至 中文"}
-                  </button>
-                </motion.div>
+                  {locale === "zh" ? "联系我们" : "Contact Us"}
+                </Link>
               </nav>
             </motion.div>
           </>

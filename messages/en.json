@@ -3,9 +3,24 @@
     "home": "Home",
     "about": "About",
     "products": "Products",
-    "technology": "Technology",
-    "cases": "Case Studies",
-    "industries": "Industries",
+    "productsCells": "Cells",
+    "productsCellsCloudchi": "Cloudchi (Aeroride) Series",
+    "productsCellsPanshi": "Panshi Series",
+    "productsPacks": "Battery Packs",
+    "technology": "R&D and Manufacturing",
+    "cases": "Solutions",
+    "industries": {
+      "lowAltitude": "Low-altitude flight",
+      "embodiedAI": "Embodied AI robots",
+      "marine": "Marine platforms",
+      "specialOps": "Special-purpose equipment"
+    },
+    "industries_alt": {
+      "lowAltitude": "UAV / eVTOL",
+      "embodiedAI": "Quadruped / humanoid",
+      "marine": "USV / ROV / AUV",
+      "specialOps": "Construction / police / rescue"
+    },
     "news": "News",
     "contact": "Contact"
   },
@@ -81,17 +96,18 @@
     "eyebrow": "SHEN'AN LITHIUM ENERGY",
     "topRightTag": "ENERGY IN ACTION",
     "topRightLink": "Scenario Reference",
-    "titleLine1": "Beyond Power.",
-    "titleLine2": "Beyond Limits.",
+    "titleLine1": "Beyond Energy Limits.",
+    "titleLine2": "Redefining Electric Boundaries.",
     "sectionTitle": "Application Scenarios",
-    "subtitle": "Solid-State Battery · Powering the Next Mile",
+    "subtitle": "High energy density and ultra-safe battery technology — expanding the performance envelope of electric equipment.",
     "tags": {
       "highEnergy": "High Energy Density",
       "highPower": "High Power",
       "highSafety": "Ultra Safety",
       "fastCharging": "Ultra-Fast Charging"
     },
-    "ctaExplore": "Explore Now",
+    "ctaExplore": "Explore Core Tech",
+    "ctaContact": "About Swift Safe Energy",
     "scene": {
       "number": "01",
       "title": "Powering Longer Missions",
@@ -271,7 +287,7 @@
     "description": "Breaking battery performance limits to enable electrification of boundary scenarios.",
     "quickLinks": "Quick Links",
     "products": "Products",
-    "technology": "Technology",
+    "technology": "R&D and Manufacturing",
     "about": "About",
     "contact": "Contact",
     "legal": "Legal",
@@ -491,5 +507,423 @@
       "smallText": "OEM · ODM · Custom Battery Solutions"
     },
     "batteryArchitecture": "Battery Architecture"
+  },
+  "solutions": {
+    "hero": {
+      "title": "Powering the missions that demand more from energy.",
+      "subtitle": "From low-altitude flight to embodied AI, marine platforms and special-purpose applications, we deliver custom power solutions — from high-performance cells to intelligent battery systems.",
+      "eyebrow": "SOLUTIONS",
+      "ctaExplore": "Explore Solutions",
+      "ctaConsult": "Discuss a Project"
+    },
+    "challenges": {
+      "title": "Core energy challenges",
+      "subtitle": "We translate the hardest energy problems into engineering requirements.",
+      "items": {
+        "energy": {
+          "label": "Energy density",
+          "title": "More usable energy in less weight and volume.",
+          "desc": "Endurance ceilings, payload headroom, marine buoyancy, robot balance — all locked by cell energy density."
+        },
+        "power": {
+          "label": "Instant power",
+          "title": "Burst output without compromising safety or cycle life.",
+          "desc": "VTOL takeoff, jumping, propulsion kickoff, hydraulic loads — all demand millisecond-scale high current."
+        },
+        "temperature": {
+          "label": "Harsh environments",
+          "title": "Stable delivery from -40℃ to 60℃.",
+          "desc": "Cold zone, high altitude, cold seawater, outdoor day-night swings all defeat ordinary batteries fast."
+        },
+        "system": {
+          "label": "System integration",
+          "title": "Cell, PACK, BMS and host controller as one stack.",
+          "desc": "Fragmented multi-vendor stacks and mismatched protocols add integration risk and tuning cycles."
+        }
+      }
+    },
+    "capabilities": {
+      "title": "Technology & delivery capability",
+      "subtitle": "From cells to system integration, we deliver one stack that drops in.",
+      "items": {
+        "cell": {
+          "title": "High-performance cells",
+          "desc": "High energy-density platforms covering industrial drones, robots and marine applications."
+        },
+        "pack": {
+          "title": "Custom PACKs",
+          "desc": "Non-standard form factors, voltages and constrained housings — we tailor PACK to your chassis."
+        },
+        "bms": {
+          "title": "Smart BMS",
+          "desc": "High-precision SOC/SOH estimation, tiered fault diagnosis, CAN comms — ready to plug into host controllers."
+        },
+        "system": {
+          "title": "System integration",
+          "desc": "Cell + PACK + BMS + tuning delivered together, reducing integration risk for the integrator."
+        }
+      },
+      "footnote": "Capabilities vary by product and model. Final scope is governed by the technical agreement."
+    },
+    "industries": {
+      "lowAltitude": {
+        "name": "Low-altitude flight",
+        "tagline": "From survey drones to eVTOL — better endurance, payload and full-mission power stability within strict weight budgets.",
+        "href": "/cases/low-altitude"
+      },
+      "embodiedAI": {
+        "name": "Embodied AI robots",
+        "tagline": "For quadruped dogs and humanoids, pairing runtime with burst power and shock tolerance.",
+        "href": "/cases/embodied-ai"
+      },
+      "marine": {
+        "name": "Marine platforms",
+        "tagline": "For USV, ROV and AUV — high energy density, salt-spray resistance and wide temperature range.",
+        "href": "/cases/marine"
+      },
+      "specialOps": {
+        "name": "Special-purpose equipment",
+        "tagline": "For construction, police and emergency-rescue — stable supply under shock, vibration and wide temperature extremes.",
+        "href": "/cases/special-ops"
+      }
+    },
+    "flow": {
+      "title": "Project development flow",
+      "subtitle": "From requirements to mass production, our recommended collaboration path."
+    },
+    "cta": {
+      "title": "Tell us your mission. We respond with engineering.",
+      "desc": "Submit your platform type, endurance/power targets and boundary conditions. Our engineering team responds within 48 hours.",
+      "button": "Start a Project"
+    },
+    "lowAltitude": {
+      "hero": {
+        "eyebrow": "SOLUTIONS / LOW-ALTITUDE FLIGHT",
+        "title": "Command the wind. Fly further.",
+        "subtitle": "A one-stop high-energy-density power system built for low-altitude flight — breaking through extreme cold and heavy-payload limits."
+      },
+      "painPoints": {
+        "title": "Industry challenges",
+        "items": [
+          "Endurance ceilings are common — insufficient cell energy density and battery weight crowding out payload;",
+          "Vertical takeoff demands large burst discharge, with severe capacity loss in high/low temperature conditions;",
+          "Ordinary cells lose capacity fast below -20℃, failing polar and high-altitude operations;",
+          "Heat dissipation is poor at high discharge, raising safety risk and accelerating battery degradation;",
+          "A matched turnkey power solution is needed — the legacy fragmented supply chain (cell / PACK / BMS) carries high integration risk."
+        ]
+      },
+      "value": {
+        "title": "Solution value",
+        "desc": "Lift endurance and payload within strict weight budgets while keeping power stable across takeoff, cruise and landing — even in harsh environments."
+      },
+      "highlights": {
+        "title": "Differentiation",
+        "items": [
+          "High energy density — more endurance and payload headroom at the same weight;",
+          "-40℃ ~ 60℃ wide temperature range — cold zone and high altitude ready;",
+          "Continuous / pulse high-current discharge — supports VTOL instantaneous power;",
+          "Aviation-tuned BMS — multi-series / multi-parallel networking, full-system adaptation and parameter tuning;",
+          "Cell + PACK two-stage thermal design — balancing energy density, safety and cycle life."
+        ]
+      },
+      "cases": {
+        "title": "Scenario cases",
+        "items": [
+          {
+            "scene": "Industrial multi-rotor UAV",
+            "image": "/images/solutions/cases/low-altitude-1.jpg",
+            "imageAlt": "Industrial multi-rotor UAV",
+            "applications": "Survey, security, inspection, emergency, logistics",
+            "challenges": ["Endurance falls short of mission needs", "Cold-weather endurance shrinks", "High-load discharge is insufficient"],
+            "configs": [
+              {
+                "config": "7S1P standard PACK (Cloudchi 360-P series)",
+                "metric": "85 minutes continuous flight",
+                "note": "vs. customer's previous PACK at 55 minutes — endurance +63%; full-flight pack temperature below 60℃; 20% residual at touchdown."
+              },
+              {
+                "config": "12S1P standard PACK (Cloudchi 360-P series)",
+                "metric": "10 kg payload, 40min+ endurance",
+                "note": "Well beyond customer expectation; full-flight pack temperature below 60℃."
+              }
+            ]
+          },
+          {
+            "scene": "Heavy-payload multi-rotor UAV",
+            "image": "/images/solutions/cases/low-altitude-2.jpg",
+            "imageAlt": "Heavy-payload multi-rotor UAV",
+            "applications": "Lifting, transport, washing, firefighting, emergency",
+            "challenges": ["Heavy takeoff requires high energy + high discharge", "Thermal management is hard in multi-module parallel mode"],
+            "configs": [
+              {
+                "config": "24S2P intelligent battery system (Cloudchi 360-P series)",
+                "metric": "30 minutes endurance at 150 kg full-load takeoff",
+                "note": "Full-flight temperature rise below 60℃; stable multi-module parallel operation."
+              }
+            ]
+          },
+          {
+            "scene": "Industrial hybrid-wing UAV",
+            "image": "/images/solutions/cases/low-altitude-3.jpg",
+            "imageAlt": "Industrial hybrid-wing UAV",
+            "applications": "Security, inspection, survey, emergency, logistics",
+            "challenges": ["VTOL phase needs instant high current", "Cruise phase needs low-weight long endurance", "Severe cold-environment endurance loss"],
+            "configs": [
+              {
+                "config": "12S1P standard PACK (Cloudchi 400-E series)",
+                "metric": "34 kg takeoff, 424.3 km continuous flight, 287 minutes",
+                "note": "vs. previous 210-minute record — endurance +36%; 13% residual at landing; estimated ceiling above 5 hours."
+              },
+              {
+                "config": "12S2P standard PACK (Cloudchi 400-E series)",
+                "metric": "2 kg lighter at equal capacity",
+                "note": "At -40℃ extreme cold, capacity retention > 90%; fits the customer's most demanding scenarios."
+              },
+              {
+                "config": "14S2P standard PACK (Cloudchi 400-E series)",
+                "metric": "33 kg takeoff, 240 minutes endurance",
+                "note": "20% residual at landing; pack temperature below 50℃; stable power output throughout."
+              }
+            ]
+          },
+          {
+            "scene": "Cargo / passenger eVTOL",
+            "image": "/images/solutions/cases/low-altitude-eVTOL.jpg",
+            "imageAlt": "Cargo / passenger eVTOL",
+            "applications": "Air passenger transport, short-haul logistics, scenic tours, emergency rescue, aerial inspection",
+            "challenges": ["Highest demands on safety, energy density, power redundancy, BMS safety management", "VTOL needs high power even at low SOC"],
+            "configs": [
+              {
+                "config": "400V high-voltage intelligent PACK (Cloudchi 360-P series)",
+                "metric": "60+ minute endurance at 1-ton full-load takeoff",
+                "note": "Full-flight temperature rise controlled."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "embodiedAI": {
+      "hero": {
+        "eyebrow": "SOLUTIONS / EMBODIED AI ROBOTS",
+        "title": "Evolution, powered from within.",
+        "subtitle": "Lightweight, high-power systems that fuel every step of a robot's evolution."
+      },
+      "painPoints": {
+        "title": "Industry challenges",
+        "items": [
+          "Battery compartment is constrained; balancing runtime against battery weight is hard; weight shifts the robot's center of mass, weakening mobility and obstacle-crossing; non-standard cavities add structural-fit issues;",
+          "Walking, jumping and self-recovery create instantaneous pulse loads that ordinary cells and BMS can't match — voltage drop and false protections cause on-site mission interruptions;",
+          "Outdoor scenarios face vibration, shock and temperature swings; ordinary PACKs are unreliable — cold-weather runtime loss and high-temperature heating are common;",
+          "Generic BMS SOC estimation is inaccurate; remaining capacity reads are misleading, causing unexpected power loss and disturbing mission planning;",
+          "A matched turnkey power solution is needed — the legacy fragmented supply chain (cell / PACK / BMS) carries high integration risk."
+        ]
+      },
+      "value": {
+        "title": "Solution value",
+        "desc": "Within tight volume and weight budgets, balance runtime with burst power, withstand shock on rough terrain, and extend continuous operation time."
+      },
+      "highlights": {
+        "title": "Differentiation",
+        "items": [
+          "High energy-density lightweight PACKs — control self-weight and extend runtime significantly;",
+          "Ultra-large instantaneous pulse discharge — handles running, jumping and fall-recovery power peaks;",
+          "Vibration- and shock-resistant structure — survives rough-terrain operation;",
+          "Robot-tuned BMS — CAN comms, seamless with host controller;",
+          "Dual-battery hot-swap — change packs without shutdown, keeping missions continuous;",
+          "-40℃ ~ 60℃ wide temperature range — indoor and outdoor scenarios."
+        ]
+      },
+      "cases": {
+        "title": "Scenario cases",
+        "items": [
+          {
+            "scene": "Quadruped robot dog",
+            "image": "/images/solutions/cases/embodied-ai-1.jpg",
+            "imageAlt": "Quadruped robot dog",
+            "applications": "Inspection, security, exploration, emergency, supply transport",
+            "challenges": ["Runtime too short for missions", "Voltage drop on running/jumping pulse peaks", "Outdoor temperature swings degrade performance"],
+            "configs": [
+              {
+                "config": "18S1P intelligent battery system (Cloudchi 400-E series)",
+                "metric": "+44% capacity at the same size, -2 kg weight",
+                "note": "300A short pulse output for heavy-load running and obstacle-crossing; dual-battery redundant hot-swap; wide temperature support."
+              }
+            ]
+          },
+          {
+            "scene": "Bipedal humanoid robot",
+            "image": "/images/solutions/cases/embodied-ai-2.jpg",
+            "imageAlt": "Bipedal humanoid robot",
+            "applications": "Industrial operations, site inspection, public security, cultural-tourism performance, home companion, commercial service",
+            "challenges": ["Chest cavity is narrow — extremely sensitive to volume and weight", "Gait changes create dynamic and violent power fluctuations"],
+            "configs": [
+              {
+                "config": "High energy-density intelligent battery system",
+                "metric": "Optimised dynamic power response + precise SOC estimation",
+                "note": "Companion BMS integrates with the humanoid host controller."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "marine": {
+      "hero": {
+        "eyebrow": "SOLUTIONS / MARINE PLATFORMS",
+        "title": "Reliable power for the deep blue frontier.",
+        "subtitle": "Salt-spray resistant and pressure-tolerant — custom PACK shapes and high energy density for the most constrained pressure hulls."
+      },
+      "painPoints": {
+        "title": "Industry challenges",
+        "items": [
+          "Pressure-hull compartments are constrained; battery weight directly affects buoyancy trim — endurance vs. lightweight is hard to balance;",
+          "Underwater equipment bears hydrostatic pressure; surface equipment lives in long-term salt-spray corrosion — ordinary PACKs lack sealing, anti-corrosion and pressure resistance;",
+          "Cold seawater temperatures reduce capacity; sealed compartments limit heat dissipation, raising thermal-control difficulty at high power;",
+          "Underwater retrieval and maintenance is costly — SOC/SOH accuracy and long-term reliability are critical; failure diagnosis is hard;",
+          "The industry lacks an integrated marine-rated power solution — fragmented cell/PACK/BMS suppliers mean long integration cycles."
+        ]
+      },
+      "value": {
+        "title": "Solution value",
+        "desc": "Combine high energy density, salt-spray resistance and wide temperature range; support deep BMS customization; fit surface, shallow-water and mid/deep-sea scenarios; address hull fit, buoyancy trim and marine reliability."
+      },
+      "highlights": {
+        "title": "Differentiation",
+        "items": [
+          "High energy-density PACK — extend runtime, reduce weight, relieve buoyancy pressure;",
+          "Salt-spray resistant and shock-resistant packaging — withstands marine corrosion and bumps;",
+          "Wide-temperature-range cells — stable discharge output in cold seawater;",
+          "Marine-tuned BMS — compatible with underwater comms protocols, high-precision SOC/SOH estimation;",
+          "Custom-shaped PACK — flexible fit for constrained pressure-hull cavities."
+        ]
+      },
+      "cases": {
+        "title": "Scenario cases",
+        "items": [
+          {
+            "scene": "Surface unmanned surface vehicle (USV)",
+            "image": "/images/solutions/cases/marine-usv.jpg",
+            "imageAlt": "Surface unmanned surface vehicle (USV)",
+            "applications": "Hydrological monitoring, border patrol, marine survey",
+            "challenges": ["Marine salt spray causes battery system corrosion failure", "Large day-night temperature swing", "Long autonomous cruise demands endurance and stability"],
+            "configs": [
+              {
+                "config": "Salt-spray-resistant PACK",
+                "metric": "Salt-spray proof + long endurance + remote state reporting",
+                "note": "Resists marine salt-spray corrosion; high energy-density design for long endurance; in-house BMS supports remote state reporting for at-sea monitoring."
+              }
+            ]
+          },
+          {
+            "scene": "ROV — remotely operated underwater vehicle",
+            "image": "/images/solutions/cases/marine-rov.jpg",
+            "imageAlt": "ROV — remotely operated underwater vehicle",
+            "applications": "Underwater facility inspection, underwater work, ship hull cleaning",
+            "challenges": ["Thruster startup creates instantaneous high-current spikes", "Pressure hull interior is space-constrained", "Cold seawater reduces battery output"],
+            "configs": [
+              {
+                "config": "High-rate PACK + compact PACK layout",
+                "metric": "Thruster high-power support + tight hull fit",
+                "note": "Supports thruster instantaneous high-power; compact PACK fits in tight hull cavity; wide-temperature cells secure low-temperature discharge."
+              }
+            ]
+          },
+          {
+            "scene": "AUV — autonomous underwater vehicle",
+            "image": "/images/solutions/cases/marine-auv.jpg",
+            "imageAlt": "AUV — autonomous underwater vehicle",
+            "applications": "Marine science, subsea pipeline inspection",
+            "challenges": ["Tetherless operation demands high energy density and endurance", "Retrieval and battery replacement are costly", "Battery weight affects buoyancy trim"],
+            "configs": [
+              {
+                "config": "High energy-density intelligent battery system",
+                "metric": "High SOC/SOH accuracy + lightweight design",
+                "note": "Extends underwater autonomous endurance; BMS provides high-precision SOC/SOH to support mission planning; lightweight design reduces buoyancy-trim pressure."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "specialOps": {
+      "hero": {
+        "eyebrow": "SOLUTIONS / SPECIAL-PURPOSE EQUIPMENT",
+        "title": "Rock-solid. Mission delivered.",
+        "subtitle": "Shock-resistant, vibration-proof, sub-second response at -40℃ — never offline when it matters."
+      },
+      "painPoints": {
+        "title": "Industry challenges",
+        "items": [
+          "Special-purpose equipment often operates in cold, hot, dusty and high-shock environments — ordinary batteries lose capacity and output in extreme cold;",
+          "Mission-critical equipment: battery failure means mission abort and possibly secondary safety incidents; reliability and safety protection are strict;",
+          "Construction, police and emergency-rescue equipment vary widely in form factor, installation space and voltage platform — standardization is hard;",
+          "Integrators need a turnkey power system, not bare cells; off-the-shelf BMS lacks scenario-specific adaptation;",
+          "Transient high-power pulse loads are common — ordinary cells and BMS aren't tuned for them, causing voltage drop and false protections."
+        ]
+      },
+      "value": {
+        "title": "Solution value",
+        "desc": "Stable power under shock, vibration and wide-temperature extremes; supports non-standard sizes and voltages."
+      },
+      "highlights": {
+        "title": "Differentiation",
+        "items": [
+          "-40℃ ~ 60℃ wide temperature range — usable capacity at extreme cold;",
+          "Shock- and vibration-resistant reinforced PACK — survives job-site and disaster-site bumps;",
+          "Non-standard voltage and form-factor customization — fits diverse, constrained installation spaces;",
+          "Equipment-tuned BMS — tiered fault diagnosis and state reporting; integrates with host controller;",
+          "Cell + PACK + BMS coordinated safety protection — multiple safeguards for harsh conditions;",
+          "Rigorous bench validation — vibration, shock, wide-temperature and electrical safety tests."
+        ]
+      },
+      "cases": {
+        "title": "Scenario cases",
+        "items": [
+          {
+            "scene": "Construction machinery",
+            "image": "/images/solutions/cases/special-ops-1.jpg",
+            "imageAlt": "Construction machinery",
+            "applications": "Municipal infrastructure, tunnels, mining, ports, indoor demolition, emergency rescue, zero-carbon sites",
+            "challenges": ["Continuous job-site vibration, bumps and impact", "Wide outdoor day-night temperature swing", "Hydraulic actuators draw transient high power", "Demanding thermal safety and fault protection"],
+            "configs": [
+              {
+                "config": "[Series name pending business confirmation] intelligent battery system (originally Panshi series)",
+                "metric": "Reinforced anti-impact PACK + dual safety protection",
+                "note": "Reinforced anti-impact PACK structure; high continuous discharge to match hydraulic loads; wide temperature range for site conditions; cell + PACK dual safety protection with tiered overcurrent / overheat / short-circuit BMS."
+              }
+            ]
+          },
+          {
+            "scene": "Police wheeled / tracked patrol robot",
+            "image": "/images/solutions/cases/patrol-robot.jpg",
+            "imageAlt": "Police wheeled / tracked patrol robot",
+            "applications": "Border patrol, site security, hazardous-area reconnaissance, large event security, complex-terrain sentry",
+            "challenges": ["Outdoor sand, snow and rain", "Long low-power standby + intermittent high-power maneuver", "Continuous driving vibration", "Strict demands on thermal safety and fault warning for unattended operation"],
+            "configs": [
+              {
+                "config": "Reinforced protection-grade PACK + in-house BMS",
+                "metric": "Wide temperature range + tiered safety + remote state reporting",
+                "note": "Adapts to harsh outdoor environments; balances low-power standby and high-power maneuver; supports tiered safety, fault warning and remote state reporting for unattended operation."
+              }
+            ]
+          },
+          {
+            "scene": "Emergency-rescue special-purpose equipment",
+            "image": "/images/solutions/cases/rescue-robot.jpg",
+            "imageAlt": "Emergency-rescue special-purpose equipment",
+            "applications": "Rubble search, emergency operations at disaster sites",
+            "challenges": ["Wide and variable temperature conditions at disaster sites", "Bumps, drops and impact", "Low-temperature fast-start required", "Mission-critical: power interruption or thermal runaway can cause secondary disasters"],
+            "configs": [
+              {
+                "config": "High-safety / high-reliability intelligent battery system",
+                "metric": "-40℃ cold-start + tiered protection",
+                "note": "Supports -40℃ low-temperature fast-start discharge; cell-intrinsic safety + PACK structural protection + BMS self-check and tiered protection; supports customization per host installation and power demand."
+              }
+            ]
+          }
+        ]
+      }
+    }
   }
 }
