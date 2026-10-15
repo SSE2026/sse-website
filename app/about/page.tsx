@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import GlobalBusinessMap from "@/components/about/GlobalBusinessMap/GlobalBusinessMap";
@@ -152,55 +153,77 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Company Introduction */}
-        <section className="py-12 md:py-16 bg-white text-[#18181B] relative">
-          <div className="absolute inset-0 opacity-5" style={{
-            backgroundImage: `linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
-          }} />
+        {/* Company Introduction — the campus picture runs full-bleed and
+            dissolves into the page, with the copy sitting over its faded
+            lower half. The picture is used at its own 1584:672 ratio, so
+            nothing is cropped at any width; a min-height keeps the band
+            tall enough to hold the copy on phones. */}
+        <section className="relative w-full overflow-hidden bg-white text-[#18181B]">
+          <div className="relative aspect-[1584/672] min-h-[600px] w-full">
+            <Image
+              src="/images/about/intro-factory.jpg"
+              alt={isZh ? "深安锂能厂区俯瞰" : "Swift Safe Energy manufacturing campus"}
+              fill
+              sizes="100vw"
+              className="object-cover object-center"
+            />
 
-          <div className="container-padding mx-auto relative max-w-4xl">
-            {/* Section Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="mb-8"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-px bg-[#2563EB]" />
-                <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-widest">
-                  {isZh ? "关于我们" : "About Us"}
-                </span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#0A0A0A]">
-                {introTitle || (isZh ? "深安锂能" : "Swift Safe Energy")}
-              </h2>
-            </motion.div>
+            {/* Fade the picture into the page along the bottom, leaving a
+                bright even surface where the copy lands. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 40%, rgba(255,255,255,0.88) 72%, #FFFFFF 100%)",
+              }}
+            />
+            {/* Soften the top edge so the band has no hard entry. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-20"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)",
+              }}
+            />
+          </div>
 
-            {/* Introduction Content */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="prose prose-lg prose-invert max-w-none"
-            >
-              {isZh ? (
-                <div className="space-y-4 text-[#71717A] leading-relaxed text-sm md:text-base">
-                  {(introText ?? CHINESE_INTRO).split('\n\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="container-padding mx-auto max-w-[1280px] pb-12 md:pb-16">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="h-px w-12 bg-[#2563EB]" />
+                  <span className="text-sm font-semibold uppercase tracking-widest text-[#2563EB]">
+                    {isZh ? "关于我们" : "About Us"}
+                  </span>
                 </div>
-              ) : (
-                <div className="space-y-4 text-[#71717A] leading-relaxed text-sm md:text-base">
-                  {(introText ?? ENGLISH_INTRO).split('\n\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
+                <h2 className="text-3xl font-bold text-[#0A0A0A] md:text-4xl">
+                  {introTitle || (isZh ? "深安锂能" : "Swift Safe Energy")}
+                </h2>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="mt-6 max-w-3xl text-sm leading-relaxed text-[#52525B] md:text-base"
+              >
+                {(introText ?? (isZh ? CHINESE_INTRO : ENGLISH_INTRO))
+                  .split('\n\n')
+                  .map((paragraph) => (
+                    <p key={paragraph} className="mb-4 last:mb-0">
+                      {paragraph}
+                    </p>
                   ))}
-                </div>
-              )}
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
         </section>
 

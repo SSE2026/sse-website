@@ -97,9 +97,18 @@ interface MilestonesProps {
   items?: Milestone[];
 }
 
+/**
+ * Development history — a year rail over the milestone it selects, in the
+ * same silver-white language as the rest of the site.
+ *
+ * Kept deliberately plain: hairlines, tabular years, ink copy, one accent.
+ * The previous version ran a silver laser line, glow blobs, a 12rem
+ * watermark year, gradient-filled type, drop shadows and a ping pulse on
+ * the active tick, which read as decoration competing with the content.
+ */
 export default function MilestonesSection({ lang = 'zh', items }: MilestonesProps) {
   const data = items && items.length > 0 ? items : milestones;
-  // 默认高亮 2023 年（新数组无 2022，2023 落在 index 7）
+  // Default to 2023 (index 7) — the first production-scale milestone.
   const [activeIndex, setActiveIndex] = useState(7);
 
   useEffect(() => {
@@ -113,156 +122,116 @@ export default function MilestonesSection({ lang = 'zh', items }: MilestonesProp
   const current = data[activeIndex];
 
   return (
-    <section className="w-full py-10 md:py-16 px-6 md:px-12 border-t border-zinc-800/80 bg-[#07080a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(212,212,216,0.12),rgba(255,255,255,0))] text-slate-100 font-sans antialiased overflow-hidden select-none">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* ===== 1. 板块 Header ===== */}
-        <div className="flex items-end justify-between border-b border-zinc-800/80 pb-4">
-          <div className="space-y-1">
-            <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-zinc-400 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">
-              {"// CHRONOLOGY & MILESTONES"}
-            </div>
-            <h2 className="text-3xl md:text-4xl font-light tracking-tight text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]">
+    <section className="w-full select-none bg-[#F7F8FB] px-6 py-16 text-[#0A0A0F] md:px-12 md:py-24 font-sans">
+      <div className="mx-auto max-w-6xl">
+        {/* Header */}
+        <div className="flex items-end justify-between gap-6 border-b border-[#E4E4E7] pb-5">
+          <div>
+            <p className="mb-2 text-[10px] tracking-[0.3em] text-[#2563EB] uppercase">
+              CHRONOLOGY &amp; MILESTONES
+            </p>
+            <h2 className="text-[clamp(1.6rem,3vw,2.5rem)] font-medium leading-tight tracking-tight">
               {isEn ? 'Evolution & Milestones' : '发展历程'}
             </h2>
           </div>
 
-          <div className="text-sm font-mono text-zinc-400">
-            <span className="text-white font-bold text-base drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]">
+          <span className="shrink-0 pb-1 text-sm tabular-nums">
+            <span className="font-medium text-[#0A0A0F]">
               {String(activeIndex + 1).padStart(2, '0')}
             </span>
-            <span className="text-zinc-600"> / </span>
-            <span>{String(data.length).padStart(2, '0')}</span>
-          </div>
+            <span className="text-[#71717A]">
+              {' / '}
+              {String(data.length).padStart(2, '0')}
+            </span>
+          </span>
         </div>
 
-        {/* ===== 2. 主体舞台（清空小图标，放大年份，施加金属银光泽） ===== */}
-        <div className="relative min-h-[240px] md:min-h-[270px] rounded-2xl bg-gradient-to-b from-[#12141c]/90 via-[#0d0e14]/90 to-[#08090d]/90 border border-zinc-700/60 p-6 md:px-10 md:py-8 overflow-hidden flex items-center group shadow-2xl backdrop-blur-md">
+        {/* Year rail — one hairline, one tick per milestone. Scrolls
+            sideways rather than crushing twelve years into a phone. */}
+        <div className="mt-10 overflow-x-auto pb-1">
+          <div className="relative min-w-[680px] pt-2">
+            <div className="absolute inset-x-0 top-[7px] h-px bg-[#E4E4E7]" />
+            <div
+              className="absolute left-0 top-[7px] h-px bg-[#0A0A0F] transition-all duration-500"
+              style={{ width: `${((activeIndex + 1) / data.length) * 100}%` }}
+            />
 
-          {/* 顶部金属银激光线条 */}
-          <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_0_12px_rgba(248,250,252,0.8)]" />
-
-          {/* 背景冷银/银白柔光斑 */}
-          <div className="absolute -top-24 -left-24 w-80 h-80 bg-slate-300/10 blur-[100px] rounded-full pointer-events-none" />
-          <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-zinc-400/10 blur-[100px] rounded-full pointer-events-none" />
-
-          {/* 倒计时金属银进度线 */}
-          <div
-            key={activeIndex}
-            className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-zinc-400 via-white to-slate-300 shadow-[0_0_12px_rgba(255,255,255,0.9)] animate-[progress_5s_linear_infinite]"
-            style={{ width: '100%' }}
-          />
-
-          {/* 右下角巨型银色水印年份 */}
-          <div className="absolute right-2 bottom-[-18%] text-[8.5rem] md:text-[12rem] font-mono font-black text-transparent bg-clip-text bg-gradient-to-b from-white/[0.14] via-zinc-400/[0.05] to-transparent pointer-events-none tracking-tighter leading-none select-none drop-shadow-[0_0_20px_rgba(255,255,255,0.03)] transition-all duration-700">
-            {current.year}
-          </div>
-
-          {/* 前景内容展现区 */}
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
-
-            <div className="lg:col-span-10 space-y-4">
-
-              {/* 大号超高对比金属银年份与标题 */}
-              <div className="flex flex-wrap items-baseline gap-5 md:gap-8">
-                {/* 年份字体大幅度放大，带有金属银渐变与强光影效果 */}
-                <span className="text-5xl md:text-7xl font-mono font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-zinc-400 drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
-                  {current.year}
-                </span>
-                <h3 className="text-2xl md:text-4xl font-light text-slate-100 tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-                  {isEn ? current.titleEn : current.titleZh}
-                </h3>
-              </div>
-
-              {/* 描述内容 */}
-              <p className="text-base md:text-lg text-zinc-300 font-light leading-relaxed max-w-3xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-                {isEn ? current.descEn : current.descZh}
-              </p>
-            </div>
-
-            {/* 左右翻页控制 */}
-            <div className="lg:col-span-2 flex justify-end gap-3 self-center">
-              <button
-                onClick={() => setActiveIndex((prev) => (prev === 0 ? data.length - 1 : prev - 1))}
-                className="w-11 h-11 rounded-full border border-zinc-700 bg-zinc-900/90 hover:bg-white hover:text-black transition-all duration-200 flex items-center justify-center text-zinc-200 hover:scale-105 active:scale-95 shadow-lg backdrop-blur-sm"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setActiveIndex((prev) => (prev + 1) % data.length)}
-                className="w-11 h-11 rounded-full border border-zinc-700 bg-zinc-900/90 hover:bg-white hover:text-black transition-all duration-200 flex items-center justify-center text-zinc-200 hover:scale-105 active:scale-95 shadow-lg backdrop-blur-sm"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-        {/* ===== 3. 金属银光效刻度导轨 ===== */}
-        <div className="relative pt-4">
-          {/* 背景导轨线 */}
-          <div className="absolute top-[25px] left-0 right-0 h-[1px] bg-zinc-800" />
-
-          {/* 动态前进的金属银发光线条 */}
-          <div
-            className="absolute top-[25px] left-0 h-[1.5px] bg-gradient-to-r from-zinc-500 via-white to-slate-200 shadow-[0_0_12px_rgba(255,255,255,0.9)] transition-all duration-500"
-            style={{ width: `${((activeIndex + 1) / data.length) * 100}%` }}
-          />
-
-          <div className="relative z-10 grid grid-cols-10 gap-1 md:gap-2">
-            {data.map((item, idx) => {
-              const isActive = idx === activeIndex;
-              const isPassed = idx < activeIndex;
-
-              return (
-                <button
-                  key={item.year}
-                  onClick={() => setActiveIndex(idx)}
-                  className="group flex flex-col items-center gap-2.5 focus:outline-none cursor-pointer"
-                >
-                  <div className="relative flex items-center justify-center w-4 h-4">
-                    {isActive && (
-                      <span className="absolute inset-0 rounded-full bg-white/40 animate-ping" />
-                    )}
-
-                    <div
-                      className={`w-3 h-3 rounded-full border transition-all duration-300 ${
-                        isActive
-                          ? 'bg-white border-white scale-125 shadow-[0_0_15px_rgba(255,255,255,1)]'
-                          : isPassed
-                          ? 'bg-zinc-400 border-zinc-300'
-                          : 'bg-[#090a0e] border-zinc-700 group-hover:border-zinc-400'
-                      }`}
-                    />
-                  </div>
-
-                  {/* 刻度年份 */}
-                  <span
-                    className={`text-xs md:text-sm font-mono transition-all duration-200 ${
-                      isActive
-                        ? 'text-white font-bold scale-110 drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]'
-                        : isPassed
-                        ? 'text-zinc-300'
-                        : 'text-zinc-500 group-hover:text-zinc-300'
-                    }`}
+            <div
+              className="relative grid gap-1"
+              style={{ gridTemplateColumns: `repeat(${data.length}, minmax(0, 1fr))` }}
+            >
+              {data.map((item, idx) => {
+                const isActive = idx === activeIndex;
+                return (
+                  <button
+                    key={item.year}
+                    type="button"
+                    onClick={() => setActiveIndex(idx)}
+                    aria-current={isActive}
+                    aria-label={item.year}
+                    className="group flex cursor-pointer flex-col items-center gap-3"
                   >
-                    {item.year}
-                  </span>
-                </button>
-              );
-            })}
+                    <span
+                      className={
+                        'h-1.5 w-1.5 rounded-full transition-colors duration-200 ' +
+                        (isActive
+                          ? 'bg-[#0A0A0F]'
+                          : 'bg-[#D4D4D8] group-hover:bg-[#A1A1AA]')
+                      }
+                    />
+                    <span
+                      className={
+                        'text-xs tabular-nums transition-colors duration-200 ' +
+                        (isActive
+                          ? 'font-semibold text-[#0A0A0F]'
+                          : 'text-[#A1A1AA] group-hover:text-[#52525B]')
+                      }
+                    >
+                      {item.year}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-      </div>
+        {/* Selected milestone. */}
+        <div className="mt-12 md:mt-16" aria-live="polite">
+          <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+            <span className="text-[clamp(2.25rem,4.5vw,3.5rem)] font-light leading-none tabular-nums tracking-tight">
+              {current.year}
+            </span>
+            <h3 className="text-lg font-medium leading-tight tracking-tight md:text-2xl">
+              {isEn ? current.titleEn : current.titleZh}
+            </h3>
+          </div>
 
-      <style jsx global>{`
-        @keyframes progress {
-          0% { width: 0%; }
-          100% { width: 100%; }
-        }
-      `}</style>
+          <p className="mt-5 max-w-3xl text-sm leading-relaxed text-[#52525B] md:text-base">
+            {isEn ? current.descEn : current.descZh}
+          </p>
+        </div>
+
+        {/* Stepper. */}
+        <div className="mt-10 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveIndex((prev) => (prev === 0 ? data.length - 1 : prev - 1))}
+            aria-label="Previous milestone"
+            className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[#0A0A0F]/15 bg-white text-[#0A0A0F] transition-colors hover:bg-[#F4F4F5]"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveIndex((prev) => (prev + 1) % data.length)}
+            aria-label="Next milestone"
+            className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[#0A0A0F]/15 bg-white text-[#0A0A0F] transition-colors hover:bg-[#F4F4F5]"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
     </section>
   );
 }
