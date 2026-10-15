@@ -32,8 +32,8 @@
       "stats": {
         "patents": "Invention Patents",
         "papers": "Nature Publications",
-        "production": "SSE Production Line",
-        "samples": "Client A-Sample Validation"
+        "production": "Production Capacity",
+        "samples": "Smart Manufacturing Plant"
       }
     },
     "coreTech": {
@@ -79,6 +79,28 @@
             "Multi-dimensional heterogeneous database",
             "Mechanism-AI integrated cloud-edge intelligent operations"
           ]
+        }
+      ],
+      "slides": [
+        {
+          "title": "Solid Electrolyte Materials",
+          "summary": "Material breakthroughs that secure the safety of solid-state cells"
+        },
+        {
+          "title": "All-Silicon Anode",
+          "summary": "Breaking through silicon's limits to release higher energy density"
+        },
+        {
+          "title": "Anode-Free",
+          "summary": "Re-engineering the cell to explore a new energy-density frontier"
+        },
+        {
+          "title": "Rapid-Heat Fast Charging",
+          "summary": "Energy released quickly, temperature held precisely"
+        },
+        {
+          "title": "AI for Battery",
+          "summary": "Data-driven innovation reshaping the battery's full lifecycle"
         }
       ]
     },
