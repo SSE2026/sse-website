@@ -176,7 +176,7 @@ export default function CellsDetailView() {
           translations={currentMessages}
           locale={locale}
           onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
-          forceLightText={true}
+          forceLightText={false}
         />
 
         <main>

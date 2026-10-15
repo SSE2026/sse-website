@@ -23,7 +23,7 @@ export default function PacksPage() {
         translations={currentMessages}
         locale={locale}
         onLocaleChange={() => {}}
-        forceLightText={true}
+        forceLightText={false}
       />
       <main className="min-h-[60vh] bg-white">
         <section className="max-w-[1140px] mx-auto px-6 py-24 md:py-32 text-center">

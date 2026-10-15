@@ -71,7 +71,7 @@ function HeroSlideImage({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]">
+      <div className="absolute inset-0 flex items-center justify-center bg-[#F7F8FB]">
         <div
           className={`relative transition-transform duration-500 ${getPositionClass()}`}
           style={{
@@ -131,7 +131,7 @@ function HeroSlideVideo({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      <div className="absolute inset-0 flex items-end justify-end bg-[#0a0a0a]">
+      <div className="absolute inset-0 flex items-end justify-end bg-[#F7F8FB]">
         <video
           ref={videoRef}
           src={videoSrc}
@@ -173,7 +173,7 @@ function HeroContent({
               return (
                 <>
                   <span className="text-shimmer-logo">{first}</span>
-                  {rest && <span className="text-white">{rest}</span>}
+                  {rest && <span className="text-[#0A0A0F]">{rest}</span>}
                 </>
               );
             })()}
@@ -181,7 +181,7 @@ function HeroContent({
 
           {/* Description */}
           <p
-            className="text-[13px] md:text-[14px] text-gray-300 leading-relaxed mb-7 max-w-[380px]"
+            className="text-[13px] md:text-[14px] text-[#52525B] leading-relaxed mb-7 max-w-[380px]"
             style={{ fontFamily: "var(--font-inter, sans-serif)" }}
           >
             {slide.description}
@@ -189,7 +189,7 @@ function HeroContent({
 
           {/* CTA Button */}
           <Link href={slide.ctaLink}>
-            <button className="inline-flex items-center gap-2 px-8 md:px-10 py-4 bg-white text-[#0a0a0a] font-semibold text-[16px] rounded-lg hover:bg-gray-200 transition-all cursor-pointer">
+            <button className="inline-flex items-center gap-2 px-8 md:px-10 py-4 bg-[#0A0A0F] text-white font-semibold text-[16px] rounded-lg hover:bg-[#1F1F2A] transition-all cursor-pointer">
               {slide.ctaText}
               <ArrowRight className="w-5 h-5" />
             </button>
@@ -199,11 +199,11 @@ function HeroContent({
           <div className="mt-10 flex gap-10">
             {slide.stats.map((stat, index) => (
               <div key={index}>
-                <div className="text-3xl font-bold text-white font-mono">
+                <div className="text-3xl font-bold text-[#0A0A0F] font-mono">
                   {stat.value}
-                  {stat.unit && <span className="text-base text-blue-400 ml-1">{stat.unit}</span>}
+                  {stat.unit && <span className="text-base text-[#2563EB] ml-1">{stat.unit}</span>}
                 </div>
-                <div className="text-xs text-gray-400 mt-1">{stat.label}</div>
+                <div className="text-xs text-[#71717A] mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -331,21 +331,22 @@ export default function HeroCarousel({
   };
 
   if (!mounted) {
-    return <section className="relative w-full h-[680px] md:h-[760px] bg-[#0a0a0a]" />;
+    return <section className="relative w-full h-[680px] md:h-[760px] bg-[#F7F8FB]" />;
   }
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[calc(100vh-80px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] lg:h-[calc(100vh-80px)] overflow-hidden bg-[#0a0a0a]"
+      className="relative w-full h-[calc(100vh-80px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] lg:h-[calc(100vh-80px)] overflow-hidden bg-[#F7F8FB]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Background ambient glow */}
-      <div className="absolute top-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 to-cyan-500/15 rounded-full blur-[140px] pointer-events-none z-0" />
+      {/* Soft studio highlight behind the subject — keeps the light
+          panel from reading as flat grey. */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-white/70 rounded-full blur-[120px] pointer-events-none z-0" />
 
       {/* Slides */}
       {slides.map((slide, index) => (
@@ -367,11 +368,12 @@ export default function HeroCarousel({
         </div>
       ))}
 
-      {/* Dark Gradient Overlay */}
+      {/* Left readability wash — keeps the copy legible over the
+          product shot, the same device the solution hero uses. */}
       <div
         className="absolute inset-0 z-10 pointer-events-none"
         style={{
-          background: "linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.1) 70%, transparent 100%)",
+          background: "linear-gradient(90deg, rgba(247,248,251,0.95) 0%, rgba(247,248,251,0.7) 35%, rgba(247,248,251,0.25) 60%, rgba(247,248,251,0) 80%)",
         }}
       />
 
