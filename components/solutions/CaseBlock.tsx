@@ -159,96 +159,111 @@ export function CaseBlock({ title, cases }: CaseBlockProps) {
                   beneath the image+content row. The row list supports
                   an optional `group` field, which renders as a slim
                   sub-header row (used in the FC200 vs deep-anchor table). */}
-              {c.comparison && (
-                <div className="border-t border-[#E4E4E7] bg-[#FAFAFC] px-7 py-9 md:px-12 md:py-12">
-                  <h4
-                    className="text-[13px] font-semibold uppercase tracking-[0.16em] text-[#71717A] mb-6"
-                    style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                  >
-                    {c.comparison.title}
-                  </h4>
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[560px] text-left">
-                      <thead>
-                        <tr className="border-b border-[#0A0A0F]/15">
-                          <th
-                            className="py-3 pr-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#71717A] w-[34%]"
-                            style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                          />
-                          {c.comparison.columns.map((col, ci) => (
-                            <th
-                              key={ci}
-                              className={
-                                "py-3 px-4 text-[11px] font-semibold uppercase tracking-[0.12em] " +
-                                (ci === c.comparison.highlightColumn
-                                  ? "text-[#0A0A0F] bg-[#E4E4E7]/60"
-                                  : "text-[#71717A]")
-                              }
-                              style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                            >
-                              {col}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {(() => {
-                          const rows: { type: "row" | "group"; group?: string; label: string; values: string[] }[] = [];
-                          c.comparison.rows.forEach((r) => {
-                            if (r.group) {
-                              rows.push({ type: "group", group: r.group, label: "", values: [] });
-                            }
-                            rows.push({ type: "row", label: r.label, values: r.values });
-                          });
-                          return rows.map((r, ri) => {
-                            if (r.type === "group") {
-                              return (
-                                <tr key={ri} className="bg-[#E4E4E7]/40">
-                                  <th
-                                    colSpan={c.comparison.columns.length + 1}
-                                    className="py-2 px-4 text-left text-[10px] font-medium uppercase tracking-[0.12em] text-[#71717A]"
-                                    style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                                  >
-                                    {r.group}
-                                  </th>
-                                </tr>
-                              );
-                            }
-                            return (
-                              <tr key={ri} className="border-b border-[#E4E4E7]/60 last:border-b-0">
-                                <td
-                                  className="py-3 pr-4 text-[12.5px] text-[#3F3F46] align-top"
-                                  style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                                >
-                                  {r.label}
-                                </td>
-                                {r.values.map((v, ci) => (
-                                  <td
-                                    key={ci}
-                                    className={
-                                      "py-3 px-4 text-[12.5px] align-top " +
-                                      (ci === c.comparison.highlightColumn
-                                        ? "text-[#0A0A0F] font-semibold bg-[#E4E4E7]/40"
-                                        : "text-[#3F3F46]")
-                                    }
-                                    style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
-                                  >
-                                    {v}
-                                  </td>
-                                ))}
-                              </tr>
-                            );
-                          });
-                        })()}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
+              {c.comparison && <ComparisonTable comparison={c.comparison} />}
             </motion.article>
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * The competitor table, extracted so its prop is a definite
+ * `CaseComparison` rather than a possibly-undefined field of the card.
+ * Narrowing a property does not survive into the map/forEach callbacks
+ * below, so keeping it inline forced the type checker to reject them.
+ */
+function ComparisonTable({ comparison }: { comparison: CaseComparison }) {
+  const rows: {
+    type: "row" | "group";
+    group?: string;
+    label: string;
+    values: string[];
+  }[] = [];
+
+  comparison.rows.forEach((r) => {
+    if (r.group) {
+      rows.push({ type: "group", group: r.group, label: "", values: [] });
+    }
+    rows.push({ type: "row", label: r.label, values: r.values });
+  });
+
+  return (
+    <div className="border-t border-[#E4E4E7] bg-[#FAFAFC] px-7 py-9 md:px-12 md:py-12">
+      <h4
+        className="text-[13px] font-semibold uppercase tracking-[0.16em] text-[#71717A] mb-6"
+        style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+      >
+        {comparison.title}
+      </h4>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[560px] text-left">
+          <thead>
+            <tr className="border-b border-[#0A0A0F]/15">
+              <th
+                className="py-3 pr-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#71717A] w-[34%]"
+                style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+              />
+              {comparison.columns.map((col, ci) => (
+                <th
+                  key={ci}
+                  className={
+                    "py-3 px-4 text-[11px] font-semibold uppercase tracking-[0.12em] " +
+                    (ci === comparison.highlightColumn
+                      ? "text-[#0A0A0F] bg-[#E4E4E7]/60"
+                      : "text-[#71717A]")
+                  }
+                  style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, ri) => {
+              if (r.type === "group") {
+                return (
+                  <tr key={ri} className="bg-[#E4E4E7]/40">
+                    <th
+                      colSpan={comparison.columns.length + 1}
+                      className="py-2 px-4 text-left text-[10px] font-medium uppercase tracking-[0.12em] text-[#71717A]"
+                      style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+                    >
+                      {r.group}
+                    </th>
+                  </tr>
+                );
+              }
+              return (
+                <tr key={ri} className="border-b border-[#E4E4E7]/60 last:border-b-0">
+                  <td
+                    className="py-3 pr-4 text-[12.5px] text-[#3F3F46] align-top"
+                    style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+                  >
+                    {r.label}
+                  </td>
+                  {r.values.map((v, ci) => (
+                    <td
+                      key={ci}
+                      className={
+                        "py-3 px-4 text-[12.5px] align-top " +
+                        (ci === comparison.highlightColumn
+                          ? "text-[#0A0A0F] font-semibold bg-[#E4E4E7]/40"
+                          : "text-[#3F3F46]")
+                      }
+                      style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
+                    >
+                      {v}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }

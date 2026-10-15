@@ -24,7 +24,7 @@ function IndustryPageContent({ locale }: { locale: Locale }) {
   const t = messages[locale].solutions.specialOps;
   const isZh = locale === "zh";
 
-  const cases: CaseBlockItem[] = t.cases.items.map((c) => ({
+  const cases: CaseBlockItem[] = (t.cases.items as CaseBlockItem[]).map((c) => ({
     scene: c.scene,
     applications: c.applications,
     value: c.value,

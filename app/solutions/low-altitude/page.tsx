@@ -25,7 +25,7 @@ function IndustryPageContent({ locale, slug }: { locale: Locale; slug: IndustryS
   const t = messages[locale].solutions[slug];
   const isZh = locale === "zh";
 
-  const cases: CaseBlockItem[] = t.cases.items.map((c) => ({
+  const cases: CaseBlockItem[] = (t.cases.items as CaseBlockItem[]).map((c) => ({
     scene: c.scene,
     applications: c.applications,
     value: c.value,
