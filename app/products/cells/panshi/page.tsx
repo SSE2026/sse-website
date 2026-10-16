@@ -13,7 +13,7 @@ import { resolveInitialLocale } from "@/lib/locale";
 const messages = { en, zh };
 
 export default function CellsPanshiPage() {
-  const [locale] = useState<"en" | "zh">(() => resolveInitialLocale());
+  const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
   const isZh = locale === "zh";
   const currentMessages = messages[locale];
 
@@ -22,7 +22,7 @@ export default function CellsPanshiPage() {
       <Header
         translations={currentMessages}
         locale={locale}
-        onLocaleChange={() => {}}
+        onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
         forceLightText={false}
       />
       <main className="min-h-[60vh] bg-white">
@@ -31,21 +31,21 @@ export default function CellsPanshiPage() {
             className="inline-block text-[11px] tracking-[0.32em] uppercase text-[#71717A] mb-6"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
-            {isZh ? "电芯 / 磐石" : "CELLS / PANS"}
+            {isZh ? "电芯 / 磐石" : "CELLS / FORTICORE"}
           </div>
           <h1
             className="text-4xl md:text-5xl font-bold text-[#0A0A0F] mb-6"
             style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
           >
-            {isZh ? "磐石系列" : "Panshi Series"}
+            {isZh ? "磐石系列" : "FortiCore Series"}
           </h1>
           <p
             className="text-base md:text-lg text-[#3F3F46] max-w-[60ch] mx-auto leading-relaxed"
             style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
           >
             {isZh
-              ? "磐石系列面向工业级与高强度作业场景,专注于超长循环寿命与极端工况下的高安全表现。详细型号规格即将上线。"
-              : "Panshi series targets industrial and high-intensity operation scenarios, focused on ultra-long cycle life and high safety under extreme conditions. Detailed specifications coming soon."}
+              ? "磐石系列面向工业级与高强度作业场景,专注于超长循环寿命与极端工况下的高安全表现。"
+              : "FortiCore series targets industrial and high-intensity operation scenarios, focused on ultra-long cycle life and high safety under extreme conditions."}
           </p>
           <div className="mt-10">
             <Link

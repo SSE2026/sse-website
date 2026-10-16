@@ -1,6 +1,6 @@
 import type { HeroSlide } from "./HeroCarousel";
 
-// Aeroride series brand showcase. Used by both the legacy home page
+// AeroRide series brand showcase. Used by both the legacy home page
 // second screen and the products page hero, so the data lives here
 // rather than being duplicated.
 export const AERORIDE_SLIDES_EN: HeroSlide[] = [
@@ -8,9 +8,9 @@ export const AERORIDE_SLIDES_EN: HeroSlide[] = [
     id: 1,
     video: "/videos/homepage-hero-new.webm",
     loop: true,
-    imageAlt: "Aeroride Series Solid-State Battery",
+    imageAlt: "AeroRide Series Solid-State Battery",
     eyebrow: "Solid-State Battery Tech",
-    title: "Aeroride Series",
+    title: "AeroRide Series",
     description:
       "Next-generation high energy density solid-state power solutions for low-altitude flight, embodied AI, and deep-sea equipment.",
     ctaText: "Customize Now",

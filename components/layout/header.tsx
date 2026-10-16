@@ -6,7 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Globe, ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { setLocaleCookie } from "@/lib/locale";
+import { getLocaleCookie, setLocaleCookie } from "@/lib/locale";
 
 interface HeaderProps {
   translations: {
@@ -41,7 +41,7 @@ interface HeaderProps {
 // ----- Nav tree types -----------------------------------------------------
 // A flat leaf is just { label, href }. A group has children; the first
 // level under "Products" is a label-only header (e.g. "Cells"), whose
-// own children are leaf links (e.g. "Cloudchi", "Panshi").
+// own children are leaf links (e.g. "AeroRide", "FortiCore").
 type NavLeaf = { label: string; href: string };
 type NavGroupChild = NavLeaf | { label: string; children: NavLeaf[] };
 type NavItem =
@@ -127,6 +127,17 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
       document.body.style.overflow = "";
     };
   }, [isMobileMenuOpen]);
+
+  // 服务端只会渲染构建期默认语言(SSG 读不到 cookie),所以**手动切过语言**的
+  // 用户要在挂载后纠正过来。
+  // 放在 Header 里是因为每个页面都渲染它 —— 一处覆盖全站,那 16 个页面的
+  // `useState(() => resolveInitialLocale())` 一行都不用动。
+  useEffect(() => {
+    const saved = getLocaleCookie();
+    if (saved && saved !== locale) onLocaleChange(saved);
+    // 只在挂载时跑一次:之后语言由用户点击驱动,不再从 cookie 回灌
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Close hover-menu when cursor leaves the entire nav region.
   // `activeLink` paints the hover background on the top-level items, so it
@@ -332,7 +343,7 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                                     <ChevronRight className="w-3.5 h-3.5" />
                                   </button>
 
-                                  {/* Level-2 flyout (Cloudchi / Panshi) */}
+                                  {/* Level-2 flyout (AeroRide / FortiCore) */}
                                   <AnimatePresence>
                                     {subOpen && (
                                       <motion.div

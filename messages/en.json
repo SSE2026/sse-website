@@ -4,11 +4,11 @@
     "about": "About",
     "products": "Products",
     "productsCells": "Cells",
-    "productsCellsCloudchi": "Cloudchi (Aeroride) Series",
-    "productsCellsCloudchi360P": "Aeroride 360-P Power",
-    "productsCellsCloudchi400E": "Aeroride 400-E Energy",
-    "productsCellsCloudchi460X": "Aeroride 460-X Ultra-High Energy",
-    "productsCellsPanshi": "Panshi Series",
+    "productsCellsCloudchi": "AeroRide Series",
+    "productsCellsCloudchi360P": "AeroRide 360-P Power",
+    "productsCellsCloudchi400E": "AeroRide 400-E Energy",
+    "productsCellsCloudchi460X": "AeroRide 460-X Ultra-High Energy",
+    "productsCellsPanshi": "FortiCore Series",
     "productsPacks": "Battery Packs",
     "technology": "R&D and Manufacturing",
     "cases": "Solutions",
@@ -233,21 +233,21 @@
     }
   },
   "products": {
-    "title": "Aeroride Series",
+    "title": "AeroRide Series",
     "subtitle": "Mission-defined products for demanding boundary applications",
     "viewDetails": "View Details",
     "power": {
-      "title": "Aeroride 360-P Power",
+      "title": "AeroRide 360-P Power",
       "desc": "High-power platform for quadruped robots and multi-rotor drones requiring instant power response",
       "specs": "360 Wh/kg • 2C/5C Discharge • Quadruped / Drone"
     },
     "storage": {
-      "title": "Aeroride 400-E Energy",
+      "title": "AeroRide 400-E Energy",
       "desc": "High-energy platform for fixed-wing drones, AUVs, and inspection robots",
       "specs": "400 Wh/kg • 1C/3C Discharge • Long Endurance"
     },
     "drone": {
-      "title": "Aeroride 460-X Ultra-High Energy",
+      "title": "AeroRide 460-X Ultra-High Energy",
       "desc": "Ultra-high energy platform for extreme endurance or 10C high-power applications",
       "specs": "460+ Wh/kg • 10C Peak • Extreme Mission"
     },

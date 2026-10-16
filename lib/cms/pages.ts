@@ -49,7 +49,7 @@ export const PAGE_DEFS: CmsPageDef[] = [
     defaultContent: {
       hero: {
         eyebrow: "Solid-State Battery Tech",
-        title: "Aeroride Series",
+        title: "AeroRide Series",
         description:
           "Next-generation high energy density solid-state power solutions for low-altitude flight, embodied AI, and deep-sea equipment.",
         ctaText: "Customize Now",
@@ -200,7 +200,7 @@ export const PAGE_DEFS: CmsPageDef[] = [
       },
     ],
     defaultContent: {
-      hero: { badge: "Products", title: "Aeroride Series", subtitle: "" },
+      hero: { badge: "Products", title: "AeroRide Series", subtitle: "" },
       series: { seriesJson: "[]" },
       comparison: { eyebrow: "", title: "", rowsJson: "[]" },
       cta: { title: "", desc: "", button: "" },

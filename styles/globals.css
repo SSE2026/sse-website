@@ -308,6 +308,32 @@ body {
   animation: shimmer 4s linear infinite;
 }
 
+/* Text Shimmer - 黑字 + 金属银光扫过（浅底上的链接/标签用）
+   底色保持近黑,只有一道窄银光掠过 —— 不是整段染色,所以文字始终是黑的 */
+.text-shimmer-silver {
+  background: linear-gradient(
+    110deg,
+    #0A0A0F 0%,
+    #0A0A0F 36%,
+    #8B94A3 45%,
+    #E5E7EB 50%,
+    #8B94A3 55%,
+    #0A0A0F 64%,
+    #0A0A0F 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-shimmer-silver {
+    animation: none;
+  }
+}
+
 /* Blur In */
 @keyframes blurIn {
   from {

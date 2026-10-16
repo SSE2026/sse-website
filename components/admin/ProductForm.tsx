@@ -469,7 +469,7 @@ export function ProductForm({ mode, product, categories, initialCategoryId }: Pr
               id="model"
               value={state.model}
               onChange={(v) => update("model", v)}
-              placeholder="例如：Aeroride 360-P"
+              placeholder="例如：AeroRide 360-P"
               disabled={submitting}
               required
             />

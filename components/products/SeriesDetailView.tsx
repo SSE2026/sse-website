@@ -71,7 +71,7 @@ function buildSpecItems(product: Product, isZh: boolean) {
 /**
  * 把系列名拆成「型号」「类型」两段,供系列导航与 Hero 标题分行显示,例如
  *   "云驰 360-P 功率型"              → { model: "云驰 360-P",  type: "功率型" }
- *   "Aeroride 460-X Ultra-High Energy" → { model: "Aeroride 460-X", type: "Ultra-High Energy" }
+ *   "AeroRide 460-X Ultra-High Energy" → { model: "AeroRide 460-X", type: "Ultra-High Energy" }
  * 只做展示层拆分,不改动 data/products.ts 里的任何文案与数据。
  */
 function splitSeriesName(label: string) {
@@ -234,19 +234,24 @@ export default function SeriesDetailView({ seriesId }: { seriesId: SeriesId }) {
 
                         {/* 产品主体 */}
                         <div className="flex-1 min-w-0 flex flex-col">
-                          {/* 型号 + 能量密度 */}
-                          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                          {/* 型号 + 爆品标 + 能量密度 —— 都紧挨型号,不推到卡片最右 */}
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                             <h3
                               className="text-[19px] md:text-[21px] font-bold tracking-tight"
                               style={{ color: "#0f172a" }}
                             >
                               {product.sku}
                             </h3>
+                            {product.bestseller && (
+                              <span className="inline-flex items-center rounded-[3px] bg-[#0A0A0F] px-1.5 py-[3px] text-[10.5px] font-medium leading-none tracking-[0.12em] text-white">
+                                {isZh ? "爆品" : "Best Seller"}
+                              </span>
+                            )}
                             <span
-                              className="inline-flex items-center rounded-md px-2.5 py-1 text-[14px] md:text-[15px] font-bold whitespace-nowrap"
+                              className="inline-flex items-center rounded-md px-2.5 py-1 text-[15px] md:text-[16px] font-bold whitespace-nowrap"
                               style={{
                                 color: profile.color,
-                                backgroundColor: `${profile.color}0F`,
+                                backgroundColor: `${profile.color}1A`,
                               }}
                             >
                               {product.energyDensity}

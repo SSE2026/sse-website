@@ -1,23 +1,26 @@
 /**
- * Browser locale cookie helpers.
+ * Browser locale helpers.
  *
- * Phase 1: persist the user's manual locale choice across page navigations.
- * Phase 2 (domain-aware default): when no NEXT_LOCALE cookie is present,
- * resolve the initial locale from the current request host.
+ * ## 为什么默认语言是「构建期常量」而不是按 cookie / hostname 猜
  *
- * Resolution priority (strict):
- *   1. NEXT_LOCALE cookie on the current host → use cookie
- *   2. Hostname → ssebatt.com / www.ssebatt.com → "zh"
- *   3. Hostname → sse-website.vercel.app / other Vercel / localhost / unknown → "en"
+ * 这些页面全部是 **SSG 预渲染**的。构建时既没有 cookie,也没有 hostname ——
+ * 服务端只能渲染一个固定的语言,而且它**只可能是构建时定下的那个**。
  *
- * Hydration contract:
- *   - SSR (no window): resolveInitialLocale() returns the cookie value or "en".
- *     Client components will read window.location.hostname on first effect
- *     and re-resolve if the SSR value disagreed with the host-aware value.
- *   - Client first render: reads window.location.hostname synchronously
- *     inside the useState initializer.
- *   - The cookie is captured once at hydration time so a user toggling
- *     languages cannot be silently reverted by the host default on remount.
+ * 之前的实现让客户端按 cookie/hostname 猜(可能得到 "zh")、服务端恒定 "en",
+ * 两边首帧不一致 → React 19 抛 hydration `#418`,**丢弃整份服务端 HTML、
+ * 整棵树客户端重渲染**。后果:中文访客先闪一屏英文;中文站的服务端渲染完全白做
+ * (等于退化成 CSR)。
+ *
+ * 现在让**服务端与客户端首帧返回同一个值**(构建期默认语言),分歧留到挂载后再纠正
+ * —— Header 里有个 effect 会读 cookie 把用户手动选过的语言切过去。
+ *
+ * 每个部署用自己的默认语言:
+ *   · CloudBase 国内镜像 → 设 `NEXT_PUBLIC_DEFAULT_LOCALE=zh`
+ *   · 境外 Vercel        → 不设,落到 "en"
+ *
+ * ⚠️ 前提是「中英文各一个部署」。若将来要**同一个构建同时服务两个域名**,
+ * 环境变量区分不了,只能回到 middleware 按 Host 判断,而那会把所有页面
+ * 从静态预渲染变成动态渲染(ƒ Dynamic),代价大得多。
  */
 
 export const LOCALE_COOKIE = "NEXT_LOCALE";
@@ -25,12 +28,17 @@ export type Locale = "en" | "zh";
 
 const VALID: ReadonlyArray<Locale> = ["en", "zh"];
 
-const HOST_ZH = new Set<string>(["ssebatt.com", "www.ssebatt.com"]);
-const HOST_EN = new Set<string>(["sse-website.vercel.app"]);
-
 function isLocale(v: string | null | undefined): v is Locale {
   return v === "en" || v === "zh";
 }
+
+/**
+ * 本部署的默认语言 —— 构建期内联。服务端与客户端首帧都用它,所以两边一致。
+ */
+const CONFIGURED_DEFAULT = process.env.NEXT_PUBLIC_DEFAULT_LOCALE;
+export const DEFAULT_LOCALE: Locale = isLocale(CONFIGURED_DEFAULT)
+  ? CONFIGURED_DEFAULT
+  : "en";
 
 function readCookieRaw(): string | null {
   if (typeof document === "undefined") return null;
@@ -54,38 +62,13 @@ export function setLocaleCookie(locale: Locale): void {
 }
 
 /**
- * Map a hostname to its default locale. Returns null for unrecognized hosts
- * so the caller can decide (today: fall back to "en").
- */
-export function getDefaultLocaleForHost(host: string | null): Locale | null {
-  if (!host) return null;
-  const h = host.toLowerCase().split(":")[0]; // strip port
-  if (HOST_ZH.has(h)) return "zh";
-  if (HOST_EN.has(h)) return "en";
-  // Vercel preview deployments: anything ending in .vercel.app → en
-  if (h.endsWith(".vercel.app")) return "en";
-  // localhost / 127.0.0.1 / unknown → en
-  return "en";
-}
-
-/**
- * Resolve the initial locale for a client component.
+ * 首帧语言 —— 服务端与客户端都返回同一个构建期常量,保证 hydration 一致。
  *
- * Priority (strict):
- *   1. NEXT_LOCALE cookie on the current host (user explicit choice).
- *   2. Hostname → zh for ssebatt.com / www.ssebatt.com, else en.
- *   3. Hard fallback: "en" (SSR with no host info, or unknown host).
- *
- * SSR-safe: when window is undefined the host-derived branch is skipped and
- * the function returns the cookie value or "en". Client components should
- * call this from a useState lazy initializer AND from a first-mount effect
- * to correct any SSR/client divergence.
+ * 用户手动选过的语言在**挂载后**由 Header 里的 effect 纠正(读 cookie),
+ * 所以这里不要再读 cookie,否则服务端/客户端又会不一致。
  */
 export function resolveInitialLocale(): Locale {
-  const fromCookie = getLocaleCookie();
-  if (fromCookie) return fromCookie;
-  if (typeof window === "undefined") return "en";
-  return getDefaultLocaleForHost(window.location.hostname) ?? "en";
+  return DEFAULT_LOCALE;
 }
 
 export const SUPPORTED_LOCALES = VALID;

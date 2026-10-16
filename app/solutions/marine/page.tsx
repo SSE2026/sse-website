@@ -10,9 +10,9 @@ import zh from "@/messages/zh.json";
 import { resolveInitialLocale } from "@/lib/locale";
 
 import { IndustryDetailHero } from "@/components/solutions/IndustryDetailHero";
-import { IndustryChallenge } from "@/components/solutions/IndustryChallenge";
+import { IndustryChallengeSolution } from "@/components/solutions/IndustryChallengeSolution";
+import { pairChallengesWithCapabilities } from "@/data/solutionPairing";
 import { CaseBlock, type CaseBlockItem } from "@/components/solutions/CaseBlock";
-import { IndustryHighlight } from "@/components/solutions/IndustryHighlight";
 import { DevelopmentFlow } from "@/components/solutions/DevelopmentFlow";
 import { BusinessCTA } from "@/components/solutions/BusinessCTA";
 
@@ -45,12 +45,13 @@ function IndustryPageContent({ locale }: { locale: Locale }) {
         bgSrc="/images/solutions/marine-hero.jpg"
       />
 
-      <IndustryChallenge title={t.painPoints.title} items={t.painPoints.items} />
-
-      <IndustryHighlight
+      <IndustryChallengeSolution
+        eyebrow="CHALLENGES"
         title={t.highlights.title}
-        items={t.highlights.items}
         intro={t.value.desc}
+        challengeColumnLabel={t.painPoints.title}
+        solutionColumnLabel={isZh ? "深安能力" : "SSE Capability"}
+        rows={pairChallengesWithCapabilities("marine", t.painPoints.items, t.highlights.items)}
       />
 
       <CaseBlock title={t.cases.title} cases={cases} />

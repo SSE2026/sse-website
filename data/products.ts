@@ -1,4 +1,4 @@
-// 产品中心数据 — 云驰系列 (Aeroride / Cloudchi)
+// 产品中心数据 — 云驰系列 (AeroRide)
 //
 // 三个子系列各自独立成页,路由见 seriesProfiles[x].slug。
 // 同一系列内,标准电压 / 充放电区间 / 倍率档位 / 循环寿命 是共用的,
@@ -43,6 +43,21 @@ export interface Product {
   spec: ProductSpec;
   seriesLabel: { zh: string; en: string };
   seriesSubtitle: { zh: string; en: string };
+  /** 主力出货规格 —— 按型号末 5 位判定,见 BESTSELLER_SUFFIXES */
+  bestseller: boolean;
+}
+
+/**
+ * 热销规格的型号后缀。
+ *
+ * 型号本身编码了尺寸(如 SSE10588187 = 10.5 × 88 × 187),所以末 5 位就是
+ * 「截面 × 高度」: 88187 = 88×187,70170 = 70×170 —— 这两种是主力出货形态。
+ * 命中即打「爆品」标。
+ */
+const BESTSELLER_SUFFIXES = ["88187", "70170"];
+
+function isBestseller(sku: string): boolean {
+  return BESTSELLER_SUFFIXES.some((suffix) => sku.endsWith(suffix));
 }
 
 /** 各型号中随尺寸变化的几项 */
@@ -95,7 +110,7 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
     slug: "cloudchi-360-p",
     color: "#2563eb",
     bgColor: "#eff6ff",
-    label: { zh: "云驰 360-P 功率型", en: "Aeroride 360-P Power" },
+    label: { zh: "云驰 360-P 功率型", en: "AeroRide 360-P Power" },
     subtitle: { zh: "高能量 + 高功率型电芯", en: "High Energy + High Power Cell" },
     image: "/images/360-p.png",
     heroImage: "/images/hero/hero-360-p.png",
@@ -107,8 +122,8 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
       cycleLife: { zh: "1000 (0.5C 充 / 1C 放)", en: "1000 (0.5C charge / 1C discharge)" },
     },
     hero: {
-      eyebrow: { zh: "云驰系列 · 高功率型", en: "Aeroride Series · High Power" },
-      title: { zh: "云驰 360-P 功率型", en: "Aeroride 360-P Power" },
+      eyebrow: { zh: "云驰系列 · 高功率型", en: "AeroRide Series · High Power" },
+      title: { zh: "云驰 360-P 功率型", en: "AeroRide 360-P Power" },
       description: {
         zh: "高比能与高功率输出兼顾,2C 快充 / 5C 持续放电,面向低空飞行器的起飞、爬升与机动工况。",
         en: "High specific energy with high power output. 2C fast charge and 5C continuous discharge for take-off, climb and manoeuvre duty in low-altitude aircraft.",
@@ -128,7 +143,7 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
     slug: "cloudchi-400-e",
     color: "#059669",
     bgColor: "#ecfdf5",
-    label: { zh: "云驰 400-E 能量型", en: "Aeroride 400-E Energy" },
+    label: { zh: "云驰 400-E 能量型", en: "AeroRide 400-E Energy" },
     subtitle: { zh: "高能量 + 长循环型电芯", en: "High Energy + Long Cycle Cell" },
     image: "/images/400-E.png",
     heroImage: "/images/hero/hero-400-e.png",
@@ -141,8 +156,8 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
       safety: { zh: "满足 GB38031-2020", en: "Meets GB38031-2020" },
     },
     hero: {
-      eyebrow: { zh: "云驰系列 · 长循环型", en: "Aeroride Series · Long Cycle" },
-      title: { zh: "云驰 400-E 能量型", en: "Aeroride 400-E Energy" },
+      eyebrow: { zh: "云驰系列 · 长循环型", en: "AeroRide Series · Long Cycle" },
+      title: { zh: "云驰 400-E 能量型", en: "AeroRide 400-E Energy" },
       description: {
         zh: "面向具身智能与深海装备的长时作业工况,在 360-391 Wh/kg 的高比能下兼顾循环稳定性,并通过 GB38031-2020 安全验证。",
         en: "Built for long-duration duty in embodied AI and deep-sea equipment: 360-391 Wh/kg specific energy with cycle stability, verified to GB38031-2020.",
@@ -162,7 +177,7 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
     slug: "cloudchi-460-x",
     color: "#7c3aed",
     bgColor: "#f5f3ff",
-    label: { zh: "云驰 460-X 超高能量型", en: "Aeroride 460-X Ultra-High Energy" },
+    label: { zh: "云驰 460-X 超高能量型", en: "AeroRide 460-X Ultra-High Energy" },
     subtitle: { zh: "超高能量 + 超高倍率型电芯", en: "Ultra High Energy + High Rate Cell" },
     image: "/images/400-X.png",
     heroImage: "/images/hero/hero-460-x.png",
@@ -174,8 +189,8 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
       cycleLife: { zh: "20 (0.2C 充 / 8C 放)", en: "20 (0.2C charge / 8C discharge)" },
     },
     hero: {
-      eyebrow: { zh: "云驰系列 · 超高倍率型", en: "Aeroride Series · Ultra High Rate" },
-      title: { zh: "云驰 460-X 超高能量型", en: "Aeroride 460-X Ultra-High Energy" },
+      eyebrow: { zh: "云驰系列 · 超高倍率型", en: "AeroRide Series · Ultra High Rate" },
+      title: { zh: "云驰 460-X 超高能量型", en: "AeroRide 460-X Ultra-High Energy" },
       description: {
         zh: "3.87 V 高电压体系带来 453-460 Wh/kg 的超高比能,同时支持 10C 持续 / 12C 瞬时放电,为高机动平台提供瞬时功率。",
         en: "A 3.87 V high-voltage chemistry reaching 453-460 Wh/kg while sustaining 10C continuous and 12C peak discharge for high-manoeuvrability platforms.",
@@ -221,6 +236,7 @@ function buildProducts(): Product[] {
       },
       seriesLabel: profile.label,
       seriesSubtitle: profile.subtitle,
+      bestseller: isBestseller(row.sku),
     }));
   });
 }
