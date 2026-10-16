@@ -1,16 +1,23 @@
 import type { MetadataRoute } from "next";
 import { newsItems } from "@/data/news";
+import { SERIES_ORDER, seriesProfiles } from "@/data/products";
 
 const SITE_URL = "https://sse-website.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
+  const seriesRoutes: MetadataRoute.Sitemap = SERIES_ORDER.map((id) => ({
+    url: `${SITE_URL}/products/${seriesProfiles[id].slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  }));
+
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
     { url: `${SITE_URL}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE_URL}/products`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${SITE_URL}/products/cloudchi-360-p`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    ...seriesRoutes,
     { url: `${SITE_URL}/technology`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE_URL}/solutions/low-altitude`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/solutions/embodied-ai`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },

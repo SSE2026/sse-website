@@ -15,7 +15,9 @@ interface HeaderProps {
       about: string;
       products: string;
       productsCells: string;
-      productsCellsCloudchi: string;
+      productsCellsCloudchi360P: string;
+      productsCellsCloudchi400E: string;
+      productsCellsCloudchi460X: string;
       productsCellsPanshi: string;
       productsPacks: string;
       technology: string;
@@ -48,7 +50,8 @@ type NavItem =
       kind: "menu";
       key: string;
       label: string;
-      href: string;
+      /** 省略 = 顶层只展开下拉、不跳转;有值则点击同时跳转 */
+      href?: string;
       children: NavGroupChild[];
     };
 
@@ -57,16 +60,19 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
 
   const navTree: NavItem[] = [
     { kind: "leaf", key: "home", label: nav.home, href: "/" },
+    // "Products" is dropdown-only: the top-level label opens the panel but
+    // does not navigate — users pick a sub-page from the menu.
     {
       kind: "menu",
       key: "products",
       label: nav.products,
-      href: "/products",
       children: [
         {
           label: nav.productsCells,
           children: [
-            { label: nav.productsCellsCloudchi, href: "/products/cells/cloudchi" },
+            { label: nav.productsCellsCloudchi360P, href: "/products/cloudchi-360-p" },
+            { label: nav.productsCellsCloudchi400E, href: "/products/cloudchi-400-e" },
+            { label: nav.productsCellsCloudchi460X, href: "/products/cloudchi-460-x" },
             { label: nav.productsCellsPanshi, href: "/products/cells/panshi" },
           ],
         },
@@ -123,9 +129,13 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
   }, [isMobileMenuOpen]);
 
   // Close hover-menu when cursor leaves the entire nav region.
+  // `activeLink` paints the hover background on the top-level items, so it
+  // has to be reset here too — otherwise the highlight sticks once the
+  // cursor moves off the nav.
   const onNavMouseLeave = () => {
     setOpenMenuKey(null);
     setOpenSubLabel(null);
+    setActiveLink("");
   };
 
   const linkBaseClass = cn(
@@ -234,24 +244,42 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                       setOpenMenuKey(item.key);
                     }}
                   >
-                    <Link
-                      href={item.href}
-                      className={cn(
+                    {(() => {
+                      const triggerClass = cn(
                         linkBaseClass,
                         "inline-flex items-center gap-1",
                         isOpen || activeLink === item.key
                           ? "text-[#0A0A0A] bg-[#F4F4F5]"
                           : colorFor(false)
-                      )}
-                    >
-                      {item.label}
-                      <ChevronDown
-                        className={cn(
-                          "w-3.5 h-3.5 transition-transform duration-200",
-                          isOpen ? "rotate-180" : ""
-                        )}
-                      />
-                    </Link>
+                      );
+                      const triggerContent = (
+                        <>
+                          {item.label}
+                          <ChevronDown
+                            className={cn(
+                              "w-3.5 h-3.5 transition-transform duration-200",
+                              isOpen ? "rotate-180" : ""
+                            )}
+                          />
+                        </>
+                      );
+
+                      // 没配 href 的顶层菜单只展开下拉,不跳转
+                      return item.href ? (
+                        <Link href={item.href} className={triggerClass}>
+                          {triggerContent}
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          aria-haspopup="true"
+                          aria-expanded={isOpen}
+                          className={cn(triggerClass, "cursor-pointer")}
+                        >
+                          {triggerContent}
+                        </button>
+                      );
+                    })()}
 
                     {/* Level-1 dropdown panel (Cells + Packs) */}
                     <AnimatePresence>

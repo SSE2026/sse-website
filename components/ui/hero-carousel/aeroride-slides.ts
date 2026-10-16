@@ -15,11 +15,6 @@ export const AERORIDE_SLIDES_EN: HeroSlide[] = [
       "Next-generation high energy density solid-state power solutions for low-altitude flight, embodied AI, and deep-sea equipment.",
     ctaText: "Customize Now",
     ctaLink: "/contact",
-    stats: [
-      { value: "500+", unit: "Wh/kg", label: "Energy Density" },
-      { value: "10C+", unit: "", label: "Peak Discharge" },
-      { value: "1000+", unit: "cycles", label: "Cycle Life" },
-    ],
   },
 ];
 
@@ -34,10 +29,5 @@ export const AERORIDE_SLIDES_ZH: HeroSlide[] = [
     description: "面向低空飞行、具身智能与深海装备的下一代高比能固态动力解决方案。",
     ctaText: "即刻定制",
     ctaLink: "/contact",
-    stats: [
-      { value: "500+", unit: "Wh/kg", label: "能量密度" },
-      { value: "10C+", unit: "", label: "峰值放电" },
-      { value: "1000+", unit: "次", label: "循环寿命" },
-    ],
   },
 ];

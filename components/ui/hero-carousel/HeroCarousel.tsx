@@ -23,10 +23,11 @@ export interface HeroSlide {
   imageAlt: string;
   eyebrow: string;
   title: string;
+  /** 可选的标题第二行(如「功率型」这类产品类型名),与 title 固定分行显示 */
+  titleLine2?: string;
   description: string;
   ctaText: string;
   ctaLink: string;
-  stats: { value: string; unit: string; label: string }[];
   objectPosition?: string;
 }
 
@@ -50,20 +51,11 @@ function HeroSlideImage({
   slide,
   isActive,
   priority,
-  index,
 }: {
   slide: HeroSlide;
   isActive: boolean;
   priority: boolean;
-  index: number;
 }) {
-  // Image positioning adjustments - all move right to avoid blocking text
-  const getPositionClass = () => {
-    if (index === 1) return "translate-x-[18%]"; // Second image moves right
-    if (index === 2) return "translate-x-[22%]"; // Third image moves more right
-    return "translate-x-[15%]"; // First image also moves right
-  };
-
   return (
     <div
       className={`absolute inset-0 ${
@@ -71,21 +63,16 @@ function HeroSlideImage({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      <div className="absolute inset-0 flex items-center justify-center bg-[#F7F8FB]">
-        <div
-          className={`relative transition-transform duration-500 ${getPositionClass()}`}
-          style={{
-            width: "70%",
-            height: "75%",
-          }}
-        >
+      {/* 桌面端右对齐、避开左侧文字区;手机端放到文字下方 */}
+      <div className="absolute inset-0 flex items-end justify-center pb-[4%] md:items-center md:justify-end md:pb-0 md:pr-[3%] bg-[#F7F8FB]">
+        <div className="relative w-[84%] h-[32%] md:w-[30%] md:h-[62%] lg:w-[42%] lg:h-[70%] xl:w-[47%] xl:h-[72%]">
           <Image
             src={slide.image!}
             alt={slide.imageAlt}
             fill
             priority={priority}
             quality={IMAGE_CONFIG.quality}
-            sizes={IMAGE_CONFIG.sizes}
+            sizes="(max-width: 768px) 90vw, 50vw"
             className="object-contain"
             style={{
               objectPosition: slide.objectPosition || "center center",
@@ -163,7 +150,13 @@ function HeroContent({
           {/* Title */}
           <h1
             className="text-[28px] md:text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-5"
-            style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
+            style={{
+              fontFamily: "var(--font-space-grotesk, sans-serif)",
+              // 中文不在词组内部断行 —— 否则 48px 下 "云驰 460-X 超高能量型"
+              // 会在 "超高能量" 和 "型" 之间断开,把 "型" 单独甩到第二行。
+              // 英文标题不受影响(keep-all 只作用于 CJK 断行规则)。
+              wordBreak: "keep-all",
+            }}
           >
             {(() => {
               const t = slide.title;
@@ -177,6 +170,9 @@ function HeroContent({
                 </>
               );
             })()}
+            {slide.titleLine2 && (
+              <span className="block text-[#0A0A0F]">{slide.titleLine2}</span>
+            )}
           </h1>
 
           {/* Description */}
@@ -194,19 +190,6 @@ function HeroContent({
               <ArrowRight className="w-5 h-5" />
             </button>
           </Link>
-
-          {/* Three Stats - Horizontal */}
-          <div className="mt-10 flex gap-10">
-            {slide.stats.map((stat, index) => (
-              <div key={index}>
-                <div className="text-3xl font-bold text-[#0A0A0F] font-mono">
-                  {stat.value}
-                  {stat.unit && <span className="text-base text-[#2563EB] ml-1">{stat.unit}</span>}
-                </div>
-                <div className="text-xs text-[#71717A] mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>
@@ -362,7 +345,6 @@ export default function HeroCarousel({
               slide={slide}
               isActive={index === currentIndex}
               priority={index === 0}
-              index={index}
             />
           )}
         </div>

@@ -5,6 +5,9 @@
     "products": "产品中心",
     "productsCells": "电芯",
     "productsCellsCloudchi": "云驰系列",
+    "productsCellsCloudchi360P": "云驰 360-P 功率型",
+    "productsCellsCloudchi400E": "云驰 400-E 能量型",
+    "productsCellsCloudchi460X": "云驰 460-X 超高能量型",
     "productsCellsPanshi": "磐石系列",
     "productsPacks": "电池组",
     "technology": "研发与智造",
@@ -234,17 +237,17 @@
     "subtitle": "以任务属性定义产品，为边界场景提供差异化动力方案",
     "viewDetails": "查看详情",
     "power": {
-      "title": "云驰 360-P",
+      "title": "云驰 360-P 功率型",
       "desc": "高功率平台，适用于四足机器人和多旋翼无人机等瞬时功率需求场景",
       "specs": "360 Wh/kg • 2C/5C放电 • 四足/无人机"
     },
     "storage": {
-      "title": "云驰 400-E",
+      "title": "云驰 400-E 能量型",
       "desc": "高能量平台，适用于固定翼/复合翼无人机，长航时潜航器、巡检机器人",
       "specs": "400 Wh/kg • 1C/3C放电 • 长续航"
     },
     "drone": {
-      "title": "云驰 460-X",
+      "title": "云驰 460-X 超高能量型",
       "desc": "超高能量平台，适用于极限续航或10C高功率输出场景",
       "specs": "460+ Wh/kg • 10C峰值 • 极限任务"
     },
