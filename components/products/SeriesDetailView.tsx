@@ -243,7 +243,10 @@ export default function SeriesDetailView({ seriesId }: { seriesId: SeriesId }) {
                               {product.sku}
                             </h3>
                             {product.bestseller && (
-                              <span className="inline-flex items-center rounded-[3px] bg-[#0A0A0F] px-1.5 py-[3px] text-[10.5px] font-medium leading-none tracking-[0.12em] text-white">
+                              /* 爆品标 —— 全站唯一的暖色。冷色系(蓝/绿/紫)里
+                                 只有它能稳定跳出来,所以尺寸也放到与型号同级,
+                                 不再是一条 10.5px 的小黑签。 */
+                              <span className="inline-flex items-center rounded-[4px] bg-[#EA580C] px-2 py-1.5 text-[12.5px] font-bold leading-none tracking-[0.06em] text-white">
                                 {isZh ? "爆品" : "Best Seller"}
                               </span>
                             )}
