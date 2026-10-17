@@ -66,7 +66,7 @@ export const technologyData: TechnologyPageData = {
       id: 'fast-charging',
       number: '01',
       title: '多维协同速热超充',
-      titleEn: 'MULTI-DIMENSIONAL FAST CHARGING',
+      titleEn: 'MULTI-DIMENSIONAL THERMAL-MODULATED FAST CHARGING',
       summary: '高效离子传输与电热协同控制',
       visual: '/images/technology/solid-electrolyte.jpg',
       details: [
