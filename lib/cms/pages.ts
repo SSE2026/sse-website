@@ -304,7 +304,7 @@ export const PAGE_DEFS: CmsPageDef[] = [
     ],
     defaultContent: {
       contact: {
-        title: "与深安锂能\n工程团队取得联系",
+        title: "携手深安锂能，共创智慧能源未来",
         subtitle: "",
         email: "changhao@ssebatt.com",
         phone: "+86 13651071130",

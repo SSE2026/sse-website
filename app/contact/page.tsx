@@ -61,7 +61,7 @@ export default function ContactPage() {
   // 文本内容
   const content = {
     sectionLabel: "04 / Contact & Engagement",
-    title: c.title || (isZh ? "与深安锂能\n工程团队取得联系" : "Connect with SSE\nEngineering Team"),
+    title: c.title || (isZh ? "携手深安锂能，共创智慧能源未来" : "Connect with SSE\nEngineering Team"),
     subtitle: c.subtitle || (isZh
       ? "专注于低空飞行与智能装备电源解决方案。无论您需要电池模组规格评估、样品调测或商务合作，我们随时提供专业支持。"
       : "Focusing on low-altitude flight and intelligent equipment power solutions. Whether you need battery module evaluation, sample testing, or business cooperation, we provide professional support."),
