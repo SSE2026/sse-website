@@ -67,24 +67,32 @@ export function EnergyStackHero({ translations }: HeroProps) {
           backgroundRepeat: "no-repeat",
         }}
       />
-      {/* Mobile focal shift — Logo lands in the right-third of the
-          viewport, not the left edge.
-          背景图是 16:9 横图,竖屏下 cover 只能按高度铺满,横向必然裁掉大半:
-          740px 高的 hero 只露出原图 29% 的宽度,主体(横向 55%~68%)正好卡在
-          窗口右边缘。手机端把 hero 降到 65vh、焦点右移到 62%,露出比例提升到
-          ~40%,主体也落回画面中间。想完整看到整张图只能换竖版图。 */}
+      {/* Mobile: 图在上、文字在下。
+          原来背景图是 absolute 铺满整个 hero,文字压在上面 —— 而且 16:9 横图
+          在竖屏用 cover 只能露出 29% 的宽度,主体还被挤到边缘。
+          手机端把图片层改成正常流的图片块(比例与图片完全一致,零裁剪),
+          文案顺排到它下面,两者不再重叠。 */}
       <style jsx>{`
         @media (max-width: 767px) {
           .brand-hero-img {
-            min-height: 65vh !important;
+            min-height: 0 !important;
+            aspect-ratio: auto !important;
           }
           .brand-hero-img__layer {
-            background-position: 62% 60% !important;
+            position: relative !important;
+            inset: auto !important;
+            width: 100%;
+            aspect-ratio: 1672 / 941;
+            background-size: cover !important;
+            background-position: center !important;
           }
-          /* 内容区原本用 min-h 撑满首屏;hero 变矮后要同步放开,
-             否则文案会被 overflow-hidden 裁掉。内容自然高度只有 278px。 */
+          /* 内容区原本用 min-h 撑满首屏,图片改回正常流后要放开 */
           .brand-hero-grid {
             min-height: 0 !important;
+          }
+          /* 原来的 translateY(80px) 是为桌面构图调的下沉,手机上会把文案推走 */
+          .brand-hero-copy {
+            transform: none !important;
           }
         }
       `}</style>
@@ -108,7 +116,7 @@ export function EnergyStackHero({ translations }: HeroProps) {
               block lines up with the Logo cube. motion.div inside
               handles the entrance animation only. */}
           <div
-            className="lg:col-span-6 lg:max-w-[480px]"
+            className="brand-hero-copy lg:col-span-6 lg:max-w-[480px]"
             style={{ transform: "translateY(80px)" }}
           >
             <motion.div

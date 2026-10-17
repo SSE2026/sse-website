@@ -95,31 +95,35 @@ export function CoreTechCarousel({
       role="region"
       aria-roledescription="carousel"
       aria-label={title || label || "Core technologies"}
-      className="relative h-screen w-full select-none overflow-hidden bg-[#F7F8FB] text-[#0A0A0F]"
+      className="relative h-auto md:h-screen w-full select-none overflow-hidden bg-[#050B14] md:bg-[#F7F8FB] text-[#0A0A0F]"
       onFocusCapture={() => setHeld(true)}
       onBlurCapture={() => setHeld(false)}
     >
-      {/* Full-bleed picture, cross-faded on opacity alone. */}
-      {slides.map((slide, i) => (
-        <div
-          key={slide.image}
-          aria-hidden={i !== index}
-          className={cn(
-            "absolute inset-0 transition-opacity ease-out",
-            i === index ? "opacity-100" : "opacity-0",
-          )}
-          style={{ transitionDuration: reducedMotion ? "0ms" : "900ms" }}
-        >
-          <Image
-            src={slide.image}
-            alt={slide.title}
-            fill
-            sizes="100vw"
-            priority={i === 0}
-            className="object-cover"
-          />
-        </div>
-      ))}
+      {/* Full-bleed picture, cross-faded on opacity alone.
+          手机上先占一块 16:9 画框、图片用 contain 完整显示(这几张原图比例
+          从 1.78 到 2.37 不等,cover 在竖屏会裁掉七成以上);md 起恢复铺满整屏。 */}
+      <div className="relative w-full aspect-[16/9] md:absolute md:inset-0 md:aspect-auto">
+        {slides.map((slide, i) => (
+          <div
+            key={slide.image}
+            aria-hidden={i !== index}
+            className={cn(
+              "absolute inset-0 transition-opacity ease-out",
+              i === index ? "opacity-100" : "opacity-0",
+            )}
+            style={{ transitionDuration: reducedMotion ? "0ms" : "900ms" }}
+          >
+            <Image
+              src={slide.image}
+              alt={slide.title}
+              fill
+              sizes="100vw"
+              priority={i === 0}
+              className="object-contain md:object-cover"
+            />
+          </div>
+        ))}
+      </div>
 
       {/* Local darkening behind the copy block. Light type needs a dark
           backdrop: at 4.5 contrast the surface under it has to come down
@@ -131,7 +135,7 @@ export function CoreTechCarousel({
           frame) and no larger, so the darkening stays off the picture. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 hidden md:block"
         style={{
           background:
             "radial-gradient(86% 66% at 13% 25%, rgba(5,11,20,0.70) 0%, rgba(5,11,20,0.51) 40%, rgba(5,11,20,0) 74%)",
@@ -141,7 +145,7 @@ export function CoreTechCarousel({
       {/* Copy, laid over the picture. The section title and the technology
           it introduces are one block at the top-left: splitting them to
           opposite corners left 433px of dead space between them. */}
-      <div className="relative z-10 flex h-full flex-col px-8 pt-24 pb-8 md:px-16">
+      <div className="relative z-10 flex flex-col px-8 pt-8 pb-8 md:h-full md:px-16 md:pt-24">
         <div className="max-w-3xl">
           {/* Section header — top-padded to clear the fixed nav. */}
           <motion.div

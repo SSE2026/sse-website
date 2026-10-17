@@ -37,28 +37,31 @@ export function HomeProducts({ locale }: HomeProductsProps) {
 
   return (
     <section className="bg-white">
+      {/* 手机上:图片按原比例完整占一块,文字排在它下面,不再压在图上。
+          md 起恢复原来的"整幅图 + 文字浮层"构图。 */}
       <div
-        className="relative w-full overflow-hidden"
-        style={{ aspectRatio: "1672 / 941", minHeight: "300px" }}
+        className="relative w-full overflow-hidden md:aspect-[1672/941] md:min-h-[300px]"
       >
-        <Image
-          src="/images/hero/products-showcase.png"
-          alt={isZh ? "深安锂能电池产品展示" : "SSE battery product showcase"}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
+        <div className="relative w-full aspect-[1672/941] md:absolute md:inset-0 md:aspect-auto">
+          <Image
+            src="/images/hero/products-showcase.png"
+            alt={isZh ? "深安锂能电池产品展示" : "SSE battery product showcase"}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
 
-        {/* ===== 右上:主副标题 ===== */}
-        <div className="absolute inset-0 flex items-start justify-end pt-[10%] md:pt-[7%] lg:pt-[6%]">
-          <div className="mx-auto w-full max-w-[1280px] px-6 md:px-10 lg:px-16">
+        {/* ===== 右上:主副标题(手机端在图片下方) ===== */}
+        <div className="relative md:absolute md:inset-0 md:flex md:items-start md:justify-end md:pt-[7%] lg:pt-[6%]">
+          <div className="mx-auto w-full max-w-[1280px] px-6 py-8 md:px-10 md:py-0 lg:px-16">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="ml-auto max-w-[320px] text-right sm:max-w-[440px] lg:max-w-[580px]"
+              className="max-w-none text-left md:ml-auto md:max-w-[320px] md:text-right lg:max-w-[580px]"
             >
               <div
                 className="mb-3 text-[11px] uppercase tracking-[0.32em] text-[#71717A] md:mb-4"
@@ -75,7 +78,7 @@ export function HomeProducts({ locale }: HomeProductsProps) {
                   : "From a single cell to a complete power system"}
               </h2>
               <p
-                className="mt-3 ml-auto max-w-[44ch] text-[12px] leading-[1.75] text-[#3F3F46] sm:text-[13px] lg:mt-4 lg:text-[14px]"
+                className="mt-3 md:ml-auto max-w-[44ch] text-[12px] leading-[1.75] text-[#3F3F46] sm:text-[13px] lg:mt-4 lg:text-[14px]"
                 style={{ fontFamily: CJK }}
               >
                 {isZh
@@ -86,8 +89,8 @@ export function HomeProducts({ locale }: HomeProductsProps) {
           </div>
         </div>
 
-        {/* ===== 底部居中:探索更多产品 + 三个入口(贴着下沿) ===== */}
-        <div className="absolute inset-x-0 bottom-0 pb-[9%] md:pb-[4%] lg:pb-[2.5%]">
+        {/* ===== 底部:探索更多产品 + 三个入口(手机端在文字下方,桌面贴着下沿) ===== */}
+        <div className="relative pb-10 md:absolute md:inset-x-0 md:bottom-0 md:pb-[4%] lg:pb-[2.5%]">
           <div className="mx-auto w-full max-w-[1280px] px-6 md:px-10 lg:px-16">
             <motion.div
               initial={{ opacity: 0, y: 12 }}

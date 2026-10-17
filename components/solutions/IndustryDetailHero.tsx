@@ -56,7 +56,7 @@ export function IndustryDetailHero({
 }: IndustryDetailHeroProps) {
   return (
     <section
-      className="relative w-full overflow-hidden text-[#0A0A0F]"
+      className="ind-hero relative w-full overflow-hidden text-[#0A0A0F]"
       style={{
         // heroHeight wins when provided (short hero, smaller image,
         // no empty bands). Otherwise fall back to image-aspect +
@@ -65,6 +65,29 @@ export function IndustryDetailHero({
         minHeight: heroHeight ?? "calc(100vh - 72px)",
       }}
     >
+      {/* 手机:图在上、文字在下。
+          原来图片 absolute 铺满整个 hero、文案压在上面;16:9 横图在竖屏用
+          cover 只能露出约 1/4 的宽度。手机端把图片层改成正常流的图片块
+          (比例与图片一致,零裁剪),文案顺排到它下面。 */}
+      <style jsx>{`
+        @media (max-width: 767px) {
+          .ind-hero {
+            aspect-ratio: auto !important;
+            min-height: 0 !important;
+          }
+          .ind-hero__layer {
+            position: relative !important;
+            inset: auto !important;
+            width: 100%;
+            aspect-ratio: 1672 / 940;
+          }
+          .ind-hero__copy {
+            min-height: 0 !important;
+            justify-content: flex-start !important;
+          }
+        }
+      `}</style>
+
       {/* IMAGE LAYER — independent, fills the hero edge-to-edge.
           Uses object-fit: cover so the image reaches all three visible
           edges; object-position: right so the crop happens on the LEFT
@@ -73,7 +96,7 @@ export function IndustryDetailHero({
       {bgSrc ? (
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none overflow-hidden"
+          className="ind-hero__layer absolute inset-0 pointer-events-none overflow-hidden"
         >
           <Image
             src={bgSrc}
@@ -137,7 +160,7 @@ export function IndustryDetailHero({
           title bleed into each other like a single composition. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none hidden md:block"
         style={{
           background: `linear-gradient(90deg, #FFFFFF 0%, rgba(255,255,255,0.92) ${fadeWidth * 0.26}%, rgba(255,255,255,0.55) ${fadeWidth * 0.54}%, rgba(255,255,255,0.10) ${fadeWidth * 0.79}%, rgba(255,255,255,0) ${fadeWidth}%)`,
         }}
@@ -149,7 +172,7 @@ export function IndustryDetailHero({
           Its min-height must track the section's, otherwise the text
           column alone would stretch the section back to full height. */}
       <div
-        className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-10 lg:px-16 flex flex-col justify-center py-12 md:py-16 lg:py-20"
+        className="ind-hero__copy relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-10 lg:px-16 flex flex-col justify-center py-12 md:py-16 lg:py-20"
         style={{ minHeight: heroHeight ?? "calc(100vh - 72px)" }}
       >
         <motion.div

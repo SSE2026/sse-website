@@ -144,6 +144,14 @@ export function IndustryChallengeSolution({
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
+                  {/* 手机上列头整行是隐藏的,这里给每一条补一个行内标签,
+                      否则只剩红/绿两块上下堆叠,看不出哪边是挑战、哪边是能力 */}
+                  <span
+                    className="mb-1.5 block text-[11px] font-semibold tracking-[0.16em] md:hidden"
+                    style={{ color: RED, fontFamily: CJK }}
+                  >
+                    {challengeColumnLabel}
+                  </span>
                   <h3
                     className="text-[16px] font-semibold leading-snug text-[#0A0A0F]"
                     style={{ fontFamily: CJK }}
@@ -175,7 +183,15 @@ export function IndustryChallengeSolution({
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <ul className="flex flex-1 flex-col gap-4">
+                <div className="flex-1">
+                  {/* 手机上补一个行内列头 —— 见上方挑战一侧的说明 */}
+                  <span
+                    className="mb-2.5 block text-[11px] font-semibold tracking-[0.16em] md:hidden"
+                    style={{ color: GREEN, fontFamily: CJK }}
+                  >
+                    {solutionColumnLabel}
+                  </span>
+                  <ul className="flex flex-col gap-4">
                   {row.solutions.map((s, j) => (
                     <li key={j}>
                       <h4
@@ -192,7 +208,8 @@ export function IndustryChallengeSolution({
                       </p>
                     </li>
                   ))}
-                </ul>
+                  </ul>
+                </div>
               </div>
             </motion.div>
           ))}

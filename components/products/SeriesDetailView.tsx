@@ -217,15 +217,18 @@ export default function SeriesDetailView({ seriesId }: { seriesId: SeriesId }) {
                       className="group bg-white rounded-xl border p-5 md:p-6 transition-colors duration-200 border-[#E4E4E7] hover:border-[#BFDBFE] shadow-[0_1px_3px_rgba(15,23,42,0.04)] hover:shadow-[0_14px_30px_-16px_rgba(15,23,42,0.25)]"
                     >
                       <div className="flex flex-col sm:flex-row gap-5 md:gap-7">
-                        {/* 产品图片 — 尺寸与比例保持原样 */}
+                        {/* 产品图片。
+                            用 object-contain 而不是 cover:产品图是 2:3 的竖版实拍,
+                            cover 在手机上(整行宽的框)会裁掉上下约一半。
+                            手机端框也跟着收窄成竖版并居中,不再拉满整行。 */}
                         <div
-                          className="w-full sm:w-32 h-56 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
+                          className="w-36 h-56 mx-auto sm:mx-0 sm:w-32 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
                           style={{ backgroundColor: "#f8fafc" }}
                         >
                           <img
                             src={product.image}
                             alt={product.sku}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                             onError={(e) => {
                               e.currentTarget.style.display = "none";
                             }}
