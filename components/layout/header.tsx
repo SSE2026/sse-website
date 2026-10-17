@@ -210,7 +210,7 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
                   forceLightText && !isScrolled ? "text-[#52525B]" : "text-[#A1A1AA]"
                 )}>
                   {locale === "zh"
-                    ? "高能量密度高安全新型动力电池引领者"
+                    ? "高比能高安全新型电池引领者"
                     : "Pioneer in High-Energy-Density, High-Safety Next-Gen Power Batteries"}
                 </p>
               </div>
