@@ -63,9 +63,12 @@ function HeroSlideImage({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      {/* 桌面端右对齐、避开左侧文字区;手机端放到文字下方 */}
+      {/* 桌面端右对齐、避开左侧文字区;手机端放到文字下方。
+          右移量用图片自身的 mr 来给(xl 起 3%),不用容器的 pr —— pr 会同时
+          压缩内容盒,把图片一起缩小;mr 只推位置,不改变尺寸。
+          不能给更多:1280 下文字右边缘到图片左边缘只剩约 57px。 */}
       <div className="absolute inset-0 flex items-end justify-center pb-[4%] md:items-center md:justify-end md:pb-0 md:pr-[3%] bg-[#F7F8FB]">
-        <div className="relative w-[84%] h-[32%] md:w-[30%] md:h-[62%] lg:w-[42%] lg:h-[70%] xl:w-[47%] xl:h-[72%]">
+        <div className="relative w-[84%] h-[32%] md:w-[30%] md:h-[62%] lg:w-[42%] lg:h-[70%] xl:w-[47%] xl:h-[72%] xl:mr-[3%]">
           <Image
             src={slide.image!}
             alt={slide.imageAlt}
@@ -350,14 +353,8 @@ export default function HeroCarousel({
         </div>
       ))}
 
-      {/* Left readability wash — keeps the copy legible over the
-          product shot, the same device the solution hero uses. */}
-      <div
-        className="absolute inset-0 z-10 pointer-events-none"
-        style={{
-          background: "linear-gradient(90deg, rgba(247,248,251,0.95) 0%, rgba(247,248,251,0.7) 35%, rgba(247,248,251,0.25) 60%, rgba(247,248,251,0) 80%)",
-        }}
-      />
+      {/* 不加渐变蒙版 —— 产品图是透明底的大图,盖一层洗白会把产品压暗发灰。
+          文字在左侧独立区域,不靠蒙版也读得清。 */}
 
       {/* Content Overlay */}
       <HeroContent slide={slides[currentIndex]} />
