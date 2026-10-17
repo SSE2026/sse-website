@@ -306,9 +306,9 @@ export const PAGE_DEFS: CmsPageDef[] = [
       contact: {
         title: "携手深安锂能，共创智慧能源未来",
         subtitle: "",
-        email: "changhao@ssebatt.com",
-        phone: "+86 13651071130",
-        address: "深圳市坪山区坑梓街道沙田社区坪山大道6352号2栋210",
+        email: "zhanwenwei@ssebatt.com",
+        phone: "15814654041",
+        address: "深圳市坪山区源通科技园",
         studioTitle: "",
         studioDesc: "",
       },
