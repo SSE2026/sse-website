@@ -112,7 +112,7 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
     bgColor: "#eff6ff",
     label: { zh: "云驰 360-P 功率型", en: "AeroRide 360-P Power" },
     subtitle: { zh: "高能量 + 高功率型电芯", en: "High Energy + High Power Cell" },
-    image: "/images/360-p.png",
+    image: "/images/360-p.webp",
     heroImage: "/images/hero/hero-360-p.png",
     common: {
       voltageRange: "2.5 ~ 4.3",
@@ -145,7 +145,7 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
     bgColor: "#ecfdf5",
     label: { zh: "云驰 400-E 能量型", en: "AeroRide 400-E Energy" },
     subtitle: { zh: "高能量 + 长循环型电芯", en: "High Energy + Long Cycle Cell" },
-    image: "/images/400-E.png",
+    image: "/images/400-E.webp",
     heroImage: "/images/hero/hero-400-e.png",
     common: {
       voltageRange: "2.5 ~ 4.3",
@@ -179,7 +179,7 @@ export const seriesProfiles: Record<SeriesId, SeriesProfile> = {
     bgColor: "#f5f3ff",
     label: { zh: "云驰 460-X 超高能量型", en: "AeroRide 460-X Ultra-High Energy" },
     subtitle: { zh: "超高能量 + 超高倍率型电芯", en: "Ultra High Energy + High Rate Cell" },
-    image: "/images/400-X.png",
+    image: "/images/400-X.webp",
     heroImage: "/images/hero/hero-460-x.png",
     common: {
       voltageRange: "3.0 ~ 4.4",
