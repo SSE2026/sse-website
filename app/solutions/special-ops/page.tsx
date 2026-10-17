@@ -44,7 +44,6 @@ function IndustryPageContent({ locale }: { locale: Locale }) {
         subtitle={t.hero.subtitle}
         bgSrc="/images/solutions/special-ops-hero.jpg"
         fadeWidth={42}
-        imageScale={0.85}
       />
 
       <IndustryChallengeSolution
