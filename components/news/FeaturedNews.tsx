@@ -22,7 +22,7 @@ export function FeaturedNews({ item, locale }: FeaturedNewsProps) {
     <section className="bg-white border-b border-[#E5E7EB]">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-16">
         <div className="py-12 lg:py-16">
-          <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 lg:items-start">
             {/* Left - Content (Primary) - 55% */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -77,17 +77,18 @@ export function FeaturedNews({ item, locale }: FeaturedNewsProps) {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="lg:w-[420px] flex-shrink-0"
+              className="w-full lg:w-[420px] lg:flex-shrink-0"
             >
               <Link
                 href={`/news/${item.slug}`}
                 className="block group"
               >
-                {/* Container: fixed dimensions, centered flex, bg for letterbox */}
+                {/* Container: fixed dimensions, centered flex, bg for letterbox.
+                    手机上必须跟着容器走 —— 原来写死 420px 内联宽度,375 屏下
+                    内容区只有 317px,直接撑出 69px 横向溢出。 */}
                 <div
-                  className="relative flex items-center justify-center overflow-hidden"
+                  className="relative flex items-center justify-center overflow-hidden w-full lg:w-[420px]"
                   style={{
-                    width: "420px",
                     height: "280px",
                     backgroundColor: "#F4F5F7",
                   }}
@@ -98,7 +99,7 @@ export function FeaturedNews({ item, locale }: FeaturedNewsProps) {
                     fill
                     className="object-contain transition-transform duration-500 group-hover:scale-[1.015]"
                     priority
-                    sizes="420px"
+                    sizes="(max-width: 1023px) 100vw, 420px"
                   />
                 </div>
               </Link>

@@ -68,11 +68,23 @@ export function EnergyStackHero({ translations }: HeroProps) {
         }}
       />
       {/* Mobile focal shift — Logo lands in the right-third of the
-          viewport, not the left edge. */}
+          viewport, not the left edge.
+          背景图是 16:9 横图,竖屏下 cover 只能按高度铺满,横向必然裁掉大半:
+          740px 高的 hero 只露出原图 29% 的宽度,主体(横向 55%~68%)正好卡在
+          窗口右边缘。手机端把 hero 降到 65vh、焦点右移到 62%,露出比例提升到
+          ~40%,主体也落回画面中间。想完整看到整张图只能换竖版图。 */}
       <style jsx>{`
         @media (max-width: 767px) {
+          .brand-hero-img {
+            min-height: 65vh !important;
+          }
           .brand-hero-img__layer {
-            background-position: 55% 60% !important;
+            background-position: 62% 60% !important;
+          }
+          /* 内容区原本用 min-h 撑满首屏;hero 变矮后要同步放开,
+             否则文案会被 overflow-hidden 裁掉。内容自然高度只有 278px。 */
+          .brand-hero-grid {
+            min-height: 0 !important;
           }
         }
       `}</style>
@@ -91,7 +103,7 @@ export function EnergyStackHero({ translations }: HeroProps) {
 
       {/* === MAIN CONTENT ============================================ */}
       <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center min-h-[calc(100vh-72px-104px)] py-14 md:py-20">
+        <div className="brand-hero-grid grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center min-h-[calc(100vh-72px-104px)] py-14 md:py-20">
           {/* LEFT — wrapper handles the static downward shift so the
               block lines up with the Logo cube. motion.div inside
               handles the entrance animation only. */}

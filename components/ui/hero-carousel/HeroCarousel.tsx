@@ -148,8 +148,10 @@ function HeroContent({
   return (
     <div className="absolute inset-0 z-20 pointer-events-none">
       <div className="absolute inset-x-0 top-[25%] md:top-[28%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[17%] md:pr-[3%] pointer-events-auto">
-        {/* Text Content - Left side */}
-        <div className="max-w-[460px] flex-shrink-0">
+        {/* Text Content - Left side. 手机上拉满容器宽度:原来只有 flex-shrink-0,
+            中文长标题的不可断宽度会把块撑到 380px,超出 375 屏后被 hero 的
+            overflow-hidden 切掉右侧。md 起恢复原来的收缩行为,桌面排版不变。 */}
+        <div className="w-full min-w-0 max-w-[460px] md:w-auto md:flex-shrink-0">
           {/* Title */}
           <h1
             className="text-[28px] md:text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-5"

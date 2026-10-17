@@ -231,7 +231,7 @@ export default function AboutPage() {
         <MilestonesSection lang={locale === 'en' ? 'en' : 'zh'} items={milestoneItems} />
 
         {/* CTA Section - Explore Products */}
-        <section className="py-12 bg-gradient-to-b from-[#09090B] to-[#050505] relative">
+        <section className="py-12 bg-gradient-to-b from-[#09090B] to-[#050505] relative overflow-hidden">
           <div className="absolute inset-0">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#2563EB]/10 rounded-full blur-[150px]" />
           </div>
