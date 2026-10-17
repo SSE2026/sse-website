@@ -32,6 +32,11 @@ function ErrorContent() {
         return "请先登录。";
       case "session_expired":
         return "登录已过期或会话已失效，请重新登录。";
+      case "Configuration":
+        // Emitted by the NextAuth middleware when no secret resolves.
+        return "服务端认证配置缺失（NEXTAUTH_SECRET 未设置），请联系管理员。";
+      case "NO_SECRET":
+        return "服务端认证配置缺失（NEXTAUTH_SECRET 未设置），请联系管理员。";
       default:
         return "发生未知错误，请重试。";
     }

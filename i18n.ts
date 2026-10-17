@@ -5,6 +5,8 @@ export default getRequestConfig(async ({ locale }) => {
     throw new Error('Invalid locale');
   }
   return {
-    messages: (await import(`./messages/${locale}.json`)).default
+    messages: (await import(`./messages/${locale}.json`)).default,
+    timeZone: 'Asia/Shanghai',
+    now: new Date(),
   };
 });

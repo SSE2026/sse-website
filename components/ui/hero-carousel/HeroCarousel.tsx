@@ -23,10 +23,11 @@ export interface HeroSlide {
   imageAlt: string;
   eyebrow: string;
   title: string;
+  /** 可选的标题第二行(如「功率型」这类产品类型名),与 title 固定分行显示 */
+  titleLine2?: string;
   description: string;
   ctaText: string;
   ctaLink: string;
-  stats: { value: string; unit: string; label: string }[];
   objectPosition?: string;
 }
 
@@ -50,20 +51,11 @@ function HeroSlideImage({
   slide,
   isActive,
   priority,
-  index,
 }: {
   slide: HeroSlide;
   isActive: boolean;
   priority: boolean;
-  index: number;
 }) {
-  // Image positioning adjustments - all move right to avoid blocking text
-  const getPositionClass = () => {
-    if (index === 1) return "translate-x-[18%]"; // Second image moves right
-    if (index === 2) return "translate-x-[22%]"; // Third image moves more right
-    return "translate-x-[15%]"; // First image also moves right
-  };
-
   return (
     <div
       className={`absolute inset-0 ${
@@ -71,21 +63,21 @@ function HeroSlideImage({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]">
-        <div
-          className={`relative transition-transform duration-500 ${getPositionClass()}`}
-          style={{
-            width: "70%",
-            height: "75%",
-          }}
-        >
+      {/* 桌面端右对齐、避开左侧文字区。
+          手机端产品和文案竖向分开:文案在上(占满宽度、正常断行),
+          产品贴右下角,两者不重叠。产品占画布 87%,横向并排放不下。
+          右移量用图片自身的 mr 来给(xl 起 3%),不用容器的 pr —— pr 会同时
+          压缩内容盒,把图片一起缩小;mr 只推位置,不改变尺寸。
+          不能给更多:1280 下文字右边缘到图片左边缘只剩约 57px。 */}
+      <div className="absolute inset-0 flex items-end justify-end pr-[5%] pb-[6%] md:items-center md:justify-end md:pb-0 md:pr-[3%] bg-[#F7F8FB]">
+        <div className="relative w-[68%] h-[40%] md:w-[30%] md:h-[62%] lg:w-[42%] lg:h-[70%] xl:w-[47%] xl:h-[72%] xl:mr-[3%]">
           <Image
             src={slide.image!}
             alt={slide.imageAlt}
             fill
             priority={priority}
             quality={IMAGE_CONFIG.quality}
-            sizes={IMAGE_CONFIG.sizes}
+            sizes="(max-width: 768px) 90vw, 50vw"
             className="object-contain"
             style={{
               objectPosition: slide.objectPosition || "center center",
@@ -131,7 +123,7 @@ function HeroSlideVideo({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      <div className="absolute inset-0 flex items-end justify-end bg-[#0a0a0a]">
+      <div className="absolute inset-0 flex items-end justify-end bg-[#F7F8FB]">
         <video
           ref={videoRef}
           src={videoSrc}
@@ -157,13 +149,21 @@ function HeroContent({
 }) {
   return (
     <div className="absolute inset-0 z-20 pointer-events-none">
-      <div className="absolute inset-x-0 top-[25%] md:top-[28%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[17%] md:pr-[3%] pointer-events-auto">
-        {/* Text Content - Left side */}
-        <div className="max-w-[460px] flex-shrink-0">
+      <div className="absolute inset-x-0 top-[15%] md:top-[28%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[17%] md:pr-[3%] pointer-events-auto">
+        {/* Text Content - Left side. 手机上拉满容器宽度:原来只有 flex-shrink-0,
+            中文长标题的不可断宽度会把块撑到 380px,超出 375 屏后被 hero 的
+            overflow-hidden 切掉右侧。md 起恢复原来的收缩行为,桌面排版不变。 */}
+        <div className="w-[86%] min-w-0 max-w-[460px] md:w-auto md:flex-shrink-0">
           {/* Title */}
           <h1
             className="text-[28px] md:text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-5"
-            style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
+            style={{
+              fontFamily: "var(--font-space-grotesk, sans-serif)",
+              // 中文不在词组内部断行 —— 否则 48px 下 "云驰 460-X 超高能量型"
+              // 会在 "超高能量" 和 "型" 之间断开,把 "型" 单独甩到第二行。
+              // 英文标题不受影响(keep-all 只作用于 CJK 断行规则)。
+              wordBreak: "keep-all",
+            }}
           >
             {(() => {
               const t = slide.title;
@@ -173,15 +173,18 @@ function HeroContent({
               return (
                 <>
                   <span className="text-shimmer-logo">{first}</span>
-                  {rest && <span className="text-white">{rest}</span>}
+                  {rest && <span className="text-[#0A0A0F]">{rest}</span>}
                 </>
               );
             })()}
+            {slide.titleLine2 && (
+              <span className="block text-[#0A0A0F]">{slide.titleLine2}</span>
+            )}
           </h1>
 
           {/* Description */}
           <p
-            className="text-[13px] md:text-[14px] text-gray-300 leading-relaxed mb-7 max-w-[380px]"
+            className="text-[13px] md:text-[14px] text-[#52525B] leading-relaxed mb-7 max-w-[380px]"
             style={{ fontFamily: "var(--font-inter, sans-serif)" }}
           >
             {slide.description}
@@ -189,24 +192,11 @@ function HeroContent({
 
           {/* CTA Button */}
           <Link href={slide.ctaLink}>
-            <button className="inline-flex items-center gap-2 px-8 md:px-10 py-4 bg-white text-[#0a0a0a] font-semibold text-[16px] rounded-lg hover:bg-gray-200 transition-all cursor-pointer">
+            <button className="inline-flex items-center gap-2 px-8 md:px-10 py-4 bg-[#0A0A0F] text-white font-semibold text-[16px] rounded-lg hover:bg-[#1F1F2A] transition-all cursor-pointer">
               {slide.ctaText}
               <ArrowRight className="w-5 h-5" />
             </button>
           </Link>
-
-          {/* Three Stats - Horizontal */}
-          <div className="mt-10 flex gap-10">
-            {slide.stats.map((stat, index) => (
-              <div key={index}>
-                <div className="text-3xl font-bold text-white font-mono">
-                  {stat.value}
-                  {stat.unit && <span className="text-base text-blue-400 ml-1">{stat.unit}</span>}
-                </div>
-                <div className="text-xs text-gray-400 mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>
@@ -331,21 +321,22 @@ export default function HeroCarousel({
   };
 
   if (!mounted) {
-    return <section className="relative w-full h-[680px] md:h-[760px] bg-[#0a0a0a]" />;
+    return <section className="relative w-full h-[680px] md:h-[760px] bg-[#F7F8FB]" />;
   }
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[calc(100vh-80px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] lg:h-[calc(100vh-80px)] overflow-hidden bg-[#0a0a0a]"
+      className="relative w-full h-[72vh] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] lg:h-[calc(100vh-80px)] overflow-hidden bg-[#F7F8FB]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Background ambient glow */}
-      <div className="absolute top-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 to-cyan-500/15 rounded-full blur-[140px] pointer-events-none z-0" />
+      {/* Soft studio highlight behind the subject — keeps the light
+          panel from reading as flat grey. */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-white/70 rounded-full blur-[120px] pointer-events-none z-0" />
 
       {/* Slides */}
       {slides.map((slide, index) => (
@@ -361,19 +352,13 @@ export default function HeroCarousel({
               slide={slide}
               isActive={index === currentIndex}
               priority={index === 0}
-              index={index}
             />
           )}
         </div>
       ))}
 
-      {/* Dark Gradient Overlay */}
-      <div
-        className="absolute inset-0 z-10 pointer-events-none"
-        style={{
-          background: "linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.1) 70%, transparent 100%)",
-        }}
-      />
+      {/* 不加渐变蒙版 —— 产品图是透明底的大图,盖一层洗白会把产品压暗发灰。
+          文字在左侧独立区域,不靠蒙版也读得清。 */}
 
       {/* Content Overlay */}
       <HeroContent slide={slides[currentIndex]} />

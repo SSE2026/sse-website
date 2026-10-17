@@ -3,9 +3,27 @@
     "home": "首页",
     "about": "关于我们",
     "products": "产品中心",
-    "technology": "技术研发",
-    "cases": "案例展示",
-    "industries": "行业应用",
+    "productsCells": "电芯",
+    "productsCellsCloudchi": "云驰系列",
+    "productsCellsCloudchi360P": "云驰 360-P 功率型",
+    "productsCellsCloudchi400E": "云驰 400-E 能量型",
+    "productsCellsCloudchi460X": "云驰 460-X 超高能量型",
+    "productsCellsPanshi": "磐石系列",
+    "productsPacks": "电池组",
+    "technology": "研发与智造",
+    "cases": "解决方案",
+    "industries": {
+      "lowAltitude": "低空飞行器",
+      "embodiedAI": "具身智能机器人",
+      "marine": "海洋装备",
+      "specialOps": "特种装备"
+    },
+    "industries_alt": {
+      "lowAltitude": "无人机 / eVTOL",
+      "embodiedAI": "四足 / 双足机器人",
+      "marine": "USV / ROV / AUV",
+      "specialOps": "工程 / 警用 / 应急"
+    },
     "news": "新闻中心",
     "contact": "联系我们"
   },
@@ -17,8 +35,8 @@
       "stats": {
         "patents": "发明专利",
         "papers": "Nature 顶刊论文",
-        "production": "固态电解质产线",
-        "samples": "头部客户送样验证"
+        "production": "生产能力",
+        "samples": "智造工厂"
       }
     },
     "coreTech": {
@@ -65,6 +83,28 @@
             "机理 - AI 融合云边系统智能运维"
           ]
         }
+      ],
+      "slides": [
+        {
+          "title": "固态电解质材料",
+          "summary": "以材料突破，筑牢固态电池安全根基"
+        },
+        {
+          "title": "全硅基负极",
+          "summary": "突破硅基材料边界，释放高比能潜力"
+        },
+        {
+          "title": "无负极技术",
+          "summary": "重构电芯结构，探索能量密度新边界"
+        },
+        {
+          "title": "速热超充",
+          "summary": "让能量快速释放，让温度精准可控"
+        },
+        {
+          "title": "AI for Battery",
+          "summary": "以数据驱动创新，以智能重塑电池全生命周期"
+        }
       ]
     },
     "rdStrength": {
@@ -78,26 +118,99 @@
     }
   },
   "hero": {
-    "title": "突破能量极限，重塑电动边界",
-    "titleLine1": "突破能量极限",
-    "titleLine2": "重塑电动边界",
-    "subtitle": "高比能、高安全固态电池解决方案",
-    "explore": "探索技术",
-    "contact": "联系我们",
-    "keywords": {
-      "lowAltitude": "低空飞行",
-      "embodiedAI": "具身智能",
-      "deepSea": "深海装备"
+    "eyebrow": "SHEN'AN LITHIUM ENERGY",
+    "topRightTag": "ENERGY IN ACTION",
+    "topRightLink": "应用场景参考",
+    "titleLine1": "突破 能量极限",
+    "titleLine2": "重塑 电动边界",
+    "sectionTitle": "应用场景",
+    "subtitle": "以高比能、高安全电池技术，拓展电动装备的性能边界。",
+    "tags": {
+      "highEnergy": "高能量密度",
+      "highPower": "高功率",
+      "highSafety": "高安全性",
+      "fastCharging": "超快充"
     },
-    "stats": {
-      "energyDensity": "Wh/kg",
-      "cycleLife": "循环寿命 (Cycles)",
-      "patents": "授权专利"
+    "ctaExplore": "探索核心技术",
+    "ctaContact": "了解深安锂能",
+    "scene": {
+      "number": "01",
+      "title": "为更远航程蓄能",
+      "titleEn": "LOW-ALTITUDE AVIATION",
+      "caption": "场景示意：DeltaQuad · PX4 User Guide / CC BY 4.0"
+    },
+    "scenarios": [
+      {
+        "id": "lowAltitude",
+        "number": "01",
+        "label": "低空经济",
+        "subLabel": "轻量化、长航时"
+      },
+      {
+        "id": "embodiedAI",
+        "number": "02",
+        "label": "具身智能",
+        "subLabel": "持久行动、动态功率"
+      },
+      {
+        "id": "deepSpaceAndSea",
+        "number": "03",
+        "label": "深空深海",
+        "subLabel": "长时供电、系统协同"
+      },
+      {
+        "id": "specialEquipment",
+        "number": "04",
+        "label": "高端特种装备",
+        "subLabel": "高负载、高抗补能"
+      }
+    ],
+    "energyStack": {
+      "captionPrefixZh": "场景",
+      "captionPrefixEn": "Scenario",
+      "scenarios": [
+        {
+          "id": "lowaltitude",
+          "index": "01",
+          "indexLabel": "01 / DRONES",
+          "en": "Drones",
+          "zh": "低空经济",
+          "captionZh": "为低空飞行器提供高比能动力，让飞行更远、更强、更自由",
+          "captionEn": "High-energy-density propulsion for farther, stronger, freer flight."
+        },
+        {
+          "id": "embodied",
+          "index": "02",
+          "indexLabel": "02 / ROBOTICS",
+          "en": "Robotics",
+          "zh": "具身智能",
+          "captionZh": "为下一代智能移动装备提供高性能能源",
+          "captionEn": "High-performance energy for next-gen mobile intelligent platforms."
+        },
+        {
+          "id": "deepsea",
+          "index": "03",
+          "indexLabel": "03 / EXPLORATION",
+          "en": "Exploration",
+          "zh": "深空深海",
+          "captionZh": "面向极端环境的高安全、高可靠能源系统",
+          "captionEn": "High-safety, high-reliability energy for extreme environments."
+        },
+        {
+          "id": "special",
+          "index": "04",
+          "indexLabel": "04 / MINING VEHICLES",
+          "en": "Mining Vehicles",
+          "zh": "特种装备",
+          "captionZh": "为高负载、高机动装备提供持续动力",
+          "captionEn": "Providing continuous power for high-load, high-mobility vehicles."
+        }
+      ]
     }
   },
   "about": {
     "companyTitle": "深安锂能",
-    "companyDesc": "深安锂能（深圳）科技有限公司是由北京理工大学产学研孵化的先进能源科技企业。公司依托院士团队及全球顶尖科研资源，由国家海外高层次人才领衔，汇聚了涵盖电池材料、电芯及系统运维的全链条工程化专家团队。\n\n深安锂能专注于高比能、极致安全的超充固态电池技术研发与产业化。公司围绕高硅/全硅负极、高安全固态电解质及先进电池结构，自主构建了「材料-电芯-系统」的全栈核心技术体系。通过「速热超充与固态融合」的颠覆性方案，成功突破高能量密度、超快充放与极致安全性兼顾的行业难题，为无人机、eVTOL及重型动力装备等前沿领域提供高效、安全、可持续的下一代新能源动力解决方案。"
+    "companyDesc": "深安锂能（深圳）科技有限公司是北京理工大学孵化的科技创新企业，由院士科研团队与资深产业化团队联合创立，专注于高比能、高安全先进电池的研发与产业化。公司聚焦低空经济、具身智能、深空深海及高端特种装备等前沿应用领域，围绕材料体系、电芯设计、先进制造与智能系统开展协同创新，以更高能量密度、更高安全性和更强环境适应性的电池技术，持续拓展新一代智能装备的性能与应用边界，相关产品已向无人机、eVTOL、机器人及工程机械等领域的多家头部客户批量交付。"
   },
   "advantages": {
     "title": "核心优势",
@@ -124,17 +237,17 @@
     "subtitle": "以任务属性定义产品，为边界场景提供差异化动力方案",
     "viewDetails": "查看详情",
     "power": {
-      "title": "云驰 360-P",
+      "title": "云驰 360-P 功率型",
       "desc": "高功率平台，适用于四足机器人和多旋翼无人机等瞬时功率需求场景",
       "specs": "360 Wh/kg • 2C/5C放电 • 四足/无人机"
     },
     "storage": {
-      "title": "云驰 400-E",
+      "title": "云驰 400-E 能量型",
       "desc": "高能量平台，适用于固定翼/复合翼无人机，长航时潜航器、巡检机器人",
       "specs": "400 Wh/kg • 1C/3C放电 • 长续航"
     },
     "drone": {
-      "title": "云驰 460-X",
+      "title": "云驰 460-X 超高能量型",
       "desc": "超高能量平台，适用于极限续航或10C高功率输出场景",
       "specs": "460+ Wh/kg • 10C峰值 • 极限任务"
     },
@@ -199,7 +312,7 @@
     "description": "突破电池性能边界，实现高门槛场景的电动化。",
     "quickLinks": "快速链接",
     "products": "产品中心",
-    "technology": "技术研发",
+    "technology": "研发与智造",
     "about": "关于我们",
     "contact": "联系我们",
     "legal": "法律信息",
@@ -259,6 +372,7 @@
       "title": "案例展示",
       "headline": "突破飞行边界，赋能未来航空。",
       "subtitle": "硬核电池解决方案：突破续航与载荷极限，无惧极端环境挑战",
+      "tagline": "高性能固态电池 · 为下一程蓄能",
       "stats": {
         "coldResilient": "耐低温",
         "maxPayload": "最大载荷",
@@ -414,5 +528,914 @@
       ]
     },
     "batteryArchitecture": "电池架构"
+  },
+  "solutions": {
+    "hero": {
+      "title": "为复杂任务，提供更强大的能源解决方案。",
+      "subtitle": "面向低空飞行、具身智能、海洋装备与特种应用，提供从高性能电芯到智能电池系统的定制化动力支持。",
+      "eyebrow": "解决方案 / SOLUTIONS",
+      "ctaExplore": "探索解决方案",
+      "ctaConsult": "洽谈项目合作"
+    },
+    "challenges": {
+      "title": "核心能源挑战",
+      "subtitle": "把行业最难解决的能源问题,翻译成我们的工程语言。",
+      "items": {
+        "energy": {
+          "label": "能量密度",
+          "title": "在有限重量与体积里,塞进更多可用能量。",
+          "desc": "续航天花板、载荷空间、整机浮力与机器人重心,都被电池的能量密度直接锁定。"
+        },
+        "power": {
+          "label": "瞬时功率",
+          "title": "瞬时大倍率放电,而不牺牲安全和寿命。",
+          "desc": "垂起推进、跳跃跌倒、推进器启动、液压负载,都要求电池在毫秒级输出大电流。"
+        },
+        "temperature": {
+          "label": "极端环境",
+          "title": "-40℃ 到 60℃,稳定供电。",
+          "desc": "高寒、高海拔、海水低温、户外风沙昼夜温差,普通电池在这里快速失效。"
+        },
+        "system": {
+          "label": "系统协同",
+          "title": "电芯、PACK、BMS 与整机主控,需要一套而不是一堆。",
+          "desc": "多方供应链割裂、协议不一致、调参周期长,是行业内反复出现的痛点。"
+        }
+      }
+    },
+    "capabilities": {
+      "title": "技术与交付能力",
+      "subtitle": "从电芯到整机适配,我们交付一整套可集成的动力方案。",
+      "items": {
+        "cell": {
+          "title": "高性能电芯",
+          "desc": "高能量密度电芯平台,覆盖工业无人机、机器人与海洋装备的多场景需求。"
+        },
+        "pack": {
+          "title": "定制 PACK",
+          "desc": "非标尺寸、非标电压、紧凑舱体、异形空间,我们按整机集成需求做定制 PACK。"
+        },
+        "bms": {
+          "title": "智能 BMS",
+          "desc": "高精度 SOC/SOH 估算、分级故障诊断、CAN 通讯,可深度对接整机主控。"
+        },
+        "system": {
+          "title": "整机适配",
+          "desc": "电芯 + PACK + BMS + 系统调参一体化交付,降低整机企业的联调风险。"
+        }
+      },
+      "footnote": "上述能力根据具体产品和型号适用范围有所差异,以技术协议为准。"
+    },
+    "industries": {
+      "lowAltitude": {
+        "name": "低空飞行器",
+        "tagline": "从测绘到 eVTOL,在有限重量约束下提升续航、载荷和垂起‑巡航‑降落全工况动力稳定。",
+        "href": "/cases/low-altitude"
+      },
+      "embodiedAI": {
+        "name": "具身智能机器人",
+        "tagline": "面向四足机器狗与人形机器人,兼顾续航、瞬时爆发功率与冲击耐受。",
+        "href": "/cases/embodied-ai"
+      },
+      "marine": {
+        "name": "海洋装备",
+        "tagline": "面向无人艇、ROV、AUV,兼顾高能量密度、耐盐雾防腐与宽温域。",
+        "href": "/cases/marine"
+      },
+      "specialOps": {
+        "name": "特种装备",
+        "tagline": "面向工程、警用、应急救援装备,在冲击振动、宽温极端环境稳定供电。",
+        "href": "/cases/special-ops"
+      }
+    },
+    "flow": {
+      "title": "项目开发流程",
+      "subtitle": "从需求沟通到量产导入,我们建议的合作路径。",
+      "steps": [
+        {
+          "title": "需求沟通",
+          "desc": "明确平台类型、续航与功率目标、边界工况"
+        },
+        {
+          "title": "方案设计",
+          "desc": "输出电芯选型、PACK 架构与系统接口方案"
+        },
+        {
+          "title": "系统定制",
+          "desc": "BMS 策略、结构与热设计按整机需求定制"
+        },
+        {
+          "title": "样品验证",
+          "desc": "样件交付 + 台架与实机工况验证"
+        },
+        {
+          "title": "量产导入",
+          "desc": "产线导入、批量交付与持续技术支持"
+        }
+      ]
+    },
+    "cta": {
+      "title": "把任务场景告诉我们,我们做工程化反馈。",
+      "desc": "提交您的平台类型、续航/功率目标与边界条件,工程团队 48 小时内给出可行方案。",
+      "button": "项目咨询"
+    },
+    "lowAltitude": {
+      "hero": {
+        "eyebrow": "解决方案 / 低空飞行器",
+        "title": "驭风无界，高能续航",
+        "subtitle": "专为低空飞行器打造的一站式高能量密度动力系统，突破极寒与重载极限"
+      },
+      "painPoints": {
+        "title": "行业挑战",
+        "items": [
+          {
+            "keyword": "续航与载荷受限",
+            "desc": "能量密度不足，自重挤占有效载荷"
+          },
+          {
+            "keyword": "高低温容量衰减",
+            "desc": "高寒高温下衰减明显，-20℃ 以下快速掉容"
+          },
+          {
+            "keyword": "瞬时大功率与热管理",
+            "desc": "垂起大倍率放电发热突出，温升难管控"
+          },
+          {
+            "keyword": "供应链多方割裂",
+            "desc": "电芯、PACK、BMS 割裂，适配调试风险高"
+          }
+        ]
+      },
+      "value": {
+        "title": "方案价值",
+        "desc": "在有限重量约束下提升续航、载荷能力,保障垂起‑巡航‑降落全工况动力稳定,满足严苛环境下实飞任务。"
+      },
+      "highlights": {
+        "title": "核心解决能力",
+        "items": [
+          {
+            "label": "高能量密度",
+            "desc": "同等重量下提升续航时间、释放载荷空间"
+          },
+          {
+            "label": "-40℃ ~ 60℃",
+            "desc": "超宽温域，适配寒区与高原作业"
+          },
+          {
+            "label": "持续 / 脉冲大电流",
+            "desc": "满足垂直起降瞬时大功率需求"
+          },
+          {
+            "label": "专用 BMS",
+            "desc": "多串多并组网，完成整机级系统适配与策略调参"
+          },
+          {
+            "label": "两级热设计",
+            "desc": "电芯‑电池组两级热设计，兼顾能量密度、安全与循环寿命"
+          }
+        ]
+      },
+      "cases": {
+        "title": "场景案例",
+        "items": [
+          {
+            "scene": "工业级多旋翼无人机",
+            "image": "/images/solutions/cases/low-altitude-1.jpg",
+            "imageAlt": "工业级多旋翼无人机",
+            "applications": "测绘 · 安防 · 巡检 · 应急 · 物流",
+            "metrics": [
+              {
+                "value": "85 min",
+                "label": "连续飞行"
+              },
+              {
+                "value": "+63%",
+                "label": "航时提升"
+              },
+              {
+                "value": "20%",
+                "label": "降落余电"
+              }
+            ],
+            "value": "续航大幅提升，全程温控稳定，降落仍保有 20% 余电",
+            "comparison": {
+              "title": "竞品对比",
+              "columns": [
+                "竞品模组",
+                "深安模组"
+              ],
+              "highlightColumn": 1,
+              "rows": [
+                {
+                  "label": "规格",
+                  "values": [
+                    "7S1P",
+                    "7S1P"
+                  ]
+                },
+                {
+                  "label": "最低容量（Ah）",
+                  "values": [
+                    "19.2",
+                    "30"
+                  ]
+                },
+                {
+                  "label": "标称电压（V）",
+                  "values": [
+                    "25.9",
+                    "24.5"
+                  ]
+                },
+                {
+                  "label": "能量（Wh）",
+                  "values": [
+                    "497.28",
+                    "735"
+                  ]
+                },
+                {
+                  "label": "重量（kg）",
+                  "values": [
+                    "2.12",
+                    "2.1"
+                  ]
+                },
+                {
+                  "label": "能量密度（Wh/kg）",
+                  "values": [
+                    "226",
+                    "350"
+                  ]
+                },
+                {
+                  "label": "尺寸（mm）",
+                  "values": [
+                    "163*85*100",
+                    "195*74*95"
+                  ]
+                },
+                {
+                  "label": "持续放电电流（A）",
+                  "values": [
+                    "96",
+                    "90~150"
+                  ]
+                },
+                {
+                  "label": "最大充电电流（A）",
+                  "values": [
+                    "19.2",
+                    "30"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "scene": "大载重多旋翼无人机",
+            "image": "/images/solutions/cases/low-altitude-2.jpg",
+            "imageAlt": "大载重多旋翼无人机",
+            "applications": "吊运 · 运输 · 清洗 · 消防 · 应急",
+            "metrics": [
+              {
+                "value": "200 kg",
+                "label": "满载起飞"
+              },
+              {
+                "value": "23 min",
+                "label": "续航"
+              },
+              {
+                "value": "223%",
+                "label": "续航提升"
+              }
+            ],
+            "value": "满载 200kg 起飞仍保持稳定续航与温升控制",
+            "comparison": {
+              "title": "竞品对比",
+              "columns": [
+                "FC200",
+                "深安客户"
+              ],
+              "highlightColumn": 1,
+              "rows": [
+                {
+                  "group": "模组参数",
+                  "label": "规格",
+                  "values": [
+                    "14S1P",
+                    "24S2P"
+                  ]
+                },
+                {
+                  "label": "最低容量（Ah）",
+                  "values": [
+                    "46",
+                    "72"
+                  ]
+                },
+                {
+                  "label": "标称电压（V）",
+                  "values": [
+                    "52.22",
+                    "84"
+                  ]
+                },
+                {
+                  "label": "能量（Wh）",
+                  "values": [
+                    "2402",
+                    "6048"
+                  ]
+                },
+                {
+                  "label": "重量（kg）",
+                  "values": [
+                    "16",
+                    "23"
+                  ]
+                },
+                {
+                  "label": "能量密度（Wh/kg）",
+                  "values": [
+                    "150",
+                    "260"
+                  ]
+                },
+                {
+                  "group": "飞行工况",
+                  "label": "满载重量（kg）",
+                  "values": [
+                    "200",
+                    "200"
+                  ]
+                },
+                {
+                  "label": "电池数量",
+                  "values": [
+                    "四电",
+                    "四电"
+                  ]
+                },
+                {
+                  "label": "满载飞行时长（min）",
+                  "values": [
+                    "7",
+                    "23"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "scene": "工业级复合翼无人机",
+            "image": "/images/solutions/cases/low-altitude-3.jpg",
+            "imageAlt": "工业级复合翼无人机",
+            "applications": "安防 · 巡检 · 测绘 · 应急 · 物流",
+            "metrics": [
+              {
+                "value": "287 min",
+                "label": "飞行时长"
+              },
+              {
+                "value": "424.3 km",
+                "label": "不间断飞行"
+              },
+              {
+                "value": "+36%",
+                "label": "航时提升"
+              }
+            ],
+            "value": "长航时突破 5 小时，极寒环境容量保持 >90%",
+            "comparison": {
+              "title": "竞品对比",
+              "columns": [
+                "竞品模组",
+                "深安锂能模组"
+              ],
+              "highlightColumn": 1,
+              "rows": [
+                {
+                  "label": "规格",
+                  "values": [
+                    "12S1P",
+                    "12S1P"
+                  ]
+                },
+                {
+                  "label": "最低容量（Ah）",
+                  "values": [
+                    "33",
+                    "42.5"
+                  ]
+                },
+                {
+                  "label": "标称电压（V）",
+                  "values": [
+                    "43.2",
+                    "42"
+                  ]
+                },
+                {
+                  "label": "能量（Wh）",
+                  "values": [
+                    "1425",
+                    "1785"
+                  ]
+                },
+                {
+                  "label": "重量（kg）",
+                  "values": [
+                    "5.1",
+                    "4.9"
+                  ]
+                },
+                {
+                  "label": "能量密度（Wh/kg）",
+                  "values": [
+                    "280",
+                    "360"
+                  ]
+                },
+                {
+                  "label": "持续放电电流（A）",
+                  "values": [
+                    "99",
+                    "120"
+                  ]
+                },
+                {
+                  "label": "最大充电电流（A）",
+                  "values": [
+                    "33",
+                    "41"
+                  ]
+                },
+                {
+                  "label": "放电工作温度（℃）",
+                  "values": [
+                    "-20~60",
+                    "-40~60"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "scene": "货运 / 载人 eVTOL",
+            "image": "/images/solutions/cases/low-altitude-eVTOL.jpg",
+            "imageAlt": "货运 / 载人 eVTOL",
+            "applications": "空中客运 · 短途物流 · 景区观光 · 应急救援",
+            "metrics": [
+              {
+                "value": "1 t",
+                "label": "满载起飞"
+              },
+              {
+                "value": "60+ min",
+                "label": "续航"
+              },
+              {
+                "value": "400 V",
+                "label": "高压平台"
+              }
+            ],
+            "value": "吨级满载起飞，高压平台保障动力冗余"
+          }
+        ]
+      }
+    },
+    "embodiedAI": {
+      "hero": {
+        "eyebrow": "解决方案 / 具身智能机器人",
+        "title": "进化，源自澎湃动力",
+        "subtitle": "以轻量化、高功率动力系统，赋能机器人的每一次进化"
+      },
+      "painPoints": {
+        "title": "行业挑战",
+        "items": [
+          {
+            "keyword": "空间受限与重心偏移",
+            "desc": "电池仓狭小，配重削弱机动与越障能力"
+          },
+          {
+            "keyword": "脉冲大负载",
+            "desc": "行走、跳跃、跌倒自救产生瞬时冲击，易电压跌落"
+          },
+          {
+            "keyword": "户外可靠性与温域",
+            "desc": "振动冲击与高低温下衰减明显，排查困难"
+          },
+          {
+            "keyword": "电量估算精度不足",
+            "desc": "剩余电量失真，引发非预期断电"
+          }
+        ]
+      },
+      "value": {
+        "title": "方案价值",
+        "desc": "在有限体积重量约束下,兼顾续航与瞬时爆发功率,抵抗复杂地形的冲击振动,提升机器人连续作业时长。"
+      },
+      "highlights": {
+        "title": "核心解决能力",
+        "items": [
+          {
+            "label": "轻量化 PACK",
+            "desc": "高能量密度控制自重，大幅提升续航能力"
+          },
+          {
+            "label": "超大瞬时脉冲",
+            "desc": "应对奔跑、跳跃、跌倒恢复的瞬时功率冲击"
+          },
+          {
+            "label": "抗振动抗冲击",
+            "desc": "结构设计适配复杂地形颠簸工况"
+          },
+          {
+            "label": "定制化 BMS",
+            "desc": "支持 CAN 通讯，无缝对接整机主控"
+          },
+          {
+            "label": "双电池热插拔",
+            "desc": "并机热插拔，更换电池无需停机"
+          },
+          {
+            "label": "-40℃ ~ 60℃",
+            "desc": "超宽温域，支持室内、野外多场景作业"
+          }
+        ]
+      },
+      "cases": {
+        "title": "场景案例",
+        "items": [
+          {
+            "scene": "四足机器狗",
+            "image": "/images/solutions/cases/embodied-ai-1.jpg",
+            "imageAlt": "四足机器狗",
+            "applications": "巡检 · 安防 · 勘探 · 应急 · 物资托运",
+            "metrics": [
+              {
+                "value": "+44%",
+                "label": "电量提升"
+              },
+              {
+                "value": "-2 kg",
+                "label": "减重"
+              },
+              {
+                "value": "300 A",
+                "label": "短时脉冲"
+              }
+            ],
+            "value": "尺寸不变电量提升 44%，支持双电冗余热插拔",
+            "comparison": {
+              "title": "竞品对比",
+              "columns": [
+                "现有模组参数",
+                "深安方案"
+              ],
+              "highlightColumn": 1,
+              "rows": [
+                {
+                  "label": "组合方式",
+                  "values": [
+                    "18S1P",
+                    "18S1P"
+                  ]
+                },
+                {
+                  "label": "标称电压（V）",
+                  "values": [
+                    "66.6",
+                    "143.5"
+                  ]
+                },
+                {
+                  "label": "标称容量（Ah）",
+                  "values": [
+                    "30",
+                    "41"
+                  ]
+                },
+                {
+                  "label": "电芯尺寸（mm）",
+                  "values": [
+                    "12*88*187（预估）",
+                    "10.5*88*187"
+                  ]
+                },
+                {
+                  "label": "电芯能量密度（Wh/kg）",
+                  "values": [
+                    "245",
+                    "391"
+                  ]
+                },
+                {
+                  "label": "电量（Wh）",
+                  "values": [
+                    "1998",
+                    "2583"
+                  ]
+                },
+                {
+                  "label": "放电截止电压（V）",
+                  "values": [
+                    "54（3.0）",
+                    "45（2.5）"
+                  ]
+                },
+                {
+                  "label": "充电终止电压（V）",
+                  "values": [
+                    "77.4（4.3）",
+                    "77.4（4.3）"
+                  ]
+                },
+                {
+                  "label": "标准充电电流（A）",
+                  "values": [
+                    "6",
+                    "20"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "scene": "双足人形机器人",
+            "image": "/images/solutions/cases/embodied-ai-2.jpg",
+            "imageAlt": "双足人形机器人",
+            "applications": "工业作业 · 场区巡检 · 公共安防 · 商业服务",
+            "metrics": [
+              {
+                "value": "高比能",
+                "label": "轻量化系统"
+              },
+              {
+                "value": "SOC",
+                "label": "精准估算"
+              }
+            ],
+            "value": "胸腔狭小空间适配，动态功率响应优化"
+          }
+        ]
+      }
+    },
+    "marine": {
+      "hero": {
+        "eyebrow": "解决方案 / 海洋装备",
+        "title": "以可靠动力，探索深蓝边界",
+        "subtitle": "耐盐雾、抗强压，异形 PACK 定制与高能量密度设计，完美适配复杂耐压舱体"
+      },
+      "painPoints": {
+        "title": "行业挑战",
+        "items": [
+          {
+            "keyword": "舱体适配与浮力配平",
+            "desc": "耐压舱空间受限，电池重量影响整机配平"
+          },
+          {
+            "keyword": "盐雾腐蚀与耐压",
+            "desc": "密封、防腐、耐压不足将直接导致失效"
+          },
+          {
+            "keyword": "低温与密闭散热",
+            "desc": "海水低温掉容，密闭舱内温升管控难"
+          },
+          {
+            "keyword": "检修成本与可靠性",
+            "desc": "回收检修昂贵，对精度与可靠性要求严苛"
+          }
+        ]
+      },
+      "value": {
+        "title": "方案价值",
+        "desc": "兼顾高能量密度、耐盐雾防腐、宽温域特性,支持 BMS 深度定制,适配水面‑浅海‑中深海多类作业工况,解决舱体适配、浮力配平、海洋环境可靠性痛点。"
+      },
+      "highlights": {
+        "title": "核心解决能力",
+        "items": [
+          {
+            "label": "高能量密度 PACK",
+            "desc": "提升续航、减轻自重，缓解浮力配平压力"
+          },
+          {
+            "label": "耐盐雾抗振动",
+            "desc": "封装设计抵御海洋高盐雾腐蚀与颠簸冲击"
+          },
+          {
+            "label": "宽温域电芯",
+            "desc": "保障海水低温环境下稳定放电输出"
+          },
+          {
+            "label": "海洋适配自研 BMS",
+            "desc": "兼容水下装备通讯协议，高精度 SOC/SOH 估算"
+          },
+          {
+            "label": "异形 PACK 定制",
+            "desc": "灵活适配耐压舱复杂受限安装空间"
+          }
+        ]
+      },
+      "cases": {
+        "title": "场景案例",
+        "items": [
+          {
+            "scene": "水面无人艇",
+            "image": "/images/solutions/cases/marine-usv.jpg",
+            "imageAlt": "水面无人艇",
+            "applications": "水文监测 · 边防巡逻 · 海洋测绘",
+            "metrics": [
+              {
+                "value": "耐盐雾",
+                "label": "封装防护"
+              },
+              {
+                "value": "长续航",
+                "label": "高比能设计"
+              },
+              {
+                "value": "远程",
+                "label": "状态上报"
+              }
+            ],
+            "value": "耐盐雾长续航，电池状态支持远程监控"
+          },
+          {
+            "scene": "ROV 遥控水下机器人",
+            "image": "/images/solutions/cases/marine-rov.jpg",
+            "imageAlt": "ROV 遥控水下机器人",
+            "applications": "水下设施检测 · 水下作业 · 船舶清洗",
+            "metrics": [
+              {
+                "value": "高倍率",
+                "label": "瞬时推进"
+              },
+              {
+                "value": "紧凑型",
+                "label": "舱内适配"
+              },
+              {
+                "value": "宽温域",
+                "label": "低温放电"
+              }
+            ],
+            "value": "推进器瞬时大功率，紧凑 PACK 适配舱内空间"
+          },
+          {
+            "scene": "AUV 自主水下无人潜器",
+            "image": "/images/solutions/cases/marine-auv.jpg",
+            "imageAlt": "AUV 自主水下无人潜器",
+            "applications": "海洋科考 · 海底管线巡检",
+            "metrics": [
+              {
+                "value": "高比能",
+                "label": "自持续航"
+              },
+              {
+                "value": "SOC/SOH",
+                "label": "精度估算"
+              },
+              {
+                "value": "轻量化",
+                "label": "浮力配平"
+              }
+            ],
+            "value": "提升水下自持续航，轻量化缓解浮力配平"
+          }
+        ]
+      }
+    },
+    "specialOps": {
+      "hero": {
+        "eyebrow": "解决方案 / 特种装备",
+        "title": "磐石品质，使命必达",
+        "subtitle": "抗冲击、抗振动、-40℃低温秒级响应，关键时刻绝不掉线"
+      },
+      "painPoints": {
+        "title": "行业挑战",
+        "items": [
+          {
+            "keyword": "极端工况适应",
+            "desc": "高寒、高温、沙尘与持续冲击颠簸"
+          },
+          {
+            "keyword": "任务关键可靠性",
+            "desc": "供电故障直接中断任务并引发次生风险"
+          },
+          {
+            "keyword": "形态与电压多样化",
+            "desc": "安装空间与电压平台差异大，难标准化"
+          },
+          {
+            "keyword": "脉冲负载与安全防护",
+            "desc": "瞬时大功率易电压跌落、误保护"
+          }
+        ]
+      },
+      "value": {
+        "title": "方案价值",
+        "desc": "在冲击、振动、宽温极端环境保障装备稳定供电,支持非标尺寸、非标电压定制。"
+      },
+      "highlights": {
+        "title": "核心解决能力",
+        "items": [
+          {
+            "label": "-40℃ ~ 60℃",
+            "desc": "超宽温域，保障极端低温环境可用容量"
+          },
+          {
+            "label": "抗冲击抗振动",
+            "desc": "强化 PACK 结构，耐受颠簸与磕碰冲击"
+          },
+          {
+            "label": "非标定制",
+            "desc": "非标电压与外形，灵活适配受限安装空间"
+          },
+          {
+            "label": "定制化 BMS",
+            "desc": "分级故障诊断与状态上报，深度对接整机主控"
+          },
+          {
+            "label": "协同安全防护",
+            "desc": "电芯‑PACK‑BMS 多重保护机制应对恶劣工况"
+          },
+          {
+            "label": "台架模拟验证",
+            "desc": "振动、冲击、宽温、电气安全多项模拟测试"
+          }
+        ]
+      },
+      "cases": {
+        "title": "场景案例",
+        "items": [
+          {
+            "scene": "工程机械",
+            "image": "/images/solutions/cases/special-ops-1.jpg",
+            "imageAlt": "工程机械",
+            "applications": "市政基建 · 隧道管廊 · 矿山 · 港口 · 应急抢险",
+            "metrics": [
+              {
+                "value": "抗冲击",
+                "label": "强化结构"
+              },
+              {
+                "value": "大持续",
+                "label": "放电能力"
+              },
+              {
+                "value": "多级",
+                "label": "BMS 保护"
+              }
+            ],
+            "value": "抗冲击强化结构，匹配液压负载大持续放电"
+          },
+          {
+            "scene": "警用轮式 / 履带巡逻机器人",
+            "image": "/images/solutions/cases/patrol-robot.jpg",
+            "imageAlt": "警用轮式 / 履带巡逻机器人",
+            "applications": "边防巡检 · 场区安防 · 危化侦察 · 大型活动安保",
+            "metrics": [
+              {
+                "value": "宽温域",
+                "label": "户外覆盖"
+              },
+              {
+                "value": "多级",
+                "label": "安全保护"
+              },
+              {
+                "value": "远程",
+                "label": "状态上报"
+              }
+            ],
+            "value": "宽温域防护，兼顾低功耗待机与机动行进"
+          },
+          {
+            "scene": "应急救援特种装备",
+            "image": "/images/solutions/cases/rescue-robot.jpg",
+            "imageAlt": "应急救援特种装备",
+            "applications": "废墟搜救 · 应急作业",
+            "metrics": [
+              {
+                "value": "-40℃",
+                "label": "低温启动"
+              },
+              {
+                "value": "本征",
+                "label": "电芯安全"
+              },
+              {
+                "value": "多级",
+                "label": "故障防护"
+              }
+            ],
+            "value": "-40℃ 低温快速启动，电芯与 PACK 双重防护"
+          }
+        ]
+      }
+    }
   }
 }

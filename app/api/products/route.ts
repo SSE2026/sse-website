@@ -7,7 +7,7 @@ const MOCK_PRODUCTS = [
   {
     id: "1",
     sku: "SSE-360P-001",
-    model: "Aeroride 360-P",
+    model: "AeroRide 360-P",
     slug: "cloudchi-360-p",
     energyDensity: 360,
     cycleLife: 2000,
@@ -25,7 +25,7 @@ const MOCK_PRODUCTS = [
   {
     id: "2",
     sku: "SSE-400E-001",
-    model: "Aeroride 400-E",
+    model: "AeroRide 400-E",
     slug: "cloudchi-400-e",
     energyDensity: 400,
     cycleLife: 1500,
@@ -43,7 +43,7 @@ const MOCK_PRODUCTS = [
   {
     id: "3",
     sku: "SSE-460X-001",
-    model: "Aeroride 460-X",
+    model: "AeroRide 460-X",
     slug: "cloudchi-460-x",
     energyDensity: 460,
     cycleLife: 1000,

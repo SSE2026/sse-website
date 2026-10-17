@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_SC } from "next/font/google";
 import "@/styles/globals.css";
 import { Providers } from "@/components/providers";
 import ClientOnly from "@/components/ui/client-only";
+import { DEFAULT_LOCALE } from "@/lib/locale";
 
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = 'force-dynamic';
@@ -52,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${notoSansSC.variable}`}>
+    <html lang={DEFAULT_LOCALE} className={`${inter.variable} ${notoSansSC.variable}`}>
       <body className="min-h-screen bg-primary font-sans antialiased">
         <ClientOnly fallback={<>{children}</>}>
           <Providers>{children}</Providers>

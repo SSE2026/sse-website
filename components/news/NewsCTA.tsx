@@ -43,13 +43,21 @@ export function NewsCTA({ locale }: NewsCTAProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex flex-col sm:flex-row gap-5"
           >
             <Link
-              href="/technology"
+              href="/contact"
+              className="inline-flex items-center gap-2 px-5 py-3 bg-[#111111] text-white text-[13px] font-medium rounded-full hover:bg-[#333] transition-colors group"
+            >
+              <span>{isZh ? "商务合作" : "Business Cooperation"}</span>
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              href="/contact"
               className="inline-flex items-center gap-2 text-[14px] font-medium text-[#111111] group"
             >
               <span className="border-b border-[#111111] pb-0.5">
-                {isZh ? "探索我们的技术" : "Explore Our Technology"}
+                {isZh ? "媒体合作" : "Media Cooperation"}
               </span>
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>

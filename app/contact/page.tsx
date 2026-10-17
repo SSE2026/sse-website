@@ -8,7 +8,6 @@ import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
 import { ArrowUpRight, Copy, Check, MapPin, Globe, Clock } from "lucide-react";
 import ContactMap from "@/components/contact/ContactMap/ContactMap";
-import WhatsAppModal from "@/components/contact/WhatsAppModal";
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
@@ -19,8 +18,8 @@ const messages = { en, zh };
 
 // 咨询类型选项
 const inquiryTags = {
-  zh: ["商务合作", "电芯及模组订制", "样品申请", "技术咨询"],
-  en: ["Business Cooperation", "Cell & Module Design", "Sample Request", "Technical Support"],
+  zh: ["商务合作", "媒体合作", "供应链合作"],
+  en: ["Business Cooperation", "Media Cooperation", "Supply Chain Cooperation"],
 };
 
 export default function ContactPage() {
@@ -30,7 +29,6 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [whatsappOpen, setWhatsappOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -48,20 +46,24 @@ export default function ContactPage() {
   };
   const c = cms.contact ?? {};
 
-  // 公司信息
+  // 公司信息 —— 与页脚保持一致(地址 / 电话 / 邮箱三处)
   const contactData = {
-    address: c.address || (isZh
-      ? "深圳市坪山区坑梓街道沙田社区坪山大道6352号2栋210"
-      : "Unit 210, Building 2, No. 6352 Pingshan Avenue, Shatian Community, Kengzi Subdistrict, Pingshan District, Shenzhen"),
-    phone: c.phone || "+86 13651071130",
-    email: c.email || "changhao@ssebatt.com",
+    address: c.address || (isZh ? "深圳市坪山区源通科技园" : "Shenzhen, China"),
+    phone: c.phone || "15814654041",
+    email: c.email || "zhanwenwei@ssebatt.com",
     coords: { lng: 114.402008, lat: 22.760216 },
   };
+
+  // 显示值和拨号值分开:页脚用的是 tel:+8615814654041。11 位纯数字在国内号
+  // 前补 +86;如果 CMS 里填的是带国家码的写法,就原样使用。
+  const phoneHref = /^\d{11}$/.test(contactData.phone)
+    ? `tel:+86${contactData.phone}`
+    : `tel:${contactData.phone}`;
 
   // 文本内容
   const content = {
     sectionLabel: "04 / Contact & Engagement",
-    title: c.title || (isZh ? "与深安锂能\n工程团队取得联系" : "Connect with SSE\nEngineering Team"),
+    title: c.title || (isZh ? "携手深安锂能，共创智慧能源未来" : "Connect with SSE\nEngineering Team"),
     subtitle: c.subtitle || (isZh
       ? "专注于低空飞行与智能装备电源解决方案。无论您需要电池模组规格评估、样品调测或商务合作，我们随时提供专业支持。"
       : "Focusing on low-altitude flight and intelligent equipment power solutions. Whether you need battery module evaluation, sample testing, or business cooperation, we provide professional support."),
@@ -79,7 +81,7 @@ export default function ContactPage() {
       : "Our technical team will directly evaluate your requirements and provide an initial customization feasibility report within 1 business day.",
     mapLabel: isZh ? "深圳总部" : "Shenzhen HQ",
     mapSub: isZh ? "深圳总部" : "Shenzhen HQ",
-    mapAddr: isZh ? "坪山大道6352号2栋" : "No. 6352 Pingshan Avenue, Bldg 2",
+    mapAddr: isZh ? "深圳市坪山区源通科技园" : "Shenzhen, China",
     navigateBtn: isZh ? "高德地图导航去总部" : "Navigate with AutoNavi",
     studioTitle: c.studioTitle || (isZh ? "在线提交需求" : "Submit Your Request"),
     studioDesc: c.studioDesc || (isZh
@@ -385,7 +387,7 @@ export default function ContactPage() {
                         {content.phoneLabel}
                       </span>
                       <a
-                        href={`tel:${contactData.phone}`}
+                        href={phoneHref}
                         className="text-sm text-neutral-700 hover:text-blue-600 transition-colors"
                       >
                         {contactData.phone}
@@ -401,21 +403,6 @@ export default function ContactPage() {
                       >
                         {contactData.email}
                       </a>
-                    </div>
-                    <div>
-                      <span className="text-xs text-neutral-400 uppercase block mb-1">
-                        {isZh ? "WhatsApp" : "WhatsApp"}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setWhatsappOpen(true)}
-                        className="text-sm text-neutral-700 hover:text-[#25D366] transition-colors inline-flex items-center gap-1.5 cursor-pointer"
-                      >
-                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-[#25D366]">
-                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                        {isZh ? "点击获取联系" : "Click to contact"}
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -443,7 +430,10 @@ export default function ContactPage() {
                 {/* 悬浮品牌地标卡 (左上角) */}
                 <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm border border-neutral-200 rounded-xl p-3 hidden md:block max-w-[200px] shadow-lg">
                   <div className="text-sm font-semibold text-neutral-900 mb-0.5">{content.mapSub}</div>
-                  <div className="text-xs text-neutral-500">{contactData.address.split('2')[0]}2...</div>
+                  {/* 原来这里用 address.split('2')[0] + "2..." 硬截断,
+                      只在旧地址(…6352号2栋210)下成立;地址改成短园区名后
+                      会拼出错误文案,改成直接显示 + CSS 截断 */}
+                  <div className="text-xs text-neutral-500 truncate">{contactData.address}</div>
                 </div>
 
                 {/* 悬浮导航按钮 (右下角) */}
@@ -461,7 +451,6 @@ export default function ContactPage() {
           </section>
         </main>
 
-        <WhatsAppModal open={whatsappOpen} onClose={() => setWhatsappOpen(false)} locale={locale} />
 
         <Footer translations={currentMessages} locale={locale} />
       </NextIntlClientProvider>

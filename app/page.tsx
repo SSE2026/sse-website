@@ -4,7 +4,9 @@ import { useState } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Hero } from "@/components/sections/hero";
+import { EnergyStackHero } from "@/components/sections/energy-stack-hero";
+import { HomeProducts } from "@/components/sections/home-products";
+import { HomeNews } from "@/components/sections/home-news";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
 
@@ -28,10 +30,17 @@ export default function HomePage() {
           translations={currentMessages}
           locale={locale}
           onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
-          forceLightText={true}
+          forceLightText={false}
         />
         <main>
-          <Hero translations={currentMessages} locale={locale} />
+          {/* 第一屏:Editorial hero — 9:16 Energy Stack */}
+          <EnergyStackHero translations={currentMessages} locale={locale} />
+
+          {/* 第二屏:产品 —— 首页此前没有任何通往产品页的入口,这一屏补上 */}
+          <HomeProducts locale={locale} translations={currentMessages} />
+
+          {/* 第三屏:新闻动态缩略版 */}
+          <HomeNews locale={locale} translations={currentMessages} />
         </main>
         <Footer translations={currentMessages} locale={locale} />
       </NextIntlClientProvider>

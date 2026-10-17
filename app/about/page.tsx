@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import GlobalBusinessMap from "@/components/about/GlobalBusinessMap/GlobalBusinessMap";
@@ -15,21 +16,11 @@ import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 
-const ENGLISH_INTRO = `Swift Safe Energy (Shenzhen) Technology Co., Ltd. is a tech innovation enterprise dedicated to the R&D and industrialization of high-specific-energy and high-safety advanced batteries. The company was jointly founded by an academician-led university research team and seasoned industry experts.
+const ENGLISH_INTRO = `Swift Safe Energy (Shenzhen) Technology Co., Ltd., a high-tech innovation enterprise spun off from Beijing Institute of Technology, was co-founded by an Academician-led research team alongside seasoned industry veterans. The company specializes in the R&D and commercialization of next-generation high-energy-density and high-safety advanced batteries.
 
-Targeting emerging application scenarios—including the low-altitude economy, embodied intelligence, deep space and deep sea exploration, construction machinery, and specialized equipment—the company conducts full-chain technical innovation across material systems, cell design, advanced manufacturing, and intelligent battery systems for next-generation power batteries. It is committed to continuously pushing the performance and application boundaries of high-end equipment electrification with battery technologies featuring higher energy density, superior safety, and enhanced environmental adaptability.
+Focusing on cutting-edge sectors such as the low-altitude economy, embodied AI, deep-space and deep-sea exploration, and high-end special equipment, Swift Safe Energy drives collaborative innovation across material systems, cell architecture, advanced manufacturing, and intelligent battery systems. By delivering battery technologies characterized by higher energy density, superior safety, and enhanced environmental adaptability, the company continuously pushes the performance and application boundaries of next-generation smart equipment. Its flagship products have been delivered in batches to leading market players in uncrewed aerial vehicles (UAVs), electric vertical takeoff and landing (eVTOL) aircraft, robotics, and construction machinery.`;
 
-The company has built a core technology architecture centered on high-silicon/all-silicon/self-generating anodes, high-safety solid-state electrolytes, advanced cell structures and manufacturing processes, physics-AI-driven battery design and smart manufacturing, and intelligent battery systems. This establishes comprehensive in-house R&D and engineering capabilities spanning key materials, cells, and full systems.
-
-Swift Safe Energy has established a strategic product portfolio featuring the "Aeroride" series tailored for high-energy-density demands and the "Panshi" series designed for ultra-safe scenarios. Its products have completed multiple rounds of client testing and real-world operational validation in drones, eVTOLs, robotics, and construction machinery, with several projects advancing into mass delivery and industrial onboarding phases.
-
-Looking to the future, Swift Safe Energy will remain focused on the performance boundary requirements of high-end applications. Guided by the core technical pillars of high energy density, high safety, and intelligence, the company will accelerate the transition of advanced battery technologies from laboratory innovations to large-scale products. It aims to progressively build an integrated "Advanced Cell – Intelligent System – Scenario-based Energy" technology and product platform, striving to become a leading provider of advanced energy solutions for next-generation aircraft, intelligent robotics, and high-end equipment.`;
-
-const CHINESE_INTRO = `深安锂能（深圳）科技有限公司是一家专注于高比能、高安全先进电池研发与产业化的科技创新企业，由高校院士团队与资深产业化团队共同组建。公司面向低空经济、具身智能、深空深海、工程机械及特种装备等新兴应用场景，围绕下一代动力电池的材料体系、电芯设计、先进制造与智能电池系统开展全链条技术创新，致力于以更高能量密度、更高安全性和更强环境适应性的电池技术，持续拓展高端装备电动化的性能与应用边界。
-
-公司围绕高硅/全硅/自生成负极、高安全固态电解质、先进电芯结构与制造工艺、物理AI驱动的电池设计与智能制造、智能电池系统等方向构建核心技术体系，形成从关键材料、电芯到系统的自主研发与工程化能力。公司已形成面向高比能需求的"云驰"系列和面向高安全场景的"磐石"系列产品布局，产品已在无人机、eVTOL、机器人及工程机械等领域完成多轮客户测试与真实工况验证，多个项目已进入批量交付与产业化导入阶段。
-
-未来，深安锂能将持续聚焦高端应用对电池性能边界的需求，以高比能、高安全、智能化为技术主线，加速先进电池技术从实验室创新向规模化产品转化，逐步构建"先进电芯—智能系统—场景能源"一体化技术与产品平台，致力于成为面向下一代航空器、智能机器人及高端装备的先进能源解决方案提供商。`;
+const CHINESE_INTRO = `深安锂能（深圳）科技有限公司是北京理工大学孵化的科技创新企业，由院士科研团队与资深产业化团队联合创立，专注于高比能、高安全先进电池的研发与产业化。公司聚焦低空经济、具身智能、深空深海及高端特种装备等前沿应用领域，围绕材料体系、电芯设计、先进制造与智能系统开展协同创新，以更高能量密度、更高安全性和更强环境适应性的电池技术，持续拓展新一代智能装备的性能与应用边界，相关产品已向无人机、eVTOL、机器人及工程机械等领域的多家头部客户批量交付。`;
 
 export default function AboutPage() {
   const [locale, setLocale] = useState<"en" | "zh">(() => resolveInitialLocale());
@@ -162,55 +153,77 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Company Introduction */}
-        <section className="py-12 md:py-16 bg-white text-[#18181B] relative">
-          <div className="absolute inset-0 opacity-5" style={{
-            backgroundImage: `linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
-          }} />
+        {/* Company Introduction — the campus picture runs full-bleed and
+            dissolves into the page, with the copy sitting over its faded
+            lower half. The picture is used at its own 1584:672 ratio, so
+            nothing is cropped at any width; a min-height keeps the band
+            tall enough to hold the copy on phones. */}
+        <section className="relative w-full overflow-hidden bg-white text-[#18181B]">
+          <div className="relative aspect-[1584/672] min-h-[600px] w-full">
+            <Image
+              src="/images/about/intro-factory.jpg"
+              alt={isZh ? "深安锂能厂区俯瞰" : "Swift Safe Energy manufacturing campus"}
+              fill
+              sizes="100vw"
+              className="object-cover object-center"
+            />
 
-          <div className="container-padding mx-auto relative max-w-4xl">
-            {/* Section Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="mb-8"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-px bg-[#2563EB]" />
-                <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-widest">
-                  {isZh ? "关于我们" : "About Us"}
-                </span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#0A0A0A]">
-                {introTitle || (isZh ? "深安锂能" : "Swift Safe Energy")}
-              </h2>
-            </motion.div>
+            {/* Fade the picture into the page along the bottom, leaving a
+                bright even surface where the copy lands. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 40%, rgba(255,255,255,0.88) 72%, #FFFFFF 100%)",
+              }}
+            />
+            {/* Soften the top edge so the band has no hard entry. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-20"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)",
+              }}
+            />
+          </div>
 
-            {/* Introduction Content */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="prose prose-lg prose-invert max-w-none"
-            >
-              {isZh ? (
-                <div className="space-y-4 text-[#71717A] leading-relaxed text-sm md:text-base">
-                  {(introText ?? CHINESE_INTRO).split('\n\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="container-padding mx-auto max-w-[1280px] pb-12 md:pb-16">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="h-px w-12 bg-[#2563EB]" />
+                  <span className="text-sm font-semibold uppercase tracking-widest text-[#2563EB]">
+                    {isZh ? "关于我们" : "About Us"}
+                  </span>
                 </div>
-              ) : (
-                <div className="space-y-4 text-[#71717A] leading-relaxed text-sm md:text-base">
-                  {(introText ?? ENGLISH_INTRO).split('\n\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
+                <h2 className="text-3xl font-bold text-[#0A0A0A] md:text-4xl">
+                  {introTitle || (isZh ? "深安锂能" : "Swift Safe Energy")}
+                </h2>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="mt-6 max-w-3xl text-sm leading-relaxed text-[#52525B] md:text-base"
+              >
+                {(introText ?? (isZh ? CHINESE_INTRO : ENGLISH_INTRO))
+                  .split('\n\n')
+                  .map((paragraph) => (
+                    <p key={paragraph} className="mb-4 last:mb-0">
+                      {paragraph}
+                    </p>
                   ))}
-                </div>
-              )}
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
         </section>
 
@@ -218,7 +231,7 @@ export default function AboutPage() {
         <MilestonesSection lang={locale === 'en' ? 'en' : 'zh'} items={milestoneItems} />
 
         {/* CTA Section - Explore Products */}
-        <section className="py-12 bg-gradient-to-b from-[#09090B] to-[#050505] relative">
+        <section className="py-12 bg-gradient-to-b from-[#09090B] to-[#050505] relative overflow-hidden">
           <div className="absolute inset-0">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#2563EB]/10 rounded-full blur-[150px]" />
           </div>

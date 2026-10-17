@@ -148,7 +148,7 @@ function AnimatedCarousel({ images }: { images: readonly string[] }) {
 
 export default function CircularGallery({
   images,
-  title = "Aeroride Series",
+  title = "AeroRide Series",
   subtitle = "Premium Battery Solutions",
 }: CircularGalleryProps) {
   const [mounted, setMounted] = useState(false);

@@ -133,7 +133,7 @@ export default function HistoryPage() {
         translations={currentMessages}
         locale={locale}
         onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
-        forceLightText={true}
+        forceLightText={false}
       />
 
       <main className="w-full bg-[#08090a] text-slate-100 min-h-screen font-sans antialiased">

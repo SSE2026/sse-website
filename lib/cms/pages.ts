@@ -49,7 +49,7 @@ export const PAGE_DEFS: CmsPageDef[] = [
     defaultContent: {
       hero: {
         eyebrow: "Solid-State Battery Tech",
-        title: "Aeroride Series",
+        title: "AeroRide Series",
         description:
           "Next-generation high energy density solid-state power solutions for low-altitude flight, embodied AI, and deep-sea equipment.",
         ctaText: "Customize Now",
@@ -200,7 +200,7 @@ export const PAGE_DEFS: CmsPageDef[] = [
       },
     ],
     defaultContent: {
-      hero: { badge: "Products", title: "Aeroride Series", subtitle: "" },
+      hero: { badge: "Products", title: "AeroRide Series", subtitle: "" },
       series: { seriesJson: "[]" },
       comparison: { eyebrow: "", title: "", rowsJson: "[]" },
       cta: { title: "", desc: "", button: "" },
@@ -304,11 +304,11 @@ export const PAGE_DEFS: CmsPageDef[] = [
     ],
     defaultContent: {
       contact: {
-        title: "与深安锂能\n工程团队取得联系",
+        title: "携手深安锂能，共创智慧能源未来",
         subtitle: "",
-        email: "changhao@ssebatt.com",
-        phone: "+86 13651071130",
-        address: "深圳市坪山区坑梓街道沙田社区坪山大道6352号2栋210",
+        email: "zhanwenwei@ssebatt.com",
+        phone: "15814654041",
+        address: "深圳市坪山区源通科技园",
         studioTitle: "",
         studioDesc: "",
       },

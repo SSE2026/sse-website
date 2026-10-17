@@ -7,10 +7,19 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { TechnologyHero } from "./TechnologyHero";
-import { CoreTechnologySection } from "./CoreTechnology";
+import { CoreTechCarousel } from "./CoreTechCarousel";
 import { RDStrengthSection } from "./RDStrength";
 import { TechnologyCTA } from "./TechnologyCTA";
 import { useCmsContent } from "@/lib/cms/use-cms";
+
+// Fixed slide imagery. The CMS owns the copy, never the pictures.
+const CORE_TECH_IMAGES = [
+  "/images/technology/tech/01-solid-electrolyte.jpg",
+  "/images/technology/tech/02-silicon-anode.jpg",
+  "/images/technology/tech/03-anode-free.jpg",
+  "/images/technology/tech/04-fast-charging.jpg",
+  "/images/technology/tech/05-ai-for-battery.jpg",
+];
 
 import en from "@/messages/en.json";
 import zh from "@/messages/zh.json";
@@ -43,24 +52,30 @@ function TechnologyPageContent({ locale }: { locale: string }) {
     },
   };
 
-  // coreTech items: prefer CMS itemsJson (parsed), else messages.
-  let coreItems = t.raw("coreTech.items") as Array<{ title: string; summary: string; details: string[] }>;
+  // Slide copy: CMS itemsJson wins, else the messages-level slides. The
+  // two overlay each other by index, so CMS edits retarget the carousel
+  // rather than silently falling back to the old list.
+  let slideCopy = t.raw("coreTech.slides") as Array<{ title: string; summary: string }>;
   if (coreTechCms.itemsJson) {
     try {
       const parsed = JSON.parse(coreTechCms.itemsJson);
-      if (Array.isArray(parsed) && parsed.length > 0) coreItems = parsed as typeof coreItems;
+      if (Array.isArray(parsed) && parsed.length > 0) slideCopy = parsed as typeof slideCopy;
     } catch {
       /* keep messages fallback */
     }
   } else if (Array.isArray(coreTechCms.items) && coreTechCms.items.length > 0) {
-    coreItems = coreTechCms.items as typeof coreItems;
+    slideCopy = coreTechCms.items as typeof slideCopy;
   }
+
+  const slides = slideCopy.slice(0, CORE_TECH_IMAGES.length).map((copy, i) => ({
+    title: copy.title,
+    summary: copy.summary,
+    image: CORE_TECH_IMAGES[i],
+  }));
 
   const coreTechProps = {
     label: coreTechCms.label || t("coreTech.label"),
     title: coreTechCms.title || t("coreTech.title"),
-    subtitle: coreTechCms.subtitle || t("coreTech.subtitle"),
-    items: coreItems,
   };
 
   const rdStrengthProps = {
@@ -91,12 +106,16 @@ function TechnologyPageContent({ locale }: { locale: string }) {
     <>
       <ScrollProgress color="#7DAEFF" height="sm" />
 
-      <main className="pt-20 bg-[#050B14]">
+      <main className="bg-white">
         {/* SECTION 01: Hero */}
         <TechnologyHero hero={heroProps} />
 
         {/* SECTION 02: Core Technology */}
-        <CoreTechnologySection labels={coreTechProps} items={coreTechProps.items} />
+        <CoreTechCarousel
+          label={coreTechProps.label}
+          title={coreTechProps.title}
+          slides={slides}
+        />
 
         {/* SECTION 03: R&D Strength */}
         <RDStrengthSection labels={rdStrengthProps} certs={rdCerts} />
@@ -118,7 +137,7 @@ export default function TechnologyPage() {
         translations={currentMessages}
         locale={locale}
         onLocaleChange={(newLocale) => setLocale(newLocale as "en" | "zh")}
-        forceLightText={true}
+        forceLightText={false}
       />
 
       <TechnologyPageContent locale={locale} />

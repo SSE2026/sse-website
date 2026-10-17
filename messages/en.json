@@ -3,9 +3,27 @@
     "home": "Home",
     "about": "About",
     "products": "Products",
-    "technology": "Technology",
-    "cases": "Case Studies",
-    "industries": "Industries",
+    "productsCells": "Cells",
+    "productsCellsCloudchi": "AeroRide Series",
+    "productsCellsCloudchi360P": "AeroRide 360-P Power",
+    "productsCellsCloudchi400E": "AeroRide 400-E Energy",
+    "productsCellsCloudchi460X": "AeroRide 460-X Ultra-High Energy",
+    "productsCellsPanshi": "FortiCore Series",
+    "productsPacks": "Battery Packs",
+    "technology": "R&D and Manufacturing",
+    "cases": "Solutions",
+    "industries": {
+      "lowAltitude": "Low-altitude flight",
+      "embodiedAI": "Embodied AI robots",
+      "marine": "Marine platforms",
+      "specialOps": "Special-purpose equipment"
+    },
+    "industries_alt": {
+      "lowAltitude": "UAV / eVTOL",
+      "embodiedAI": "Quadruped / humanoid",
+      "marine": "USV / ROV / AUV",
+      "specialOps": "Construction / police / rescue"
+    },
     "news": "News",
     "contact": "Contact"
   },
@@ -17,8 +35,8 @@
       "stats": {
         "patents": "Invention Patents",
         "papers": "Nature Publications",
-        "production": "SSE Production Line",
-        "samples": "Client A-Sample Validation"
+        "production": "Production Capacity",
+        "samples": "Smart Manufacturing Plant"
       }
     },
     "coreTech": {
@@ -27,7 +45,7 @@
       "subtitle": "Focusing on breakthroughs in materials, cells, and intelligent systems",
       "items": [
         {
-          "title": "Multi-Dimensional Fast Charging",
+          "title": "Multi-Dimensional Thermal-Modulated Fast Charging",
           "summary": "Efficient ion transport with electrochemical-thermal coordination",
           "details": [
             "Ultra-high ion conductivity liquid/additives",
@@ -65,6 +83,28 @@
             "Mechanism-AI integrated cloud-edge intelligent operations"
           ]
         }
+      ],
+      "slides": [
+        {
+          "title": "Solid Electrolyte Materials",
+          "summary": "Material breakthroughs that secure the safety of solid-state cells"
+        },
+        {
+          "title": "All-Silicon Anode",
+          "summary": "Breaking through silicon's limits to release higher energy density"
+        },
+        {
+          "title": "Anode-Free",
+          "summary": "Re-engineering the cell to explore a new energy-density frontier"
+        },
+        {
+          "title": "Thermal-Modulated Fast Charging",
+          "summary": "Energy released quickly, temperature held precisely"
+        },
+        {
+          "title": "AI for Battery",
+          "summary": "Data-driven innovation reshaping the battery's full lifecycle"
+        }
       ]
     },
     "rdStrength": {
@@ -78,26 +118,99 @@
     }
   },
   "hero": {
-    "title": "Breaking Energy Limits, Reshaping Electric Boundaries",
-    "titleLine1": "Breaking Energy Limits",
-    "titleLine2": "Reshaping Electric Boundaries",
-    "subtitle": "High energy density, ultra-safe solid-state battery solutions",
-    "explore": "Explore Technology",
-    "contact": "Contact Us",
-    "keywords": {
-      "lowAltitude": "Low-Altitude Flight",
-      "embodiedAI": "Embodied AI",
-      "deepSea": "Deep-Sea Equipment"
+    "eyebrow": "SHEN'AN LITHIUM ENERGY",
+    "topRightTag": "ENERGY IN ACTION",
+    "topRightLink": "Scenario Reference",
+    "titleLine1": "BEYOND ENERGY.",
+    "titleLine2": "BEYOND BOUNDARIES.",
+    "sectionTitle": "Application Scenarios",
+    "subtitle": "High energy density and ultra-safe battery technology — expanding the performance envelope of electric equipment.",
+    "tags": {
+      "highEnergy": "High Energy Density",
+      "highPower": "High Power",
+      "highSafety": "Ultra Safety",
+      "fastCharging": "Ultra-Fast Charging"
     },
-    "stats": {
-      "energyDensity": "Wh/kg",
-      "cycleLife": "Cycle Life (Cycles)",
-      "patents": "Authorized Patents"
+    "ctaExplore": "Explore Core Tech",
+    "ctaContact": "About Swift Safe Energy",
+    "scene": {
+      "number": "01",
+      "title": "Powering Longer Missions",
+      "titleEn": "LOW-ALTITUDE AVIATION",
+      "caption": "Scene reference: DeltaQuad · PX4 User Guide / CC BY 4.0"
+    },
+    "scenarios": [
+      {
+        "id": "lowAltitude",
+        "number": "01",
+        "label": "Low-Altitude Economy",
+        "subLabel": "Lightweight, Long Endurance"
+      },
+      {
+        "id": "embodiedAI",
+        "number": "02",
+        "label": "Embodied AI",
+        "subLabel": "Sustained Action, Dynamic Power"
+      },
+      {
+        "id": "deepSpaceAndSea",
+        "number": "03",
+        "label": "Deep-Space & Deep-Sea",
+        "subLabel": "Long-Duration Supply, System Synergy"
+      },
+      {
+        "id": "specialEquipment",
+        "number": "04",
+        "label": "High-End Specialty Equipment",
+        "subLabel": "High Load, Resilient Replenishment"
+      }
+    ],
+    "energyStack": {
+      "captionPrefixZh": "场景",
+      "captionPrefixEn": "Scenario",
+      "scenarios": [
+        {
+          "id": "lowaltitude",
+          "index": "01",
+          "indexLabel": "01 / DRONES",
+          "en": "Drones",
+          "zh": "Low-Altitude",
+          "captionZh": "高比能动力，让飞行更远、更强、更自由",
+          "captionEn": "High-energy-density propulsion for farther, stronger, freer flight."
+        },
+        {
+          "id": "embodied",
+          "index": "02",
+          "indexLabel": "02 / ROBOTICS",
+          "en": "Robotics",
+          "zh": "Embodied AI",
+          "captionZh": "为下一代智能移动装备提供高性能能源",
+          "captionEn": "High-performance energy for next-gen mobile intelligent platforms."
+        },
+        {
+          "id": "deepsea",
+          "index": "03",
+          "indexLabel": "03 / EXPLORATION",
+          "en": "Exploration",
+          "zh": "Deep-Space & Deep-Sea",
+          "captionZh": "面向极端环境的高安全、高可靠能源系统",
+          "captionEn": "High-safety, high-reliability energy for extreme environments."
+        },
+        {
+          "id": "special",
+          "index": "04",
+          "indexLabel": "04 / MINING VEHICLES",
+          "en": "Mining Vehicles",
+          "zh": "Specialized Equipment",
+          "captionZh": "为高负载、高机动装备提供持续动力",
+          "captionEn": "Providing continuous power for high-load, high-mobility vehicles."
+        }
+      ]
     }
   },
   "about": {
     "companyTitle": "Swift Safe Energy (Shenzhen) Technology Co., Ltd.",
-    "companyDesc": "Swift Safe Energy (Shenzhen) Technology Co., Ltd. is an advanced energy technology enterprise spun off from Beijing Institute of Technology (BIT). Backed by an academician-led team and top-tier global research resources, the company is headed by national overseas high-level talents and brings together an end-to-end engineering team specializing in battery materials, cells, and system operations.\n\nSwift Safe Energy focuses on the R&D and industrialization of high-energy-density, ultra-safe solid-state batteries with supercharging capabilities. By leveraging silicon/full-silicon anodes, high-safety solid electrolytes, and advanced battery structures, the company has established a full-stack proprietary technology framework spanning \"Materials–Cells–Systems.\" Through its disruptive solution integrating rapid heating and solid-state technology, Swift Safe Energy successfully resolves the long-standing industry trilemma of balancing high energy density, ultra-fast charging, and ultimate safety—delivering efficient, safe, and sustainable next-generation power solutions for cutting-edge sectors such as drones/UAVs, eVTOLs, and heavy-duty industrial equipment."
+    "companyDesc": "Swift Safe Energy (Shenzhen) Technology Co., Ltd., a high-tech innovation enterprise spun off from Beijing Institute of Technology, was co-founded by an Academician-led research team alongside seasoned industry veterans. The company specializes in the R&D and commercialization of next-generation high-energy-density and high-safety advanced batteries.\n\nFocusing on cutting-edge sectors such as the low-altitude economy, embodied AI, deep-space and deep-sea exploration, and high-end special equipment, Swift Safe Energy drives collaborative innovation across material systems, cell architecture, advanced manufacturing, and intelligent battery systems. By delivering battery technologies characterized by higher energy density, superior safety, and enhanced environmental adaptability, the company continuously pushes the performance and application boundaries of next-generation smart equipment. Its flagship products have been delivered in batches to leading market players in uncrewed aerial vehicles (UAVs), electric vertical takeoff and landing (eVTOL) aircraft, robotics, and construction machinery."
   },
   "advantages": {
     "title": "Core Advantages",
@@ -120,21 +233,21 @@
     }
   },
   "products": {
-    "title": "Aeroride Series",
+    "title": "AeroRide Series",
     "subtitle": "Mission-defined products for demanding boundary applications",
     "viewDetails": "View Details",
     "power": {
-      "title": "Aeroride 360-P",
+      "title": "AeroRide 360-P Power",
       "desc": "High-power platform for quadruped robots and multi-rotor drones requiring instant power response",
       "specs": "360 Wh/kg • 2C/5C Discharge • Quadruped / Drone"
     },
     "storage": {
-      "title": "Aeroride 400-E",
+      "title": "AeroRide 400-E Energy",
       "desc": "High-energy platform for fixed-wing drones, AUVs, and inspection robots",
       "specs": "400 Wh/kg • 1C/3C Discharge • Long Endurance"
     },
     "drone": {
-      "title": "Aeroride 460-X",
+      "title": "AeroRide 460-X Ultra-High Energy",
       "desc": "Ultra-high energy platform for extreme endurance or 10C high-power applications",
       "specs": "460+ Wh/kg • 10C Peak • Extreme Mission"
     },
@@ -199,7 +312,7 @@
     "description": "Breaking battery performance limits to enable electrification of boundary scenarios.",
     "quickLinks": "Quick Links",
     "products": "Products",
-    "technology": "Technology",
+    "technology": "R&D and Manufacturing",
     "about": "About",
     "contact": "Contact",
     "legal": "Legal",
@@ -259,6 +372,7 @@
       "title": "CASE STUDIES",
       "headline": "Powering Flight Beyond Limits.",
       "subtitle": "High-Performance Battery Solutions: Pushing the limits of range and payload, built for extreme environments.",
+      "tagline": "Solid-State Battery · Powering the Next Mile",
       "stats": {
         "coldResilient": "Cold Resilient",
         "maxPayload": "Max Payload",
@@ -418,5 +532,914 @@
       "smallText": "OEM · ODM · Custom Battery Solutions"
     },
     "batteryArchitecture": "Battery Architecture"
+  },
+  "solutions": {
+    "hero": {
+      "title": "Powering the missions that demand more from energy.",
+      "subtitle": "From low-altitude flight to embodied AI, marine platforms and special-purpose applications, we deliver custom power solutions — from high-performance cells to intelligent battery systems.",
+      "eyebrow": "SOLUTIONS",
+      "ctaExplore": "Explore Solutions",
+      "ctaConsult": "Discuss a Project"
+    },
+    "challenges": {
+      "title": "Core energy challenges",
+      "subtitle": "We translate the hardest energy problems into engineering requirements.",
+      "items": {
+        "energy": {
+          "label": "Energy density",
+          "title": "More usable energy in less weight and volume.",
+          "desc": "Endurance ceilings, payload headroom, marine buoyancy, robot balance — all locked by cell energy density."
+        },
+        "power": {
+          "label": "Instant power",
+          "title": "Burst output without compromising safety or cycle life.",
+          "desc": "VTOL takeoff, jumping, propulsion kickoff, hydraulic loads — all demand millisecond-scale high current."
+        },
+        "temperature": {
+          "label": "Harsh environments",
+          "title": "Stable delivery from -40℃ to 60℃.",
+          "desc": "Cold zone, high altitude, cold seawater, outdoor day-night swings all defeat ordinary batteries fast."
+        },
+        "system": {
+          "label": "System integration",
+          "title": "Cell, PACK, BMS and host controller as one stack.",
+          "desc": "Fragmented multi-vendor stacks and mismatched protocols add integration risk and tuning cycles."
+        }
+      }
+    },
+    "capabilities": {
+      "title": "Technology & delivery capability",
+      "subtitle": "From cells to system integration, we deliver one stack that drops in.",
+      "items": {
+        "cell": {
+          "title": "High-performance cells",
+          "desc": "High energy-density platforms covering industrial drones, robots and marine applications."
+        },
+        "pack": {
+          "title": "Custom PACKs",
+          "desc": "Non-standard form factors, voltages and constrained housings — we tailor PACK to your chassis."
+        },
+        "bms": {
+          "title": "Smart BMS",
+          "desc": "High-precision SOC/SOH estimation, tiered fault diagnosis, CAN comms — ready to plug into host controllers."
+        },
+        "system": {
+          "title": "System integration",
+          "desc": "Cell + PACK + BMS + tuning delivered together, reducing integration risk for the integrator."
+        }
+      },
+      "footnote": "Capabilities vary by product and model. Final scope is governed by the technical agreement."
+    },
+    "industries": {
+      "lowAltitude": {
+        "name": "Low-altitude flight",
+        "tagline": "From survey drones to eVTOL — better endurance, payload and full-mission power stability within strict weight budgets.",
+        "href": "/cases/low-altitude"
+      },
+      "embodiedAI": {
+        "name": "Embodied AI robots",
+        "tagline": "For quadruped dogs and humanoids, pairing runtime with burst power and shock tolerance.",
+        "href": "/cases/embodied-ai"
+      },
+      "marine": {
+        "name": "Marine platforms",
+        "tagline": "For USV, ROV and AUV — high energy density, salt-spray resistance and wide temperature range.",
+        "href": "/cases/marine"
+      },
+      "specialOps": {
+        "name": "Special-purpose equipment",
+        "tagline": "For construction, police and emergency-rescue — stable supply under shock, vibration and wide temperature extremes.",
+        "href": "/cases/special-ops"
+      }
+    },
+    "flow": {
+      "title": "Project development flow",
+      "subtitle": "From requirements to mass production, our recommended collaboration path.",
+      "steps": [
+        {
+          "title": "Requirements",
+          "desc": "Define platform type, endurance/power targets and boundary conditions"
+        },
+        {
+          "title": "Solution design",
+          "desc": "Cell selection, PACK architecture and system interface proposal"
+        },
+        {
+          "title": "Customisation",
+          "desc": "BMS strategy, structure and thermal design tailored to the host"
+        },
+        {
+          "title": "Sample validation",
+          "desc": "Sample delivery plus bench and real-world validation"
+        },
+        {
+          "title": "Production ramp",
+          "desc": "Line qualification, volume delivery and ongoing support"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Tell us your mission. We respond with engineering.",
+      "desc": "Submit your platform type, endurance/power targets and boundary conditions. Our engineering team responds within 48 hours.",
+      "button": "Start a Project"
+    },
+    "lowAltitude": {
+      "hero": {
+        "eyebrow": "SOLUTIONS / LOW-ALTITUDE FLIGHT",
+        "title": "Command the wind. Fly further.",
+        "subtitle": "A one-stop high-energy-density power system built for low-altitude flight — breaking through extreme cold and heavy-payload limits."
+      },
+      "painPoints": {
+        "title": "Industry challenges",
+        "items": [
+          {
+            "keyword": "Endurance and payload",
+            "desc": "Insufficient energy density; battery mass eats into payload"
+          },
+          {
+            "keyword": "Temperature-related capacity loss",
+            "desc": "Marked loss in cold and heat; rapid drop below -20℃"
+          },
+          {
+            "keyword": "Burst power and thermal control",
+            "desc": "VTOL high-rate discharge runs hot; temperature hard to manage"
+          },
+          {
+            "keyword": "Fragmented supply chain",
+            "desc": "Cell, PACK and BMS from separate vendors raises integration risk"
+          }
+        ]
+      },
+      "value": {
+        "title": "Solution value",
+        "desc": "Lift endurance and payload within strict weight budgets while keeping power stable across takeoff, cruise and landing — even in harsh environments."
+      },
+      "highlights": {
+        "title": "Core Capability",
+        "items": [
+          {
+            "label": "High energy density",
+            "desc": "More endurance and released payload space at the same weight"
+          },
+          {
+            "label": "-40℃ ~ 60℃",
+            "desc": "Wide temperature range for cold-zone and plateau operations"
+          },
+          {
+            "label": "Continuous / pulse current",
+            "desc": "Meets VTOL instantaneous high-power demand"
+          },
+          {
+            "label": "Dedicated BMS",
+            "desc": "Multi-series/parallel networking with system-level adaptation and tuning"
+          },
+          {
+            "label": "Two-stage thermal design",
+            "desc": "Cell + PACK thermal design balancing energy density, safety and cycle life"
+          }
+        ]
+      },
+      "cases": {
+        "title": "Scenario cases",
+        "items": [
+          {
+            "scene": "Industrial multi-rotor UAV",
+            "image": "/images/solutions/cases/low-altitude-1.jpg",
+            "imageAlt": "Industrial multi-rotor UAV",
+            "applications": "Survey · Security · Inspection · Emergency · Logistics",
+            "metrics": [
+              {
+                "value": "85 min",
+                "label": "Continuous flight"
+              },
+              {
+                "value": "+63%",
+                "label": "Endurance gain"
+              },
+              {
+                "value": "20%",
+                "label": "Residual at landing"
+              }
+            ],
+            "value": "Substantially longer endurance with stable thermal control, landing with 20% charge remaining",
+            "comparison": {
+              "title": "Competitor comparison",
+              "columns": [
+                "Competitor module",
+                "SSE module"
+              ],
+              "highlightColumn": 1,
+              "rows": [
+                {
+                  "label": "Configuration",
+                  "values": [
+                    "7S1P",
+                    "7S1P"
+                  ]
+                },
+                {
+                  "label": "Min. capacity (Ah)",
+                  "values": [
+                    "19.2",
+                    "30"
+                  ]
+                },
+                {
+                  "label": "Nominal voltage (V)",
+                  "values": [
+                    "25.9",
+                    "24.5"
+                  ]
+                },
+                {
+                  "label": "Energy (Wh)",
+                  "values": [
+                    "497.28",
+                    "735"
+                  ]
+                },
+                {
+                  "label": "Weight (kg)",
+                  "values": [
+                    "2.12",
+                    "2.1"
+                  ]
+                },
+                {
+                  "label": "Energy density (Wh/kg)",
+                  "values": [
+                    "226",
+                    "350"
+                  ]
+                },
+                {
+                  "label": "Dimensions (mm)",
+                  "values": [
+                    "163*85*100",
+                    "195*74*95"
+                  ]
+                },
+                {
+                  "label": "Continuous discharge (A)",
+                  "values": [
+                    "96",
+                    "90~150"
+                  ]
+                },
+                {
+                  "label": "Max. charge current (A)",
+                  "values": [
+                    "19.2",
+                    "30"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "scene": "Heavy-payload multi-rotor UAV",
+            "image": "/images/solutions/cases/low-altitude-2.jpg",
+            "imageAlt": "Heavy-payload multi-rotor UAV",
+            "applications": "Lifting · Transport · Washing · Firefighting · Emergency",
+            "metrics": [
+              {
+                "value": "200 kg",
+                "label": "Takeoff weight"
+              },
+              {
+                "value": "23 min",
+                "label": "Endurance"
+              },
+              {
+                "value": "223%",
+                "label": "Endurance gain"
+              }
+            ],
+            "value": "Stable endurance and thermal control even at 200 kg full-load takeoff",
+            "comparison": {
+              "title": "Competitor comparison",
+              "columns": [
+                "FC200",
+                "SSE customer"
+              ],
+              "highlightColumn": 1,
+              "rows": [
+                {
+                  "group": "Module specs",
+                  "label": "Configuration",
+                  "values": [
+                    "14S1P",
+                    "24S2P"
+                  ]
+                },
+                {
+                  "label": "Min. capacity (Ah)",
+                  "values": [
+                    "46",
+                    "72"
+                  ]
+                },
+                {
+                  "label": "Nominal voltage (V)",
+                  "values": [
+                    "52.22",
+                    "84"
+                  ]
+                },
+                {
+                  "label": "Energy (Wh)",
+                  "values": [
+                    "2402",
+                    "6048"
+                  ]
+                },
+                {
+                  "label": "Weight (kg)",
+                  "values": [
+                    "16",
+                    "23"
+                  ]
+                },
+                {
+                  "label": "Energy density (Wh/kg)",
+                  "values": [
+                    "150",
+                    "260"
+                  ]
+                },
+                {
+                  "group": "Flight conditions",
+                  "label": "Full-load weight (kg)",
+                  "values": [
+                    "200",
+                    "200"
+                  ]
+                },
+                {
+                  "label": "Battery count",
+                  "values": [
+                    "4 packs",
+                    "4 packs"
+                  ]
+                },
+                {
+                  "label": "Full-load flight time (min)",
+                  "values": [
+                    "7",
+                    "23"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "scene": "Industrial hybrid-wing UAV",
+            "image": "/images/solutions/cases/low-altitude-3.jpg",
+            "imageAlt": "Industrial hybrid-wing UAV",
+            "applications": "Security · Inspection · Survey · Emergency · Logistics",
+            "metrics": [
+              {
+                "value": "287 min",
+                "label": "Flight time"
+              },
+              {
+                "value": "424.3 km",
+                "label": "Continuous range"
+              },
+              {
+                "value": "+36%",
+                "label": "Endurance gain"
+              }
+            ],
+            "value": "Endurance beyond 5 hours with >90% capacity retention in extreme cold",
+            "comparison": {
+              "title": "Competitor comparison",
+              "columns": [
+                "Competitor module",
+                "SSE module"
+              ],
+              "highlightColumn": 1,
+              "rows": [
+                {
+                  "label": "Configuration",
+                  "values": [
+                    "12S1P",
+                    "12S1P"
+                  ]
+                },
+                {
+                  "label": "Min. capacity (Ah)",
+                  "values": [
+                    "33",
+                    "42.5"
+                  ]
+                },
+                {
+                  "label": "Nominal voltage (V)",
+                  "values": [
+                    "43.2",
+                    "42"
+                  ]
+                },
+                {
+                  "label": "Energy (Wh)",
+                  "values": [
+                    "1425",
+                    "1785"
+                  ]
+                },
+                {
+                  "label": "Weight (kg)",
+                  "values": [
+                    "5.1",
+                    "4.9"
+                  ]
+                },
+                {
+                  "label": "Energy density (Wh/kg)",
+                  "values": [
+                    "280",
+                    "360"
+                  ]
+                },
+                {
+                  "label": "Continuous discharge (A)",
+                  "values": [
+                    "99",
+                    "120"
+                  ]
+                },
+                {
+                  "label": "Max. charge current (A)",
+                  "values": [
+                    "33",
+                    "41"
+                  ]
+                },
+                {
+                  "label": "Discharge temp. range (℃)",
+                  "values": [
+                    "-20~60",
+                    "-40~60"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "scene": "Cargo / passenger eVTOL",
+            "image": "/images/solutions/cases/low-altitude-eVTOL.jpg",
+            "imageAlt": "Cargo / passenger eVTOL",
+            "applications": "Air transport · Short-haul logistics · Sightseeing · Rescue",
+            "metrics": [
+              {
+                "value": "1 t",
+                "label": "Takeoff weight"
+              },
+              {
+                "value": "60+ min",
+                "label": "Endurance"
+              },
+              {
+                "value": "400 V",
+                "label": "HV platform"
+              }
+            ],
+            "value": "Ton-class takeoff weight with high-voltage power redundancy"
+          }
+        ]
+      }
+    },
+    "embodiedAI": {
+      "hero": {
+        "eyebrow": "SOLUTIONS / EMBODIED AI ROBOTS",
+        "title": "Evolution, powered from within.",
+        "subtitle": "Lightweight, high-power systems that fuel every step of a robot's evolution."
+      },
+      "painPoints": {
+        "title": "Industry challenges",
+        "items": [
+          {
+            "keyword": "Cramped bay and off-centre weight",
+            "desc": "Tight battery bay; weight weakens mobility and obstacle crossing"
+          },
+          {
+            "keyword": "Pulse loads",
+            "desc": "Walking, jumping and fall recovery cause voltage drop"
+          },
+          {
+            "keyword": "Outdoor reliability and temperature",
+            "desc": "Vibration, shock and temperature swings degrade performance"
+          },
+          {
+            "keyword": "Poor SOC accuracy",
+            "desc": "Misleading charge readings cause unexpected shutdowns"
+          }
+        ]
+      },
+      "value": {
+        "title": "Solution value",
+        "desc": "Within tight volume and weight budgets, balance runtime with burst power, withstand shock on rough terrain, and extend continuous operation time."
+      },
+      "highlights": {
+        "title": "Core Capability",
+        "items": [
+          {
+            "label": "Lightweight PACK",
+            "desc": "High energy density with controlled self-weight for longer runtime"
+          },
+          {
+            "label": "Ultra-high pulse",
+            "desc": "Handles running, jumping and fall-recovery power peaks"
+          },
+          {
+            "label": "Vibration and shock resistant",
+            "desc": "Structure designed for rough-terrain operation"
+          },
+          {
+            "label": "Custom BMS",
+            "desc": "CAN communication with seamless host-controller integration"
+          },
+          {
+            "label": "Dual-battery hot swap",
+            "desc": "Swap packs without shutting the mission down"
+          },
+          {
+            "label": "-40℃ ~ 60℃",
+            "desc": "Wide temperature range for indoor and outdoor use"
+          }
+        ]
+      },
+      "cases": {
+        "title": "Scenario cases",
+        "items": [
+          {
+            "scene": "Quadruped robot dog",
+            "image": "/images/solutions/cases/embodied-ai-1.jpg",
+            "imageAlt": "Quadruped robot dog",
+            "applications": "Inspection · Security · Exploration · Emergency · Logistics",
+            "metrics": [
+              {
+                "value": "+44%",
+                "label": "Capacity"
+              },
+              {
+                "value": "-2 kg",
+                "label": "Weight saved"
+              },
+              {
+                "value": "300 A",
+                "label": "Burst current"
+              }
+            ],
+            "value": "44% more capacity in the same footprint, with dual-battery hot swap",
+            "comparison": {
+              "title": "Competitor comparison",
+              "columns": [
+                "Existing module",
+                "SSE solution"
+              ],
+              "highlightColumn": 1,
+              "rows": [
+                {
+                  "label": "Configuration",
+                  "values": [
+                    "18S1P",
+                    "18S1P"
+                  ]
+                },
+                {
+                  "label": "Nominal voltage (V)",
+                  "values": [
+                    "66.6",
+                    "143.5"
+                  ]
+                },
+                {
+                  "label": "Nominal capacity (Ah)",
+                  "values": [
+                    "30",
+                    "41"
+                  ]
+                },
+                {
+                  "label": "Cell dimensions (mm)",
+                  "values": [
+                    "12*88*187 (est.)",
+                    "10.5*88*187"
+                  ]
+                },
+                {
+                  "label": "Cell energy density (Wh/kg)",
+                  "values": [
+                    "245",
+                    "391"
+                  ]
+                },
+                {
+                  "label": "Energy (Wh)",
+                  "values": [
+                    "1998",
+                    "2583"
+                  ]
+                },
+                {
+                  "label": "Discharge cut-off (V)",
+                  "values": [
+                    "54 (3.0)",
+                    "45 (2.5)"
+                  ]
+                },
+                {
+                  "label": "Charge end voltage (V)",
+                  "values": [
+                    "77.4 (4.3)",
+                    "77.4 (4.3)"
+                  ]
+                },
+                {
+                  "label": "Standard charge current (A)",
+                  "values": [
+                    "6",
+                    "20"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "scene": "Bipedal humanoid robot",
+            "image": "/images/solutions/cases/embodied-ai-2.jpg",
+            "imageAlt": "Bipedal humanoid robot",
+            "applications": "Industrial work · Site inspection · Public security · Service",
+            "metrics": [
+              {
+                "value": "High-density",
+                "label": "Lightweight system"
+              },
+              {
+                "value": "SOC",
+                "label": "Accurate estimation"
+              }
+            ],
+            "value": "Fits a tight chest cavity with optimised dynamic power response"
+          }
+        ]
+      }
+    },
+    "marine": {
+      "hero": {
+        "eyebrow": "SOLUTIONS / MARINE PLATFORMS",
+        "title": "Reliable power for the deep blue frontier.",
+        "subtitle": "Salt-spray resistant and pressure-tolerant — custom PACK shapes and high energy density for the most constrained pressure hulls."
+      },
+      "painPoints": {
+        "title": "Industry challenges",
+        "items": [
+          {
+            "keyword": "Hull fit and buoyancy trim",
+            "desc": "Tight pressure hull; battery weight affects trim"
+          },
+          {
+            "keyword": "Salt spray and pressure",
+            "desc": "Weak sealing, coating or pressure resistance means failure"
+          },
+          {
+            "keyword": "Cold water and sealed heat",
+            "desc": "Cold seawater cuts capacity; sealed hulls trap heat"
+          },
+          {
+            "keyword": "Service cost and reliability",
+            "desc": "Costly retrieval; strict precision and reliability demands"
+          }
+        ]
+      },
+      "value": {
+        "title": "Solution value",
+        "desc": "Combine high energy density, salt-spray resistance and wide temperature range; support deep BMS customization; fit surface, shallow-water and mid/deep-sea scenarios; address hull fit, buoyancy trim and marine reliability."
+      },
+      "highlights": {
+        "title": "Core Capability",
+        "items": [
+          {
+            "label": "High-density PACK",
+            "desc": "Longer runtime and less weight, relieving buoyancy trim pressure"
+          },
+          {
+            "label": "Salt-spray and shock resistant",
+            "desc": "Packaging resists marine corrosion and shocks"
+          },
+          {
+            "label": "Wide-temperature cells",
+            "desc": "Stable discharge output in cold seawater"
+          },
+          {
+            "label": "In-house marine BMS",
+            "desc": "Underwater protocol support with high-precision SOC/SOH"
+          },
+          {
+            "label": "Shaped PACK customisation",
+            "desc": "Fits complex, constrained pressure-hull cavities"
+          }
+        ]
+      },
+      "cases": {
+        "title": "Scenario cases",
+        "items": [
+          {
+            "scene": "Surface unmanned surface vehicle (USV)",
+            "image": "/images/solutions/cases/marine-usv.jpg",
+            "imageAlt": "Surface unmanned surface vehicle",
+            "applications": "Hydrology · Border patrol · Marine survey",
+            "metrics": [
+              {
+                "value": "Salt-spray",
+                "label": "Sealed protection"
+              },
+              {
+                "value": "Long range",
+                "label": "High-density design"
+              },
+              {
+                "value": "Remote",
+                "label": "State reporting"
+              }
+            ],
+            "value": "Long salt-spray-resistant endurance with remote state monitoring"
+          },
+          {
+            "scene": "ROV — remotely operated underwater vehicle",
+            "image": "/images/solutions/cases/marine-rov.jpg",
+            "imageAlt": "ROV underwater vehicle",
+            "applications": "Facility inspection · Underwater work · Hull cleaning",
+            "metrics": [
+              {
+                "value": "High-rate",
+                "label": "Thruster power"
+              },
+              {
+                "value": "Compact",
+                "label": "Hull fit"
+              },
+              {
+                "value": "Wide temp",
+                "label": "Cold discharge"
+              }
+            ],
+            "value": "Instant thruster power in a PACK sized for the hull cavity"
+          },
+          {
+            "scene": "AUV — autonomous underwater vehicle",
+            "image": "/images/solutions/cases/marine-auv.jpg",
+            "imageAlt": "AUV underwater vehicle",
+            "applications": "Marine science · Subsea pipeline inspection",
+            "metrics": [
+              {
+                "value": "High-density",
+                "label": "Endurance"
+              },
+              {
+                "value": "SOC/SOH",
+                "label": "Precision"
+              },
+              {
+                "value": "Lightweight",
+                "label": "Buoyancy trim"
+              }
+            ],
+            "value": "Longer autonomous endurance with lightweight buoyancy trim"
+          }
+        ]
+      }
+    },
+    "specialOps": {
+      "hero": {
+        "eyebrow": "SOLUTIONS / SPECIAL-PURPOSE EQUIPMENT",
+        "title": "Rock-solid. Mission delivered.",
+        "subtitle": "Shock-resistant, vibration-proof, sub-second response at -40℃ — never offline when it matters."
+      },
+      "painPoints": {
+        "title": "Industry challenges",
+        "items": [
+          {
+            "keyword": "Extreme conditions",
+            "desc": "Severe cold, heat, dust and continuous shock"
+          },
+          {
+            "keyword": "Mission-critical reliability",
+            "desc": "Power failure aborts the mission and can cause secondary risk"
+          },
+          {
+            "keyword": "Form factor and voltage spread",
+            "desc": "Wide variance in installation space and platform voltage"
+          },
+          {
+            "keyword": "Pulse loads and protection",
+            "desc": "High instantaneous power causes voltage drop and false trips"
+          }
+        ]
+      },
+      "value": {
+        "title": "Solution value",
+        "desc": "Stable power under shock, vibration and wide-temperature extremes; supports non-standard sizes and voltages."
+      },
+      "highlights": {
+        "title": "Core Capability",
+        "items": [
+          {
+            "label": "-40℃ ~ 60℃",
+            "desc": "Wide range preserving usable capacity in extreme cold"
+          },
+          {
+            "label": "Shock and vibration resistant",
+            "desc": "Reinforced PACK structure for site and disaster conditions"
+          },
+          {
+            "label": "Non-standard customisation",
+            "desc": "Custom voltage and form factor for constrained spaces"
+          },
+          {
+            "label": "Custom BMS",
+            "desc": "Tiered fault diagnosis and state reporting, deeply integrated with the host"
+          },
+          {
+            "label": "Coordinated protection",
+            "desc": "Cell-PACK-BMS multi-layer protection for harsh conditions"
+          },
+          {
+            "label": "Bench validation",
+            "desc": "Vibration, shock, thermal and electrical safety simulation tests"
+          }
+        ]
+      },
+      "cases": {
+        "title": "Scenario cases",
+        "items": [
+          {
+            "scene": "Construction machinery",
+            "image": "/images/solutions/cases/special-ops-1.jpg",
+            "imageAlt": "Construction machinery",
+            "applications": "Infrastructure · Tunnels · Mining · Ports · Emergency",
+            "metrics": [
+              {
+                "value": "Impact",
+                "label": "Reinforced structure"
+              },
+              {
+                "value": "Continuous",
+                "label": "Discharge"
+              },
+              {
+                "value": "Tiered",
+                "label": "BMS protection"
+              }
+            ],
+            "value": "Reinforced against impact while matching hydraulic load discharge"
+          },
+          {
+            "scene": "Police wheeled / tracked patrol robot",
+            "image": "/images/solutions/cases/patrol-robot.jpg",
+            "imageAlt": "Police patrol robot",
+            "applications": "Border patrol · Site security · Hazmat recon · Event security",
+            "metrics": [
+              {
+                "value": "Wide temp",
+                "label": "Outdoor coverage"
+              },
+              {
+                "value": "Tiered",
+                "label": "Safety protection"
+              },
+              {
+                "value": "Remote",
+                "label": "State reporting"
+              }
+            ],
+            "value": "Wide-temperature protection for standby and manoeuvre alike"
+          },
+          {
+            "scene": "Emergency-rescue special-purpose equipment",
+            "image": "/images/solutions/cases/rescue-robot.jpg",
+            "imageAlt": "Emergency-rescue equipment",
+            "applications": "Rubble search · Emergency operations",
+            "metrics": [
+              {
+                "value": "-40℃",
+                "label": "Cold start"
+              },
+              {
+                "value": "Intrinsic",
+                "label": "Cell safety"
+              },
+              {
+                "value": "Tiered",
+                "label": "Fault protection"
+              }
+            ],
+            "value": "-40℃ fast cold start with cell and PACK dual protection"
+          }
+        ]
+      }
+    }
   }
 }

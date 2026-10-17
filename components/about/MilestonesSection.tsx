@@ -14,73 +14,80 @@ export interface Milestone {
 const milestones: Milestone[] = [
   {
     year: '2014',
-    titleZh: '技术研究启动',
-    titleEn: 'R&D Initiation',
-    descZh: '依托院士团队科研力量，围绕下一代高比能固态电解质与高硅负极体系开启底层技术攻关。',
-    descEn: 'Initiated core R&D on next-gen solid-state electrolytes and high-silicon anodes backed by academician team.',
+    titleZh: '布局固态电池前沿',
+    titleEn: 'Frontier of Solid-State Batteries',
+    descZh: '创始人加入国际顶尖电池研究机构，携手全球领先固态电池企业，攻关核心技术',
+    descEn: 'Founder joined a leading international battery research institute and worked alongside a global solid-state battery leader on core technology.',
   },
   {
     year: '2016',
-    titleZh: 'Nature 正刊发表',
-    titleEn: 'Nature Publication',
-    descZh: '关键电池材料突破性研究成果发表于国际顶级学术期刊《Nature》，奠定技术学术地位。',
-    descEn: 'Breakthrough battery material research published in Nature journal, establishing academic leadership.',
+    titleZh: '全气候电池成果登上《Nature》',
+    titleEn: 'All-Climate Battery Published in Nature',
+    descZh: '突破电池低温应用瓶颈，为后续冬奥会全气候新能源汽车应用奠定理论基础',
+    descEn: 'Broke through the low-temperature operating limit, laying the theoretical foundation for the all-climate new-energy vehicles later deployed at the Winter Olympics.',
+  },
+  {
+    year: '2017',
+    titleZh: '开创电池寿命预测新范式',
+    titleEn: 'A New Paradigm for Battery Life Prediction',
+    descZh: '发布全球首个锂电池全生命周期寿命预测模型，累计引用逾1,200次，获行业广泛应用',
+    descEn: 'Released the world’s first full-lifecycle lithium battery life-prediction model; cited over 1,200 times and widely adopted across the industry.',
   },
   {
     year: '2018',
-    titleZh: '极寒快充技术突破',
-    titleEn: 'Extreme Cold Fast Charge',
-    descZh: '攻克 -40℃ 极寒低温环境下的高倍率快充与循环寿命衰减难题。',
-    descEn: 'Solved high-rate fast charging and cycle life degradation challenges in -40℃ extreme cold environments.',
+    titleZh: '突破−50℃极寒快充',
+    titleEn: 'Fast Charging at −50 °C',
+    descZh: '实现极寒环境下15分钟快充、4,500次循环，研究成果发表于《PNAS》',
+    descEn: 'Achieved 15-minute fast charging and 4,500 cycles in extreme cold; results published in PNAS.',
   },
   {
     year: '2019',
-    titleZh: '全球首发速热 6C 超充',
-    titleEn: 'Global Debut 6C Fast Charge',
-    descZh: '推出业界领先的速热 6C 超快充电池技术，实现分钟级补能与高安全性兼备。',
-    descEn: 'Pioneered industry-leading rapid-heating 6C ultra-fast charging technology with minute-level replenishment.',
+    titleZh: '首创速热6C超充',
+    titleEn: 'First Rapid-Heating 6C Ultra-Fast Charging',
+    descZh: '以速热技术实现10分钟超充，突破传统电池温度管理范式，成果发表于《Joule》',
+    descEn: 'Used rapid-heating technology to deliver 10-minute ultra-fast charging, breaking with conventional thermal management; published in Joule.',
+  },
+  {
+    year: '2020',
+    titleZh: '率先定义eVTOL电池需求',
+    titleEn: 'First to Define eVTOL Battery Requirements',
+    descZh: '发表全球首篇eVTOL电池需求论文，明确“三高一快”性能要求',
+    descEn: 'Published the first paper on eVTOL battery requirements, defining the three-highs-and-one-fast performance criteria.',
   },
   {
     year: '2021',
-    titleZh: '产业化团队组建',
-    titleEn: 'Entity Incorporation',
-    descZh: '院士团队与资深新能源产业化工程专家共同组建实体公司，开启规模化商业落地。',
-    descEn: 'Formed an industrial entity with top battery engineering experts to drive commercial deployment.',
-  },
-  {
-    year: '2022',
-    titleZh: '试制平台建成',
-    titleEn: 'Pilot Line Operational',
-    descZh: '搭建高标准中试生产线，启动先进电芯与模组在无人机及特种装备上的实测验证。',
-    descEn: 'Built high-spec pilot lines to evaluate cells and modules on drones and specialized equipment.',
+    titleZh: '归国创业，推进技术产业化',
+    titleEn: 'Returned to China to Commercialize the Technology',
+    descZh: '创始人全职回国，组建产业化团队，聚焦超快充、高能量密度与固态电池核心技术',
+    descEn: 'Founder returned full-time and built a commercialization team focused on ultra-fast charging, high energy density, and solid-state core technology.',
   },
   {
     year: '2023',
-    titleZh: '百吨级量产工艺开发',
-    titleEn: '100-Ton Mass Production',
-    descZh: '攻克关键材料百吨级稳定制备与规模化涂布工艺，打通实验室到工厂的关键卡点。',
-    descEn: 'Achieved 100-ton scale material synthesis and coating, bridging lab scale to factory manufacturing.',
+    titleZh: '突破固态电解质量产工艺',
+    titleEn: 'Breakthrough in Solid Electrolyte Mass Production',
+    descZh: '攻克氧化物与聚合物固态电解质材料量产工艺瓶颈，实现吨级试制',
+    descEn: 'Overcame mass-production bottlenecks in oxide and polymer solid electrolyte materials, achieving ton-scale pilot production.',
   },
   {
     year: '2024',
-    titleZh: '深圳总部设立',
-    titleEn: 'Shenzhen HQ Launch',
-    descZh: '深安锂能（深圳）总部正式成立，聚焦低空经济、具身智能与高端装备电源市场。',
-    descEn: 'Established Shenzhen HQ targeting low-altitude economy, embodied AI, and advanced equipment markets.',
+    titleZh: '深安锂能成立，开启产业化准备',
+    titleEn: 'Swift Safe Energy Founded, Preparing for Industrialization',
+    descZh: '启动MWh级固态电池试制线与百吨级固态电解质量产线建设，加速科研成果产业化。',
+    descEn: 'Began building an MWh-scale solid-state battery pilot line and a 100-ton solid electrolyte production line to accelerate the path from research to industry.',
   },
   {
     year: '2025',
-    titleZh: '融资规模超 1 亿元',
-    titleEn: '¥100M+ Series Funding',
-    descZh: '完成过亿元战略融资，资本与产业资源加码，加速产能建设与产品交付进程。',
-    descEn: 'Secured over 100M RMB in funding to accelerate gigafactory construction and mass deliveries.',
+    titleZh: '高比能电芯通过头部客户验证',
+    titleEn: 'High-Energy Cells Validated by Leading Customers',
+    descZh: '产品通过中汽研等第三方检测认证，完成行业头部客户送样验证，迈入商业化新阶段。',
+    descEn: 'Products passed third-party testing and certification including CATARC and completed sample validation with leading customers — entering the commercialization stage.',
   },
   {
     year: '2026',
-    titleZh: '0.5GWh 生产基地建设',
-    titleEn: '0.5GWh Base Construction',
-    descZh: '启动 0.5GWh 先进电池规模化生产基地建设，全面开启低空与工业级电源的大批量交付。',
-    descEn: 'Began constructing 0.5GWh production base for high-volume delivery of drone and industrial batteries.',
+    titleZh: '数亿元融资落地，迈向规模制造',
+    titleEn: 'Multi-Hundred-Million Funding, Moving to Scale Manufacturing',
+    descZh: '获得数亿元融资，高比能固态电池取得批量订单，启动0.5GWh高标准产线建设。',
+    descEn: 'Raised several hundred million RMB; high-energy-density solid-state batteries won volume orders and construction began on a 0.5 GWh high-standard production line.',
   },
 ];
 
@@ -90,9 +97,19 @@ interface MilestonesProps {
   items?: Milestone[];
 }
 
+/**
+ * Development history — a year rail over the milestone it selects, in the
+ * same silver-white language as the rest of the site.
+ *
+ * Kept deliberately plain: hairlines, tabular years, ink copy, one accent.
+ * The previous version ran a silver laser line, glow blobs, a 12rem
+ * watermark year, gradient-filled type, drop shadows and a ping pulse on
+ * the active tick, which read as decoration competing with the content.
+ */
 export default function MilestonesSection({ lang = 'zh', items }: MilestonesProps) {
   const data = items && items.length > 0 ? items : milestones;
-  const [activeIndex, setActiveIndex] = useState(6); // 默认高亮 2023 年
+  // Default to 2023 (index 7) — the first production-scale milestone.
+  const [activeIndex, setActiveIndex] = useState(7);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -105,156 +122,116 @@ export default function MilestonesSection({ lang = 'zh', items }: MilestonesProp
   const current = data[activeIndex];
 
   return (
-    <section className="w-full py-10 md:py-16 px-6 md:px-12 border-t border-zinc-800/80 bg-[#07080a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(212,212,216,0.12),rgba(255,255,255,0))] text-slate-100 font-sans antialiased overflow-hidden select-none">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* ===== 1. 板块 Header ===== */}
-        <div className="flex items-end justify-between border-b border-zinc-800/80 pb-4">
-          <div className="space-y-1">
-            <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-zinc-400 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">
-              {"// CHRONOLOGY & MILESTONES"}
-            </div>
-            <h2 className="text-3xl md:text-4xl font-light tracking-tight text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]">
+    <section className="w-full select-none bg-[#F7F8FB] px-6 py-16 text-[#0A0A0F] md:px-12 md:py-24 font-sans">
+      <div className="mx-auto max-w-6xl">
+        {/* Header */}
+        <div className="flex items-end justify-between gap-6 border-b border-[#E4E4E7] pb-5">
+          <div>
+            <p className="mb-2 text-[10px] tracking-[0.3em] text-[#2563EB] uppercase">
+              CHRONOLOGY &amp; MILESTONES
+            </p>
+            <h2 className="text-[clamp(1.6rem,3vw,2.5rem)] font-medium leading-tight tracking-tight">
               {isEn ? 'Evolution & Milestones' : '发展历程'}
             </h2>
           </div>
 
-          <div className="text-sm font-mono text-zinc-400">
-            <span className="text-white font-bold text-base drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]">
+          <span className="shrink-0 pb-1 text-sm tabular-nums">
+            <span className="font-medium text-[#0A0A0F]">
               {String(activeIndex + 1).padStart(2, '0')}
             </span>
-            <span className="text-zinc-600"> / </span>
-            <span>{String(data.length).padStart(2, '0')}</span>
-          </div>
+            <span className="text-[#71717A]">
+              {' / '}
+              {String(data.length).padStart(2, '0')}
+            </span>
+          </span>
         </div>
 
-        {/* ===== 2. 主体舞台（清空小图标，放大年份，施加金属银光泽） ===== */}
-        <div className="relative min-h-[240px] md:min-h-[270px] rounded-2xl bg-gradient-to-b from-[#12141c]/90 via-[#0d0e14]/90 to-[#08090d]/90 border border-zinc-700/60 p-6 md:px-10 md:py-8 overflow-hidden flex items-center group shadow-2xl backdrop-blur-md">
+        {/* Year rail — one hairline, one tick per milestone. Scrolls
+            sideways rather than crushing twelve years into a phone. */}
+        <div className="mt-10 overflow-x-auto pb-1">
+          <div className="relative min-w-[680px] pt-2">
+            <div className="absolute inset-x-0 top-[7px] h-px bg-[#E4E4E7]" />
+            <div
+              className="absolute left-0 top-[7px] h-px bg-[#0A0A0F] transition-all duration-500"
+              style={{ width: `${((activeIndex + 1) / data.length) * 100}%` }}
+            />
 
-          {/* 顶部金属银激光线条 */}
-          <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_0_12px_rgba(248,250,252,0.8)]" />
-
-          {/* 背景冷银/银白柔光斑 */}
-          <div className="absolute -top-24 -left-24 w-80 h-80 bg-slate-300/10 blur-[100px] rounded-full pointer-events-none" />
-          <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-zinc-400/10 blur-[100px] rounded-full pointer-events-none" />
-
-          {/* 倒计时金属银进度线 */}
-          <div
-            key={activeIndex}
-            className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-zinc-400 via-white to-slate-300 shadow-[0_0_12px_rgba(255,255,255,0.9)] animate-[progress_5s_linear_infinite]"
-            style={{ width: '100%' }}
-          />
-
-          {/* 右下角巨型银色水印年份 */}
-          <div className="absolute right-2 bottom-[-18%] text-[8.5rem] md:text-[12rem] font-mono font-black text-transparent bg-clip-text bg-gradient-to-b from-white/[0.14] via-zinc-400/[0.05] to-transparent pointer-events-none tracking-tighter leading-none select-none drop-shadow-[0_0_20px_rgba(255,255,255,0.03)] transition-all duration-700">
-            {current.year}
-          </div>
-
-          {/* 前景内容展现区 */}
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
-
-            <div className="lg:col-span-10 space-y-4">
-
-              {/* 大号超高对比金属银年份与标题 */}
-              <div className="flex flex-wrap items-baseline gap-5 md:gap-8">
-                {/* 年份字体大幅度放大，带有金属银渐变与强光影效果 */}
-                <span className="text-5xl md:text-7xl font-mono font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-zinc-400 drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
-                  {current.year}
-                </span>
-                <h3 className="text-2xl md:text-4xl font-light text-slate-100 tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-                  {isEn ? current.titleEn : current.titleZh}
-                </h3>
-              </div>
-
-              {/* 描述内容 */}
-              <p className="text-base md:text-lg text-zinc-300 font-light leading-relaxed max-w-3xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-                {isEn ? current.descEn : current.descZh}
-              </p>
-            </div>
-
-            {/* 左右翻页控制 */}
-            <div className="lg:col-span-2 flex justify-end gap-3 self-center">
-              <button
-                onClick={() => setActiveIndex((prev) => (prev === 0 ? data.length - 1 : prev - 1))}
-                className="w-11 h-11 rounded-full border border-zinc-700 bg-zinc-900/90 hover:bg-white hover:text-black transition-all duration-200 flex items-center justify-center text-zinc-200 hover:scale-105 active:scale-95 shadow-lg backdrop-blur-sm"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setActiveIndex((prev) => (prev + 1) % data.length)}
-                className="w-11 h-11 rounded-full border border-zinc-700 bg-zinc-900/90 hover:bg-white hover:text-black transition-all duration-200 flex items-center justify-center text-zinc-200 hover:scale-105 active:scale-95 shadow-lg backdrop-blur-sm"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-        {/* ===== 3. 金属银光效刻度导轨 ===== */}
-        <div className="relative pt-4">
-          {/* 背景导轨线 */}
-          <div className="absolute top-[25px] left-0 right-0 h-[1px] bg-zinc-800" />
-
-          {/* 动态前进的金属银发光线条 */}
-          <div
-            className="absolute top-[25px] left-0 h-[1.5px] bg-gradient-to-r from-zinc-500 via-white to-slate-200 shadow-[0_0_12px_rgba(255,255,255,0.9)] transition-all duration-500"
-            style={{ width: `${((activeIndex + 1) / data.length) * 100}%` }}
-          />
-
-          <div className="relative z-10 grid grid-cols-10 gap-1 md:gap-2">
-            {data.map((item, idx) => {
-              const isActive = idx === activeIndex;
-              const isPassed = idx < activeIndex;
-
-              return (
-                <button
-                  key={item.year}
-                  onClick={() => setActiveIndex(idx)}
-                  className="group flex flex-col items-center gap-2.5 focus:outline-none cursor-pointer"
-                >
-                  <div className="relative flex items-center justify-center w-4 h-4">
-                    {isActive && (
-                      <span className="absolute inset-0 rounded-full bg-white/40 animate-ping" />
-                    )}
-
-                    <div
-                      className={`w-3 h-3 rounded-full border transition-all duration-300 ${
-                        isActive
-                          ? 'bg-white border-white scale-125 shadow-[0_0_15px_rgba(255,255,255,1)]'
-                          : isPassed
-                          ? 'bg-zinc-400 border-zinc-300'
-                          : 'bg-[#090a0e] border-zinc-700 group-hover:border-zinc-400'
-                      }`}
-                    />
-                  </div>
-
-                  {/* 刻度年份 */}
-                  <span
-                    className={`text-xs md:text-sm font-mono transition-all duration-200 ${
-                      isActive
-                        ? 'text-white font-bold scale-110 drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]'
-                        : isPassed
-                        ? 'text-zinc-300'
-                        : 'text-zinc-500 group-hover:text-zinc-300'
-                    }`}
+            <div
+              className="relative grid gap-1"
+              style={{ gridTemplateColumns: `repeat(${data.length}, minmax(0, 1fr))` }}
+            >
+              {data.map((item, idx) => {
+                const isActive = idx === activeIndex;
+                return (
+                  <button
+                    key={item.year}
+                    type="button"
+                    onClick={() => setActiveIndex(idx)}
+                    aria-current={isActive}
+                    aria-label={item.year}
+                    className="group flex cursor-pointer flex-col items-center gap-3"
                   >
-                    {item.year}
-                  </span>
-                </button>
-              );
-            })}
+                    <span
+                      className={
+                        'h-1.5 w-1.5 rounded-full transition-colors duration-200 ' +
+                        (isActive
+                          ? 'bg-[#0A0A0F]'
+                          : 'bg-[#D4D4D8] group-hover:bg-[#A1A1AA]')
+                      }
+                    />
+                    <span
+                      className={
+                        'text-xs tabular-nums transition-colors duration-200 ' +
+                        (isActive
+                          ? 'font-semibold text-[#0A0A0F]'
+                          : 'text-[#A1A1AA] group-hover:text-[#52525B]')
+                      }
+                    >
+                      {item.year}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-      </div>
+        {/* Selected milestone. */}
+        <div className="mt-12 md:mt-16" aria-live="polite">
+          <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+            <span className="text-[clamp(2.25rem,4.5vw,3.5rem)] font-light leading-none tabular-nums tracking-tight">
+              {current.year}
+            </span>
+            <h3 className="text-lg font-medium leading-tight tracking-tight md:text-2xl">
+              {isEn ? current.titleEn : current.titleZh}
+            </h3>
+          </div>
 
-      <style jsx global>{`
-        @keyframes progress {
-          0% { width: 0%; }
-          100% { width: 100%; }
-        }
-      `}</style>
+          <p className="mt-5 max-w-3xl text-sm leading-relaxed text-[#52525B] md:text-base">
+            {isEn ? current.descEn : current.descZh}
+          </p>
+        </div>
+
+        {/* Stepper. */}
+        <div className="mt-10 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveIndex((prev) => (prev === 0 ? data.length - 1 : prev - 1))}
+            aria-label="Previous milestone"
+            className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[#0A0A0F]/15 bg-white text-[#0A0A0F] transition-colors hover:bg-[#F4F4F5]"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveIndex((prev) => (prev + 1) % data.length)}
+            aria-label="Next milestone"
+            className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[#0A0A0F]/15 bg-white text-[#0A0A0F] transition-colors hover:bg-[#F4F4F5]"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
     </section>
   );
 }
