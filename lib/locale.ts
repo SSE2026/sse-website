@@ -14,9 +14,9 @@
  * 现在让**服务端与客户端首帧返回同一个值**(构建期默认语言),分歧留到挂载后再纠正
  * —— Header 里有个 effect 会读 cookie 把用户手动选过的语言切过去。
  *
- * 每个部署用自己的默认语言:
- *   · CloudBase 国内镜像 → 设 `NEXT_PUBLIC_DEFAULT_LOCALE=zh`
- *   · 境外 Vercel        → 不设,落到 "en"
+ * 默认语言是**中文**。想用英文的部署显式设 `NEXT_PUBLIC_DEFAULT_LOCALE=en`:
+ *   · 国内镜像(EdgeOne / CloudBase) → 不设,落到 "zh"
+ *   · 境外部署想给英文     → 设 `NEXT_PUBLIC_DEFAULT_LOCALE=en`
  *
  * ⚠️ 前提是「中英文各一个部署」。若将来要**同一个构建同时服务两个域名**,
  * 环境变量区分不了,只能回到 middleware 按 Host 判断,而那会把所有页面
@@ -34,11 +34,12 @@ function isLocale(v: string | null | undefined): v is Locale {
 
 /**
  * 本部署的默认语言 —— 构建期内联。服务端与客户端首帧都用它,所以两边一致。
+ * 未设环境变量时落到中文(主站是中文站)。
  */
 const CONFIGURED_DEFAULT = process.env.NEXT_PUBLIC_DEFAULT_LOCALE;
 export const DEFAULT_LOCALE: Locale = isLocale(CONFIGURED_DEFAULT)
   ? CONFIGURED_DEFAULT
-  : "en";
+  : "zh";
 
 function readCookieRaw(): string | null {
   if (typeof document === "undefined") return null;
