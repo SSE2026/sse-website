@@ -243,9 +243,17 @@ function buildProducts(): Product[] {
 
 export const products: Product[] = buildProducts();
 
-/** 按系列分组 */
+/**
+ * 按系列分组 —— 爆品排在最前面。
+ *
+ * 用 filter 出来的新数组排序,不动 `products` 本身。
+ * sort 在 ES2019 起保证稳定,所以爆品组内、非爆品组内各自维持原来的顺序,
+ * 不是把两拨分别排序 —— 只是把爆品整段提到前面。
+ */
 export function getProductsBySeries(series: SeriesId): Product[] {
-  return products.filter((p) => p.series === series);
+  return products
+    .filter((p) => p.series === series)
+    .sort((a, b) => Number(b.bestseller) - Number(a.bestseller));
 }
 
 /** 按型号查询 */
