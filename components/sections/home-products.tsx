@@ -89,15 +89,17 @@ export function HomeProducts({ locale }: HomeProductsProps) {
           </div>
         </div>
 
-        {/* ===== 底部居中:探索更多产品 + 三个入口(手机端字号缩小,仍贴着下沿) ===== */}
-        <div className="absolute inset-x-0 bottom-0 pb-[3%] md:pb-[4%] lg:pb-[2.5%]">
+        {/* ===== 底部居中:探索更多产品 + 三个入口 =====
+            三个入口各自带一个浅色胶囊底 —— 否则字直接压在图上,看起来像图片
+            自带的文字,不像可点的入口。标签"探索更多产品"是说明,不加底。 */}
+        <div className="absolute inset-x-0 bottom-0 pb-[2.4%] md:pb-[2%] lg:pb-[1.5%]">
           <div className="mx-auto w-full max-w-[1280px] px-4 md:px-10 lg:px-16">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, delay: 0.12, ease: "easeOut" }}
-              className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-3 gap-y-1.5 py-1 md:gap-x-9 md:gap-y-3 md:py-2"
+              className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-2 gap-y-1.5 py-1 md:gap-x-4 md:gap-y-3 md:py-2"
             >
               <span
                 className="text-shimmer-silver text-[9px] font-medium md:text-[14px]"
@@ -110,7 +112,7 @@ export function HomeProducts({ locale }: HomeProductsProps) {
                 <Link
                   key={p.href}
                   href={p.href}
-                  className="group inline-flex items-center gap-1 border-b border-[#0A0A0F]/25 pb-0.5 text-[11px] font-semibold no-underline transition-colors hover:border-[#0A0A0F] md:gap-1.5 md:text-[18px]"
+                  className="group inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 ring-1 ring-[#0A0A0F]/10 text-[11px] font-semibold no-underline shadow-[0_1px_2px_rgba(10,10,15,0.06)] backdrop-blur-[2px] transition-all duration-200 hover:bg-white hover:ring-[#0A0A0F]/25 hover:shadow-[0_2px_8px_rgba(10,10,15,0.10)] md:gap-1.5 md:px-4 md:py-2 md:text-[16px]"
                   style={{ fontFamily: CJK }}
                 >
                   <span className="text-shimmer-silver">{isZh ? p.zh : p.en}</span>
