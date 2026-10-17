@@ -100,8 +100,9 @@ export function CoreTechCarousel({
       onBlurCapture={() => setHeld(false)}
     >
       {/* Full-bleed picture, cross-faded on opacity alone.
-          手机上先占一块 16:9 画框、图片用 contain 完整显示(这几张原图比例
-          从 1.78 到 2.37 不等,cover 在竖屏会裁掉七成以上);md 起恢复铺满整屏。 */}
+          手机用 16:9 画框 + object-contain:这五张原图比例 1.78~2.37,
+          只有 contain 能让整张图可见(2.37 的那两张上下各留 26px 暗边);
+          md 起铺满整屏。 */}
       <div className="relative w-full aspect-[16/9] md:absolute md:inset-0 md:aspect-auto">
         {slides.map((slide, i) => (
           <div
@@ -145,7 +146,7 @@ export function CoreTechCarousel({
       {/* Copy, laid over the picture. The section title and the technology
           it introduces are one block at the top-left: splitting them to
           opposite corners left 433px of dead space between them. */}
-      <div className="relative z-10 flex flex-col px-8 pt-8 pb-8 md:h-full md:px-16 md:pt-24">
+      <div className="relative z-10 flex flex-col px-8 pt-6 pb-8 md:h-full md:px-16 md:pt-24">
         <div className="max-w-3xl">
           {/* Section header — top-padded to clear the fixed nav. */}
           <motion.div
@@ -161,7 +162,7 @@ export function CoreTechCarousel({
             </h2>
           </motion.div>
 
-          <div aria-live="polite" className="mt-12">
+          <div aria-live="polite" className="mt-8 md:mt-12">
             <h3 className="text-[clamp(1.5rem,2.6vw,2.25rem)] font-semibold leading-tight tracking-tight text-white">
               {active.title}
             </h3>

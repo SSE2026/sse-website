@@ -63,12 +63,14 @@ function HeroSlideImage({
       }`}
       style={{ transition: "opacity 600ms ease-in-out" }}
     >
-      {/* 桌面端右对齐、避开左侧文字区;手机端放到文字下方。
+      {/* 桌面端右对齐、避开左侧文字区。
+          手机端产品和文案竖向分开:文案在上(占满宽度、正常断行),
+          产品贴右下角,两者不重叠。产品占画布 87%,横向并排放不下。
           右移量用图片自身的 mr 来给(xl 起 3%),不用容器的 pr —— pr 会同时
           压缩内容盒,把图片一起缩小;mr 只推位置,不改变尺寸。
           不能给更多:1280 下文字右边缘到图片左边缘只剩约 57px。 */}
-      <div className="absolute inset-0 flex items-end justify-center pb-[4%] md:items-center md:justify-end md:pb-0 md:pr-[3%] bg-[#F7F8FB]">
-        <div className="relative w-[84%] h-[32%] md:w-[30%] md:h-[62%] lg:w-[42%] lg:h-[70%] xl:w-[47%] xl:h-[72%] xl:mr-[3%]">
+      <div className="absolute inset-0 flex items-end justify-end pr-[5%] pb-[6%] md:items-center md:justify-end md:pb-0 md:pr-[3%] bg-[#F7F8FB]">
+        <div className="relative w-[68%] h-[40%] md:w-[30%] md:h-[62%] lg:w-[42%] lg:h-[70%] xl:w-[47%] xl:h-[72%] xl:mr-[3%]">
           <Image
             src={slide.image!}
             alt={slide.imageAlt}
@@ -147,11 +149,11 @@ function HeroContent({
 }) {
   return (
     <div className="absolute inset-0 z-20 pointer-events-none">
-      <div className="absolute inset-x-0 top-[25%] md:top-[28%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[17%] md:pr-[3%] pointer-events-auto">
+      <div className="absolute inset-x-0 top-[15%] md:top-[28%] flex items-start md:justify-start gap-3 md:gap-5 px-6 md:pl-[17%] md:pr-[3%] pointer-events-auto">
         {/* Text Content - Left side. 手机上拉满容器宽度:原来只有 flex-shrink-0,
             中文长标题的不可断宽度会把块撑到 380px,超出 375 屏后被 hero 的
             overflow-hidden 切掉右侧。md 起恢复原来的收缩行为,桌面排版不变。 */}
-        <div className="w-full min-w-0 max-w-[460px] md:w-auto md:flex-shrink-0">
+        <div className="w-[86%] min-w-0 max-w-[460px] md:w-auto md:flex-shrink-0">
           {/* Title */}
           <h1
             className="text-[28px] md:text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-5"
@@ -325,7 +327,7 @@ export default function HeroCarousel({
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[calc(100vh-80px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] lg:h-[calc(100vh-80px)] overflow-hidden bg-[#F7F8FB]"
+      className="relative w-full h-[72vh] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] lg:h-[calc(100vh-80px)] overflow-hidden bg-[#F7F8FB]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}

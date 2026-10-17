@@ -37,8 +37,8 @@ export function HomeProducts({ locale }: HomeProductsProps) {
 
   return (
     <section className="bg-white">
-      {/* 手机上:图片按原比例完整占一块,文字排在它下面,不再压在图上。
-          md 起恢复原来的"整幅图 + 文字浮层"构图。 */}
+      {/* 图片按原比例完整显示(手机 365×206);
+          文字缩小后放回桌面版的两个角,不再另起一段。 */}
       <div
         className="relative w-full overflow-hidden md:aspect-[1672/941] md:min-h-[300px]"
       >
@@ -53,24 +53,24 @@ export function HomeProducts({ locale }: HomeProductsProps) {
           />
         </div>
 
-        {/* ===== 右上:主副标题(手机端在图片下方) ===== */}
-        <div className="relative md:absolute md:inset-0 md:flex md:items-start md:justify-end md:pt-[7%] lg:pt-[6%]">
-          <div className="mx-auto w-full max-w-[1280px] px-6 py-8 md:px-10 md:py-0 lg:px-16">
+        {/* ===== 右上:主副标题(手机端字号缩小,位置与桌面一致) ===== */}
+        <div className="absolute inset-0 flex items-start justify-end pt-[5%] md:pt-[7%] lg:pt-[6%]">
+          <div className="mx-auto w-full max-w-[1280px] px-4 md:px-10 lg:px-16">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="max-w-none text-left md:ml-auto md:max-w-[320px] md:text-right lg:max-w-[580px]"
+              className="ml-auto max-w-[64%] text-right md:max-w-[320px] lg:max-w-[580px]"
             >
               <div
-                className="mb-3 text-[11px] uppercase tracking-[0.32em] text-[#71717A] md:mb-4"
+                className="mb-1.5 text-[8.5px] uppercase tracking-[0.32em] text-[#71717A] md:mb-4 md:text-[11px]"
                 style={{ fontFamily: GROTESK }}
               >
                 PRODUCTS
               </div>
               <h2
-                className="text-[21px] font-bold leading-[1.2] tracking-[-0.015em] text-[#0A0A0F] sm:text-[26px] lg:text-[38px]"
+                className="text-[17px] font-bold leading-[1.2] tracking-[-0.015em] text-[#0A0A0F] sm:text-[26px] lg:text-[38px]"
                 style={{ fontFamily: CJK }}
               >
                 {isZh
@@ -78,7 +78,7 @@ export function HomeProducts({ locale }: HomeProductsProps) {
                   : "From a single cell to a complete power system"}
               </h2>
               <p
-                className="mt-3 md:ml-auto max-w-[44ch] text-[12px] leading-[1.75] text-[#3F3F46] sm:text-[13px] lg:mt-4 lg:text-[14px]"
+                className="mt-1.5 ml-auto max-w-[44ch] text-[10.5px] leading-[1.6] text-[#3F3F46] sm:text-[13px] lg:mt-4 lg:text-[14px]"
                 style={{ fontFamily: CJK }}
               >
                 {isZh
@@ -89,18 +89,18 @@ export function HomeProducts({ locale }: HomeProductsProps) {
           </div>
         </div>
 
-        {/* ===== 底部:探索更多产品 + 三个入口(手机端在文字下方,桌面贴着下沿) ===== */}
-        <div className="relative pb-10 md:absolute md:inset-x-0 md:bottom-0 md:pb-[4%] lg:pb-[2.5%]">
-          <div className="mx-auto w-full max-w-[1280px] px-6 md:px-10 lg:px-16">
+        {/* ===== 底部居中:探索更多产品 + 三个入口(手机端字号缩小,仍贴着下沿) ===== */}
+        <div className="absolute inset-x-0 bottom-0 pb-[3%] md:pb-[4%] lg:pb-[2.5%]">
+          <div className="mx-auto w-full max-w-[1280px] px-4 md:px-10 lg:px-16">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, delay: 0.12, ease: "easeOut" }}
-              className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-7 gap-y-3 py-2 md:gap-x-9"
+              className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-3 gap-y-1.5 py-1 md:gap-x-9 md:gap-y-3 md:py-2"
             >
               <span
-                className="text-shimmer-silver text-[13px] font-medium md:text-[14px]"
+                className="text-shimmer-silver text-[9px] font-medium md:text-[14px]"
                 style={{ fontFamily: CJK }}
               >
                 {isZh ? "探索更多产品" : "Explore more products"}
@@ -110,11 +110,11 @@ export function HomeProducts({ locale }: HomeProductsProps) {
                 <Link
                   key={p.href}
                   href={p.href}
-                  className="group inline-flex items-center gap-1.5 border-b border-[#0A0A0F]/25 pb-0.5 text-[16px] font-semibold no-underline transition-colors hover:border-[#0A0A0F] md:text-[18px]"
+                  className="group inline-flex items-center gap-1 border-b border-[#0A0A0F]/25 pb-0.5 text-[11px] font-semibold no-underline transition-colors hover:border-[#0A0A0F] md:gap-1.5 md:text-[18px]"
                   style={{ fontFamily: CJK }}
                 >
                   <span className="text-shimmer-silver">{isZh ? p.zh : p.en}</span>
-                  <ArrowUpRight className="h-4 w-4 text-[#3F3F46] transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#0A0A0F]" />
+                  <ArrowUpRight className="h-3 w-3 text-[#3F3F46] transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#0A0A0F] md:h-4 md:w-4" />
                 </Link>
               ))}
             </motion.div>

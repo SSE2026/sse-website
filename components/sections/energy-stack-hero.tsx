@@ -67,28 +67,24 @@ export function EnergyStackHero({ translations }: HeroProps) {
           backgroundRepeat: "no-repeat",
         }}
       />
-      {/* Mobile: 图在上、文字在下。
-          原来背景图是 absolute 铺满整个 hero,文字压在上面 —— 而且 16:9 横图
-          在竖屏用 cover 只能露出 29% 的宽度,主体还被挤到边缘。
-          手机端把图片层改成正常流的图片块(比例与图片完全一致,零裁剪),
-          文案顺排到它下面,两者不再重叠。 */}
+      {/* Mobile: 换成 4:5 竖版图,画框也是 4:5 —— 比例完全一致,cover 零裁剪,
+          整张图可见,文字重新压回图上。和桌面是同一套构图,只是换了张竖版素材。 */}
       <style jsx>{`
         @media (max-width: 767px) {
           .brand-hero-img {
             min-height: 0 !important;
-            aspect-ratio: auto !important;
+            aspect-ratio: 4 / 5 !important;
           }
           .brand-hero-img__layer {
-            position: relative !important;
-            inset: auto !important;
-            width: 100%;
-            aspect-ratio: 1672 / 941;
-            background-size: cover !important;
+            background-image: url('/images/hero/brand-studio-bg-mobile.webp') !important;
             background-position: center !important;
           }
-          /* 内容区原本用 min-h 撑满首屏,图片改回正常流后要放开 */
+          /* 内容区原本用 min-h 撑满首屏,画框改成 4:5 后要放开。
+             同时补足顶部留白:固定页头 72px,默认 py-14 只有 56px,
+             标题会被压在页头下面。 */
           .brand-hero-grid {
             min-height: 0 !important;
+            padding-top: 92px !important;
           }
           /* 原来的 translateY(80px) 是为桌面构图调的下沉,手机上会把文案推走 */
           .brand-hero-copy {
@@ -102,7 +98,7 @@ export function EnergyStackHero({ translations }: HeroProps) {
           Logo's highlights for contrast. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none hidden md:block"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
             "linear-gradient(90deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.25) 28%, rgba(255,255,255,0) 55%)",

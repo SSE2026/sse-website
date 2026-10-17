@@ -65,25 +65,22 @@ export function IndustryDetailHero({
         minHeight: heroHeight ?? "calc(100vh - 72px)",
       }}
     >
-      {/* 手机:图在上、文字在下。
-          原来图片 absolute 铺满整个 hero、文案压在上面;16:9 横图在竖屏用
-          cover 只能露出约 1/4 的宽度。手机端把图片层改成正常流的图片块
-          (比例与图片一致,零裁剪),文案顺排到它下面。 */}
+      {/* 手机:和首页第二屏同一套做法 —— 画框取图片自身比例(1672/940),
+          cover 即零裁剪、整张图可见;文字缩小后仍压在图上。
+          原来 hero 是 100vh 高,16:9 横图在竖屏只能露出约 1/4 的宽度。 */}
       <style jsx>{`
         @media (max-width: 767px) {
           .ind-hero {
-            aspect-ratio: auto !important;
+            aspect-ratio: 1672 / 940 !important;
             min-height: 0 !important;
-          }
-          .ind-hero__layer {
-            position: relative !important;
-            inset: auto !important;
-            width: 100%;
-            aspect-ratio: 1672 / 940;
           }
           .ind-hero__copy {
+            position: absolute !important;
+            inset: 0 !important;
             min-height: 0 !important;
-            justify-content: flex-start !important;
+            justify-content: center !important;
+            padding-top: 84px !important;
+            padding-bottom: 12px !important;
           }
         }
       `}</style>
@@ -160,7 +157,7 @@ export function IndustryDetailHero({
           title bleed into each other like a single composition. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none hidden md:block"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background: `linear-gradient(90deg, #FFFFFF 0%, rgba(255,255,255,0.92) ${fadeWidth * 0.26}%, rgba(255,255,255,0.55) ${fadeWidth * 0.54}%, rgba(255,255,255,0.10) ${fadeWidth * 0.79}%, rgba(255,255,255,0) ${fadeWidth}%)`,
         }}
@@ -182,19 +179,19 @@ export function IndustryDetailHero({
           className="max-w-2xl"
         >
           <div
-            className="mb-3 md:mb-4 text-[11px] tracking-[0.32em] uppercase text-[#71717A]"
+            className="mb-1 md:mb-4 text-[7.5px] md:text-[11px] tracking-[0.32em] uppercase text-[#71717A]"
             style={{ fontFamily: "var(--font-space-grotesk, sans-serif)" }}
           >
             {eyebrow}
           </div>
           <h1
-            className="text-[26px] md:text-[32px] lg:text-[40px] font-bold leading-[1.12] tracking-[-0.015em] text-[#0A0A0F]"
+            className="text-[15px] md:text-[32px] lg:text-[40px] font-bold leading-[1.12] tracking-[-0.015em] text-[#0A0A0F]"
             style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
           >
             {title}
           </h1>
           <p
-            className="mt-4 md:mt-5 text-[12px] md:text-[13px] lg:text-[14px] text-[#3F3F46] leading-[1.7] max-w-[52ch]"
+            className="mt-1.5 md:mt-5 text-[8.5px] md:text-[13px] lg:text-[14px] text-[#3F3F46] leading-[1.7] max-w-[52ch]"
             style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
           >
             {subtitle}
