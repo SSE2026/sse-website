@@ -139,6 +139,13 @@ export function Header({ translations, locale, onLocaleChange, forceLightText = 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // `<html lang>` 是服务端按构建期默认语言写死的,但访客可以点语言切换改内容。
+  // 不同步的话,切成英文的访客会拿到 lang="zh" —— 读屏软件按中文读音念英文、
+  // 浏览器不提示翻译、断行规则也用错。挂载时跑一次,之后每次 locale 变化都跟着改。
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
   // Close hover-menu when cursor leaves the entire nav region.
   // `activeLink` paints the hover background on the top-level items, so it
   // has to be reset here too — otherwise the highlight sticks once the
