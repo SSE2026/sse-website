@@ -61,30 +61,30 @@ export function EnergyStackHero({ translations }: HeroProps) {
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none brand-hero-img__layer"
         style={{
-          backgroundImage: "url('/images/hero/brand-studio-bg.jpg')",
+          backgroundImage: "url('/images/hero/hero-bg.webp')",
           backgroundSize: "cover",
           backgroundPosition: "right center",
           backgroundRepeat: "no-repeat",
         }}
       />
-      {/* Mobile: 换成 4:5 竖版图,画框也是 4:5 —— 比例完全一致,cover 零裁剪,
-          整张图可见,文字重新压回图上。和桌面是同一套构图,只是换了张竖版素材。 */}
+      {/* 手机:和首页第二屏同一套做法 —— 直接用原图,画框取图片自身比例
+          (1672/941),cover 即零裁剪、整张图可见;文字缩小后压回图上。
+          不再需要单独的竖版裁图。 */}
       <style jsx>{`
         @media (max-width: 767px) {
           .brand-hero-img {
             min-height: 0 !important;
-            aspect-ratio: 4 / 5 !important;
+            aspect-ratio: 1672 / 941 !important;
           }
-          .brand-hero-img__layer {
-            background-image: url('/images/hero/brand-studio-bg-mobile.webp') !important;
-            background-position: center !important;
-          }
-          /* 内容区原本用 min-h 撑满首屏,画框改成 4:5 后要放开。
-             同时补足顶部留白:固定页头 72px,默认 py-14 只有 56px,
-             标题会被压在页头下面。 */
+          /* 画框只有约 206px 高,文案改成绝对定位铺满画框;
+             顶部留出固定页头的 72px,否则标题会被压在页头下面。
+             左右要显式补回内边距 —— inset:0 是从外层的 padding box 算起,
+             会把外层 px-6 吃掉,标题会贴在屏幕最左边。 */
           .brand-hero-grid {
+            position: absolute !important;
+            inset: 0 !important;
             min-height: 0 !important;
-            padding-top: 92px !important;
+            padding: 76px 24px 8px !important;
           }
           /* 原来的 translateY(80px) 是为桌面构图调的下沉,手机上会把文案推走 */
           .brand-hero-copy {
@@ -122,24 +122,24 @@ export function EnergyStackHero({ translations }: HeroProps) {
               className="flex flex-col"
             >
               <h1
-                className="text-[26px] md:text-[32px] lg:text-[40px] font-bold leading-[1.12] tracking-[-0.015em] text-[#0A0A0F]"
+                className="text-[15px] md:text-[32px] lg:text-[40px] font-bold leading-[1.12] tracking-[-0.015em] text-[#0A0A0F]"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 <span className="block">{titleLine1}</span>
-                <span className="block mt-1.5 md:mt-2">{titleLine2}</span>
+                <span className="block mt-0.5 md:mt-2">{titleLine2}</span>
               </h1>
 
               <p
-                className="mt-5 md:mt-7 text-[12px] md:text-[13px] lg:text-[14px] text-[#3F3F46] leading-[1.7] whitespace-nowrap overflow-hidden text-ellipsis"
+                className="mt-1.5 md:mt-7 text-[9px] md:text-[13px] lg:text-[14px] text-[#3F3F46] leading-[1.7] whitespace-nowrap overflow-hidden text-ellipsis"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {subtitle}
               </p>
 
-              <div className="mt-6 md:mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <div className="mt-3 md:mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 md:gap-x-5 md:gap-y-3">
                 <a
                   href="/technology"
-                  className="group inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#0A0A0F] text-white text-[11px] font-semibold rounded-full hover:bg-[#1F1F2A] transition-colors shadow-[0_10px_30px_-14px_rgba(10,10,15,0.6)]"
+                  className="group inline-flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2.5 bg-[#0A0A0F] text-white text-[9px] md:text-[11px] font-semibold rounded-full hover:bg-[#1F1F2A] transition-colors shadow-[0_10px_30px_-14px_rgba(10,10,15,0.6)]"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaExplore}
@@ -147,7 +147,7 @@ export function EnergyStackHero({ translations }: HeroProps) {
                 </a>
                 <a
                   href="/about"
-                  className="group inline-flex items-center gap-1.5 text-[11px] font-medium text-[#0A0A0F] border-b border-[#0A0A0F]/40 hover:border-[#0A0A0F] pb-0.5 transition-colors"
+                  className="group inline-flex items-center gap-1.5 text-[9px] md:text-[11px] font-medium text-[#0A0A0F] border-b border-[#0A0A0F]/40 hover:border-[#0A0A0F] pb-0.5 transition-colors"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaContact}
