@@ -64,13 +64,13 @@ export function HomeProducts({ locale }: HomeProductsProps) {
               className="ml-auto max-w-[64%] text-right md:max-w-[320px] lg:max-w-[580px]"
             >
               <div
-                className="mb-1.5 text-[8.5px] uppercase tracking-[0.32em] text-[#71717A] md:mb-4 md:text-[11px]"
+                className="mb-1 text-[8px] uppercase tracking-[0.32em] text-[#71717A] md:mb-4 md:text-[11px]"
                 style={{ fontFamily: GROTESK }}
               >
                 PRODUCTS
               </div>
               <h2
-                className="text-[17px] font-bold leading-[1.2] tracking-[-0.015em] text-[#0A0A0F] sm:text-[26px] lg:text-[38px]"
+                className="text-[15px] font-bold leading-[1.2] tracking-[-0.015em] text-[#0A0A0F] sm:text-[26px] lg:text-[38px]"
                 style={{ fontFamily: CJK }}
               >
                 {isZh
@@ -78,7 +78,7 @@ export function HomeProducts({ locale }: HomeProductsProps) {
                   : "From a single cell to a complete power system"}
               </h2>
               <p
-                className="mt-1.5 ml-auto max-w-[44ch] text-[10.5px] leading-[1.6] text-[#3F3F46] sm:text-[13px] lg:mt-4 lg:text-[14px]"
+                className="mt-1.5 ml-auto max-w-[44ch] text-[8px] leading-[1.6] text-[#3F3F46] sm:text-[13px] lg:mt-4 lg:text-[14px]"
                 style={{ fontFamily: CJK }}
               >
                 {isZh
@@ -92,7 +92,7 @@ export function HomeProducts({ locale }: HomeProductsProps) {
         {/* ===== 底部居中:探索更多产品 + 三个入口 =====
             三个入口各自带一个浅色胶囊底 —— 否则字直接压在图上,看起来像图片
             自带的文字,不像可点的入口。标签"探索更多产品"是说明,不加底。 */}
-        <div className="absolute inset-x-0 bottom-0 pb-[2.4%] md:pb-[2%] lg:pb-[1.5%]">
+        <div className="absolute inset-x-0 bottom-0 pb-[0.5%] md:pb-[2%] lg:pb-[1.5%]">
           <div className="mx-auto w-full max-w-[1280px] px-4 md:px-10 lg:px-16">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -102,7 +102,7 @@ export function HomeProducts({ locale }: HomeProductsProps) {
               className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-2 gap-y-1.5 py-1 md:gap-x-4 md:gap-y-3 md:py-2"
             >
               <span
-                className="text-shimmer-silver text-[9px] font-medium md:text-[14px]"
+                className="text-shimmer-silver text-[8.5px] font-medium md:text-[14px]"
                 style={{ fontFamily: CJK }}
               >
                 {isZh ? "探索更多产品" : "Explore more products"}
@@ -112,11 +112,11 @@ export function HomeProducts({ locale }: HomeProductsProps) {
                 <Link
                   key={p.href}
                   href={p.href}
-                  className="group inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 ring-1 ring-[#0A0A0F]/10 text-[11px] font-semibold no-underline shadow-[0_1px_2px_rgba(10,10,15,0.06)] backdrop-blur-[2px] transition-all duration-200 hover:bg-white hover:ring-[#0A0A0F]/25 hover:shadow-[0_2px_8px_rgba(10,10,15,0.10)] md:gap-1.5 md:px-4 md:py-2 md:text-[16px]"
+                  className="group inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 ring-1 ring-[#0A0A0F]/10 text-[10px] font-semibold no-underline shadow-[0_1px_2px_rgba(10,10,15,0.06)] backdrop-blur-[2px] transition-all duration-200 hover:bg-white hover:ring-[#0A0A0F]/25 hover:shadow-[0_2px_8px_rgba(10,10,15,0.10)] md:gap-1.5 md:px-4 md:py-2 md:text-[16px]"
                   style={{ fontFamily: CJK }}
                 >
                   <span className="text-shimmer-silver">{isZh ? p.zh : p.en}</span>
-                  <ArrowUpRight className="h-3 w-3 text-[#3F3F46] transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#0A0A0F] md:h-4 md:w-4" />
+                  <ArrowUpRight className="h-2.5 w-2.5 text-[#3F3F46] transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#0A0A0F] md:h-4 md:w-4" />
                 </Link>
               ))}
             </motion.div>
