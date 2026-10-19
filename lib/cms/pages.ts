@@ -1,6 +1,8 @@
 // CMS 页面定义 — 每页的内容块 schema 和默认值
 // 前台页面从数据库读 content，缺失字段时回退到默认值（这里）或组件内兜底。
 
+import { CHINESE_INTRO } from "@/lib/company-intro";
+
 export type FieldType = "text" | "textarea" | "image" | "json";
 
 export interface CmsField {
@@ -103,7 +105,9 @@ export const PAGE_DEFS: CmsPageDef[] = [
       hero: { title: "", subtitle: "", auxText: "" },
       intro: {
         title: "深安锂能",
-        body: `深安锂能（深圳）科技有限公司是一家专注于高比能、高安全先进电池研发与产业化的科技创新企业，由高校院士团队与资深产业化团队共同组建。`,
+        // 与前台 lib/company-intro.ts 保持同一份完整文案 —— 后台首次打开时
+        // 若用摘要兜底，管理员一保存就会把前台的完整介绍覆盖成摘要。
+        body: CHINESE_INTRO,
       },
       milestones: { itemsJson: "[]" },
       cta: { title: "", desc: "", button: "" },

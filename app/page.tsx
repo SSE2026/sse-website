@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { EnergyStackHero } from "@/components/sections/energy-stack-hero";
 import { HomeProducts } from "@/components/sections/home-products";
+import { HomeAbout } from "@/components/sections/home-about";
 import { HomeNews } from "@/components/sections/home-news";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { CursorFollower } from "@/components/ui/animations";
@@ -39,7 +40,10 @@ export default function HomePage() {
           {/* 第二屏:产品 —— 首页此前没有任何通往产品页的入口,这一屏补上 */}
           <HomeProducts locale={locale} translations={currentMessages} />
 
-          {/* 第三屏:新闻动态缩略版 */}
+          {/* 第三屏:关于我们缩略版 —— 厂区大图 + 一句话简介,通往关于页 */}
+          <HomeAbout locale={locale} />
+
+          {/* 第四屏:新闻动态缩略版 */}
           <HomeNews locale={locale} translations={currentMessages} />
         </main>
         <Footer translations={currentMessages} locale={locale} />
