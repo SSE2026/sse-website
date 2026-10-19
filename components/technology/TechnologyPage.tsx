@@ -13,12 +13,14 @@ import { TechnologyCTA } from "./TechnologyCTA";
 import { useCmsContent } from "@/lib/cms/use-cms";
 
 // Fixed slide imagery. The CMS owns the copy, never the pictures.
+// 顺序与文件名 01–06 一致,与 messages 里 coreTech.slides 的六条文案逐条对应。
 const CORE_TECH_IMAGES = [
-  "/images/technology/tech/01-solid-electrolyte.jpg",
-  "/images/technology/tech/02-silicon-anode.jpg",
-  "/images/technology/tech/03-anode-free.jpg",
-  "/images/technology/tech/04-fast-charging.jpg",
-  "/images/technology/tech/05-ai-for-battery.jpg",
+  "/images/technology/tech/01-oxide-electrolyte.webp",
+  "/images/technology/tech/02-condensed-electrolyte.webp",
+  "/images/technology/tech/03-silicon-anode.webp",
+  "/images/technology/tech/04-anode-free.webp",
+  "/images/technology/tech/05-fast-charging.webp",
+  "/images/technology/tech/06-ai-rnd.webp",
 ];
 
 import en from "@/messages/en.json";

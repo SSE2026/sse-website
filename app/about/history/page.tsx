@@ -13,6 +13,69 @@ import { resolveInitialLocale } from "@/lib/locale";
 
 const messages = { en, zh };
 
+/** 把里程碑按 2021 切成两段:
+ *  - 2021 本身: 转折点(特殊卡片)
+ *  - < 2021:   科研突破期
+ *  - > 2021:   产业化落地期 */
+type Phase = "research" | "transition" | "industrialization";
+function phaseOf(year: string): Phase {
+  const y = parseInt(year, 10);
+  if (y === 2021) return "transition";
+  return y < 2021 ? "research" : "industrialization";
+}
+
+/** 时间轴里插入的阶段标题条 —— 告诉读者"从这一年开始,故事换了主线"。 */
+function PhaseBanner({
+  phase,
+  labelZh,
+  labelEn,
+  years,
+  isZh,
+}: {
+  phase: 1 | 2;
+  labelZh: string;
+  labelEn: string;
+  years: string;
+  isZh: boolean;
+}) {
+  const isPhase2 = phase === 2;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6 }}
+      className="relative flex items-center justify-center"
+    >
+      {/* 轴线在阶段条处保持贯通,不打断 */}
+      <div className="absolute left-4 md:left-1/2 -translate-x-1/2 h-12 w-px bg-neutral-800 z-0" />
+      <div className="w-full md:w-2/3 lg:w-1/2 pl-12 md:pl-0 md:px-10 relative z-10">
+        <div
+          className={
+            "relative p-5 rounded-2xl border backdrop-blur-sm " +
+            (isPhase2
+              ? "border-[#0D9488]/35 bg-gradient-to-r from-[#0D9488]/15 via-[#0D9488]/5 to-transparent"
+              : "border-white/10 bg-gradient-to-r from-slate-600/10 via-slate-600/5 to-transparent")
+          }
+        >
+          <div
+            className={
+              "text-[10px] font-mono tracking-[0.3em] uppercase mb-2 " +
+              (isPhase2 ? "text-[#0D9488]" : "text-slate-400")
+            }
+          >
+            PHASE 0{phase}
+          </div>
+          <div className="text-xl md:text-2xl font-light text-white mb-1">
+            {isZh ? labelZh : labelEn}
+          </div>
+          <div className="text-sm text-slate-400 font-mono">{years}</div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 interface Milestone {
   year: string;
   title: string;
@@ -27,96 +90,106 @@ interface Milestone {
 const milestones: Milestone[] = [
   {
     year: "2014",
-    title: "技术研究启动",
-    titleEn: "R&D Initiation",
+    title: "开启固态电池前沿研究",
+    titleEn: "Advancing Solid-State Battery Research",
     tag: "技术研究",
     tagEn: "R&D",
-    desc: "依托院士团队科研力量，围绕下一代高比能固态电解质与高硅负极体系开启底层技术攻关。",
-    descEn: "Launched fundamental technology research on next-gen high-energy-density solid-state electrolytes and high-silicon anode systems with academician-led research team.",
+    desc: "创始人加入国际顶尖电池研究机构，联合全球领先固态电池企业开展核心技术攻关",
+    descEn: "The founder joined a world-leading battery research institute and collaborated with leading solid-state battery companies to advance core technologies.",
   },
   {
     year: "2016",
-    title: "Nature 正刊发表",
-    titleEn: "Published in Nature",
+    title: "全气候电池成果发表于《Nature》",
+    titleEn: "All-Climate Battery Research Published in Nature",
     tag: "学术突破",
     tagEn: "Academic",
-    desc: "关键电池材料突破性研究成果发表于国际顶级学术期刊《Nature》，奠定技术学术地位。",
-    descEn: "Breakthrough research on key battery materials published in Nature, establishing academic leadership.",
+    desc: "突破电池低温应用瓶颈，为后续冬奥会新能源汽车的全气候应用奠定理论基础",
+    descEn: "A breakthrough in low-temperature battery performance laid the scientific groundwork for all-climate electric vehicle applications at the Beijing Winter Olympics.",
     highlight: true,
   },
   {
+    year: "2017",
+    title: "开创锂电池寿命预测新方法",
+    titleEn: "Pioneering Lithium-Ion Battery Life Prediction",
+    tag: "方法创新",
+    tagEn: "Methodology",
+    desc: "发布全球首个锂电池全生命周期寿命预测模型，推动行业广泛应用，相关论文累计被引1,200余次",
+    descEn: "Developed the world’s first physics-based model that can predict the full lifespan of lithium-ion batteries. The research paper has been cited more than 1,200 times.",
+  },
+  {
     year: "2018",
-    title: "极寒快充技术突破",
-    titleEn: "Extreme Cold Fast-Charging",
+    title: "突破−50°C极寒快充瓶颈",
+    titleEn: "A Breakthrough in Fast Charging at −50°C",
     tag: "技术创新",
     tagEn: "Innovation",
-    desc: "攻克 -40℃ 极寒低温环境下的高倍率快充与循环寿命衰减难题，拓展应用边界。",
-    descEn: "Solved high-rate fast-charging and cycle life challenges at -40°C extreme cold, expanding application boundaries.",
+    desc: "攻克极寒环境下的快充难题，相关研究实现15分钟快充及4,500次循环，成果发表于《PNAS》",
+    descEn: "Advanced fast-charging technology for extreme cold, with research demonstrating 15-minute charging and 4,500 cycles. The findings were published in PNAS.",
+    highlight: true,
   },
   {
     year: "2019",
-    title: "全球首发速热 6C 超充",
-    titleEn: "World's First 6C Rapid Heating",
-    tag: "全球首发",
+    title: "首创速热6C超快充技术",
+    titleEn: "Pioneering Thermally-modulated 6C Ultrafast Charging",
+    tag: "全球首创",
     tagEn: "World First",
-    desc: "推出业界领先的速热 6C 超快充电池技术，实现分钟级补能与高安全性兼备。",
-    descEn: "Launched industry's leading rapid-heating 6C ultra-fast charging technology, achieving minute-level energy replenishment with high safety.",
+    desc: "以速热技术实现10分钟超快充，创新电池热管理范式，研究成果发表于《Joule》",
+    descEn: "Developed an asymmetric thermal modulation approach that enabled 10-minute charging. The research was published in Joule.",
+    highlight: true,
+  },
+  {
+    year: "2020",
+    title: "率先明确eVTOL电池性能需求",
+    titleEn: "Defining Battery Requirements for eVTOL Aircraft",
+    tag: "行业首部",
+    tagEn: "Industry First",
+    desc: "发表全球首篇聚焦eVTOL电池需求的研究论文，明确“三高一快”的核心性能要求",
+    descEn: "Published the world’s first paper dedicated to eVTOL battery requirements, setting out the core performance criteria for electric flight.",
     highlight: true,
   },
   {
     year: "2021",
-    title: "产业化团队组建",
-    titleEn: "Industrialization Team",
+    title: "归国创业，推动技术产业化",
+    titleEn: "Returning to China to Bring Research to Market",
     tag: "团队组建",
     tagEn: "Team",
-    desc: "院士团队与资深新能源产业化工程专家共同组建实体公司，开启规模化商业落地。",
-    descEn: "Founded the company with academician team and senior new energy industrialization experts, launching commercial-scale deployment.",
-  },
-  {
-    year: "2022",
-    title: "试制平台建成",
-    titleEn: "Pilot Line Completed",
-    tag: "中试验证",
-    tagEn: "Pilot",
-    desc: "搭建高标准中试生产线，启动先进电芯与模组在无人机及特种装备上的实测验证。",
-    descEn: "Built high-standard pilot production line, launching real-world testing of advanced cells and modules in drones and specialized equipment.",
+    desc: "创始人全职归国，组建产业化团队，推进超快充、高能量密度与固态电池核心技术的研发与成果转化",
+    descEn: "The founder returned to China to focus on commercialization, assembling a team to develop technologies for ultrafast charging, high energy density, and solid-state batteries.",
   },
   {
     year: "2023",
-    title: "百吨级量产工艺开发",
-    titleEn: "Hundred-Ton Production",
+    title: "高性能固态电解质实现吨级试制",
+    titleEn: "Tonne-Scale Pilot Production of High-Performance Solid Electrolytes",
     tag: "规模量产",
     tagEn: "Mass Prod",
-    desc: "攻克关键材料百吨级稳定制备与规模化涂布工艺，打通实验室到工厂的关键卡点。",
-    descEn: "Mastered hundred-ton stable preparation and large-scale coating processes for key materials, bridging lab-to-factory gap.",
+    desc: "攻克氧化物与聚合物固态电解质材料的规模化制备难题，实现吨级试制",
+    descEn: "Overcame key manufacturing challenges in oxide and polymer solid electrolytes, achieving pilot production at the tonne scale.",
   },
   {
     year: "2024",
-    title: "深圳总部设立",
-    titleEn: "Shenzhen HQ Established",
-    tag: "总部成立",
-    tagEn: "HQ",
-    desc: "深安锂能（深圳）总部正式成立，聚焦低空经济、具身智能与高端装备电源市场。",
-    descEn: "Swift Safe Energy (Shenzhen) headquarters officially established, focusing on low-altitude economy, embodied intelligence, and high-end equipment power markets.",
+    title: "深安锂能成立，启动产线建设",
+    titleEn: "Swift Safe Energy Founded",
+    tag: "公司成立",
+    tagEn: "Founded",
+    desc: "启动MWh级固态电池试制线与百吨级固态电解质产线建设，加快科研成果产业化",
+    descEn: "Began construction of an MWh-scale solid-state battery pilot line and a 100-tonne-scale solid electrolyte production line, accelerating the transition from research to production.",
   },
   {
     year: "2025",
-    title: "融资规模超 1 亿元",
-    titleEn: "100M+ RMB Funding Raised",
-    tag: "战略融资",
-    tagEn: "Funding",
-    desc: "完成过亿元战略融资，资本与产业资源加码，加速产能建设与产品交付进程。",
-    descEn: "Completed strategic financing exceeding 100M RMB, accelerating capacity building and product delivery.",
-    highlight: true,
+    title: "高比能电芯通过头部客户验证",
+    titleEn: "High-Specific-Energy Cells Validated by Leading Customers",
+    tag: "客户验证",
+    tagEn: "Validation",
+    desc: "产品通过中汽研等权威第三方机构检测认证，完成行业头部客户送样验证，推进商业化应用",
+    descEn: "Products passed third-party testing and certification, including assessments by CATARC. Successful sample validation with leading industry customers marked a further step toward commercialization.",
   },
   {
     year: "2026",
-    title: "0.5GWh 生产基地建设",
-    titleEn: "0.5GWh Gigafactory",
-    tag: "超级工厂",
-    tagEn: "Gigafactory",
-    desc: "启动 0.5GWh 先进电池规模化生产基地建设，全面开启低空与工业级电源的大批量交付。",
-    descEn: "Started 0.5GWh advanced battery mass production base construction, fully launching batch delivery for low-altitude and industrial-grade power.",
+    title: "完成数亿元融资，迈向规模制造",
+    titleEn: "New Funding Secured to Scale Manufacturing",
+    tag: "战略融资",
+    tagEn: "Funding",
+    desc: "完成数亿元融资，取得高比能固态电池批量订单，启动0.5 GWh高标准产线建设",
+    descEn: "Raised hundreds of millions of yuan in funding, secured volume orders for solid-state batteries with high specific energy, and began construction of a 0.5 GWh production line.",
     highlight: true,
   },
 ];
@@ -126,6 +199,23 @@ export default function HistoryPage() {
   const currentMessages = messages[locale];
   const isZh = locale === "zh";
   const [activeYear, setActiveYear] = useState<string>("2026");
+
+  // 渲染序列:Phase 01 标题条 → 2014/2016/2017/2018/2019/2020 →
+  // Phase 02 标题条 → 2021 转折点(特殊满宽卡片)→ 2023/2024/2025/2026
+  const slots: any[] = [];
+  {
+    let phase1Emitted = false;
+    milestones.forEach((m: any, i: number) => {
+      if (!phase1Emitted) {
+        slots.push({ kind: "banner", phase: 1, labelZh: "01 · 科研突破期", labelEn: "01 · Research Era", years: "2014 — 2020" });
+        phase1Emitted = true;
+      }
+      if (m.year === "2021") {
+        slots.push({ kind: "banner", phase: 2, labelZh: "02 · 产业化落地期", labelEn: "02 · Industrialization Era", years: "2021 —" });
+      }
+      slots.push({ kind: "milestone", item: m, index: i });
+    });
+  }
 
   return (
     <>
@@ -153,7 +243,7 @@ export default function HistoryPage() {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-slate-500 mb-4">
               <span className="w-2 h-2 rounded-full bg-[#2563EB]"></span>
-              <span>{isZh ? "发展历程" : "Milestones"}</span>
+              <span>{isZh ? "创新与发展历程" : "Our Journey"}</span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
@@ -161,18 +251,18 @@ export default function HistoryPage() {
                 <h1 className="text-4xl md:text-6xl font-light tracking-tight text-white leading-tight">
                   {isZh ? (
                     <>
-                      从技术研究到产业化
+                      创新与发展历程
                       <br />
                       <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-                        十载创新之路
+                        从科研突破到产业应用
                       </span>
                     </>
                   ) : (
                     <>
-                      From Research to
+                      Our Journey
                       <br />
                       <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-                        Industrialization
+                        From Research to Commercialization
                       </span>
                     </>
                   )}
@@ -203,8 +293,69 @@ export default function HistoryPage() {
 
             {/* Timeline list */}
             <div className="space-y-16 md:space-y-24 relative z-10">
-              {milestones.map((item, index) => {
-                const isEven = index % 2 === 0;
+              {slots.map((s, i) => {
+                if (s.kind === "banner") {
+                  return <PhaseBanner key={`b-${s.phase}-${i}`} phase={s.phase} labelZh={s.labelZh} labelEn={s.labelEn} years={s.years} isZh={isZh} />;
+                }
+                const item = s.item;
+                const phase = phaseOf(item.year);
+                const isEven = s.index % 2 === 0;
+
+                // 2021 转折点 —— 满宽、强调色、不再左右交替
+                if (phase === "transition") {
+                  return (
+                    <motion.div
+                      key={item.year}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ duration: 0.6, delay: s.index * 0.05 }}
+                      onMouseEnter={() => setActiveYear(item.year)}
+                      className="flex flex-col items-center group"
+                    >
+                      <div className="w-full md:max-w-2xl pl-12 md:pl-0 relative">
+                        <div className="relative p-8 md:p-10 rounded-2xl border-2 border-[#0D9488]/45 bg-gradient-to-br from-[#0D9488]/15 via-[#0D9488]/5 to-transparent backdrop-blur-sm">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-[10px] font-mono tracking-[0.3em] text-[#0D9488] uppercase">
+                              {isZh ? "里程碑转折 · A Pivotal Year" : "A Pivotal Year · 里程碑转折"}
+                            </span>
+                            <Sparkles className="w-3.5 h-3.5 text-[#0D9488]" />
+                          </div>
+                          <div className="text-5xl md:text-6xl font-mono font-bold text-white mb-4 tracking-tight">2021</div>
+                          <h3 className="text-xl md:text-2xl font-medium text-white mb-3 flex items-center gap-2">
+                            {isZh ? item.title : item.titleEn}
+                          </h3>
+                          <p className="text-slate-300 leading-relaxed text-sm md:text-base">
+                            {isZh ? item.desc : item.descEn}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="absolute left-4 md:left-1/2 -translate-x-1/2 mt-6 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full border-2 border-white bg-[#0D9488] shadow-[0_0_24px_rgba(13,148,136,0.7)]" />
+                      </div>
+                    </motion.div>
+                  );
+                }
+
+                // 科研期偏冷、产业化期更亮
+                const isResearch = phase === "research";
+                const borderClass = isResearch
+                  ? "border-slate-700/40 group-hover:border-slate-600/60"
+                  : "border-[#0D9488]/25 group-hover:border-[#0D9488]/50";
+                const bgClass = isResearch ? "bg-neutral-900/20" : "bg-neutral-900/30";
+                const yearColor = isResearch
+                  ? "text-slate-300 group-hover:text-white"
+                  : "text-white group-hover:text-[#0D9488]";
+                const descColor = isResearch
+                  ? "text-slate-500 group-hover:text-slate-400"
+                  : "text-slate-400 group-hover:text-slate-300";
+                const nodeColor = isResearch
+                  ? activeYear === item.year
+                    ? "bg-[#2563EB] border-white scale-125 shadow-[0_0_20px_rgba(37,99,235,0.5)]"
+                    : "bg-[#08090a] border-slate-600 group-hover:border-slate-300"
+                  : activeYear === item.year
+                    ? "bg-[#0D9488] border-white scale-125 shadow-[0_0_20px_rgba(13,148,136,0.5)]"
+                    : "bg-[#0a0a0f] border-[#0D9488]/50 group-hover:border-[#0D9488]";
 
                 return (
                   <motion.div
@@ -212,64 +363,34 @@ export default function HistoryPage() {
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.6, delay: index * 0.05 }}
+                    transition={{ duration: 0.6, delay: s.index * 0.05 }}
                     onMouseEnter={() => setActiveYear(item.year)}
-                    className={`flex flex-col md:flex-row items-start ${
-                      isEven ? "md:flex-row-reverse" : ""
-                    } group`}
+                    className={`flex flex-col md:flex-row items-start ${isEven ? "md:flex-row-reverse" : ""} group`}
                   >
-                    {/* Content card (half width) */}
                     <div className="w-full md:w-1/2 pl-12 md:pl-0 md:px-10">
-                      <div
-                        className={`p-6 md:p-8 rounded-2xl border transition-all duration-300 ${
-                          item.highlight
-                            ? "bg-neutral-900/60 border-neutral-700 group-hover:border-[#2563EB]/50"
-                            : "bg-neutral-900/20 border-neutral-800/80 group-hover:border-neutral-700"
-                        }`}
-                      >
-                        {/* Year & Tag Header */}
+                      <div className={`p-6 md:p-8 rounded-2xl border transition-all duration-300 ${borderClass} ${bgClass}`}>
                         <div className="flex items-center justify-between mb-4">
-                          <span
-                            className={`text-3xl font-mono font-bold tracking-tight transition-colors duration-300 ${
-                              item.highlight
-                                ? "text-white group-hover:text-[#2563EB]"
-                                : "text-white group-hover:text-slate-300"
-                            }`}
-                          >
+                          <span className={`text-3xl font-mono font-bold tracking-tight transition-colors duration-300 ${yearColor}`}>
                             {item.year}
                           </span>
-                          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 bg-neutral-900 px-2.5 py-1 rounded border border-neutral-800">
+                          <span className={`text-[10px] font-mono uppercase tracking-widest bg-neutral-900 px-2.5 py-1 rounded border ${isResearch ? "text-slate-500 border-neutral-800" : "text-[#0D9488] border-[#0D9488]/30"}`}>
                             {isZh ? item.tag : item.tagEn}
                           </span>
                         </div>
-
-                        {/* Milestone title */}
                         <h3 className="text-lg font-medium text-white mb-2 flex items-center gap-2">
                           <span>{isZh ? item.title : item.titleEn}</span>
                           {item.highlight && (
-                            <Sparkles className="w-3.5 h-3.5 text-[#2563EB]" />
+                            <Sparkles className={`w-3.5 h-3.5 ${isResearch ? "text-slate-400" : "text-[#0D9488]"}`} />
                           )}
                         </h3>
-
-                        {/* Milestone description */}
-                        <p className="text-xs md:text-sm text-slate-400 leading-relaxed font-light">
+                        <p className={`text-xs md:text-sm leading-relaxed font-light transition-colors duration-300 ${descColor}`}>
                           {isZh ? item.desc : item.descEn}
                         </p>
                       </div>
                     </div>
-
-                    {/* Center axis node circle */}
                     <div className="absolute left-4 md:left-1/2 -translate-x-1/2 mt-6 flex items-center justify-center">
-                      <div
-                        className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${
-                          activeYear === item.year
-                            ? "bg-[#2563EB] border-white scale-125 shadow-[0_0_20px_rgba(37,99,235,0.5)]"
-                            : "bg-[#08090a] border-neutral-600 group-hover:border-slate-300"
-                        }`}
-                      />
+                      <div className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${nodeColor}`} />
                     </div>
-
-                    {/* Empty space on the other side (for layout balance) */}
                     <div className="hidden md:block w-1/2" />
                   </motion.div>
                 );

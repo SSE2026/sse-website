@@ -45,65 +45,60 @@
       "subtitle": "Focusing on breakthroughs in materials, cells, and intelligent systems",
       "items": [
         {
-          "title": "Multi-Dimensional Thermal-Modulated Fast Charging",
-          "summary": "Efficient ion transport with electrochemical-thermal coordination",
-          "details": [
-            "Ultra-high ion conductivity liquid/additives",
-            "High-purity oxide solid electrolyte",
-            "Fast lossless self-heating with intelligent thermal control"
-          ]
+          "title": "01｜High-Performance Oxide Solid Electrolyte",
+          "summary": "High purity and conductivity, balancing efficient ion transport with pack-level thermal safety.",
+          "details": []
         },
         {
-          "title": "High Energy Density",
-          "summary": "High-performance materials with compact structure design",
-          "details": [
-            "High-stability micro-nano composite electrode + high-temp flame-retardant electrolyte",
-            "High-temp oxide solid electrolyte innovation",
-            "In-situ interface softening technology",
-            "9-series high-nickel system + solid electrolyte",
-            "Sub-micron porous silicon-oxygen composite",
-            "High-voltage silicon-based / lithium metal electrolyte",
-            "Ultra-thin substrate design"
-          ]
+          "title": "02｜Highly Elastic Condensed Electrolyte",
+          "summary": "Self-adaptive conformal interfaces relieve solid–solid contact and build stable ion-transport channels.",
+          "details": []
         },
         {
-          "title": "Solid-State Materials & Interface",
-          "summary": "Solid electrolyte and interface engineering",
-          "details": [
-            "High-temp oxide solid electrolyte innovation",
-            "In-situ interface softening technology"
-          ]
+          "title": "03｜Low-Expansion Pure-Silicon Anode",
+          "summary": "A novel scaffold buffer structure tames silicon expansion and unlocks high capacity.",
+          "details": []
         },
         {
-          "title": "Intelligent Operations",
-          "summary": "Mechanism models with AI-powered management",
-          "details": [
-            "High-precision battery mechanism models",
-            "Multi-dimensional heterogeneous database",
-            "Mechanism-AI integrated cloud-edge intelligent operations"
-          ]
+          "title": "04｜Anode-Free Lithium Metal Battery",
+          "summary": "In-situ lithium plating forms the anode, simplifying cell architecture and extending the energy-density boundary.",
+          "details": []
+        },
+        {
+          "title": "05｜Rapid-Heating Ultra-Fast Charging",
+          "summary": "Fast thermal control improves charging kinetics, optimising both charging speed and cycle life.",
+          "details": []
+        },
+        {
+          "title": "06｜AI-Driven Battery R&D and Manufacturing",
+          "summary": "Integrating materials screening, cell design and process optimisation to accelerate iteration and productisation.",
+          "details": []
         }
       ],
       "slides": [
         {
-          "title": "Solid Electrolyte Materials",
-          "summary": "Material breakthroughs that secure the safety of solid-state cells"
+          "title": "01｜High-Performance Oxide Solid Electrolyte",
+          "summary": "High purity and conductivity, balancing efficient ion transport with pack-level thermal safety."
         },
         {
-          "title": "All-Silicon Anode",
-          "summary": "Breaking through silicon's limits to release higher energy density"
+          "title": "02｜Highly Elastic Condensed Electrolyte",
+          "summary": "Self-adaptive conformal interfaces relieve solid–solid contact and build stable ion-transport channels."
         },
         {
-          "title": "Anode-Free",
-          "summary": "Re-engineering the cell to explore a new energy-density frontier"
+          "title": "03｜Low-Expansion Pure-Silicon Anode",
+          "summary": "A novel scaffold buffer structure tames silicon expansion and unlocks high capacity."
         },
         {
-          "title": "Thermal-Modulated Fast Charging",
-          "summary": "Energy released quickly, temperature held precisely"
+          "title": "04｜Anode-Free Lithium Metal Battery",
+          "summary": "In-situ lithium plating forms the anode, simplifying cell architecture and extending the energy-density boundary."
         },
         {
-          "title": "AI for Battery",
-          "summary": "Data-driven innovation reshaping the battery's full lifecycle"
+          "title": "05｜Rapid-Heating Ultra-Fast Charging",
+          "summary": "Fast thermal control improves charging kinetics, optimising both charging speed and cycle life."
+        },
+        {
+          "title": "06｜AI-Driven Battery R&D and Manufacturing",
+          "summary": "Integrating materials screening, cell design and process optimisation to accelerate iteration and productisation."
         }
       ]
     },
@@ -210,7 +205,7 @@
   },
   "about": {
     "companyTitle": "Swift Safe Energy (Shenzhen) Technology Co., Ltd.",
-    "companyDesc": "Swift Safe Energy (Shenzhen) Technology Co., Ltd., a high-tech innovation enterprise spun off from Beijing Institute of Technology, was co-founded by an Academician-led research team alongside seasoned industry veterans. The company specializes in the R&D and commercialization of next-generation high-energy-density and high-safety advanced batteries.\n\nFocusing on cutting-edge sectors such as the low-altitude economy, embodied AI, deep-space and deep-sea exploration, and high-end special equipment, Swift Safe Energy drives collaborative innovation across material systems, cell architecture, advanced manufacturing, and intelligent battery systems. By delivering battery technologies characterized by higher energy density, superior safety, and enhanced environmental adaptability, the company continuously pushes the performance and application boundaries of next-generation smart equipment. Its flagship products have been delivered in batches to leading market players in uncrewed aerial vehicles (UAVs), electric vertical takeoff and landing (eVTOL) aircraft, robotics, and construction machinery."
+    "companyDesc": "Swift Safe Energy (Shenzhen) Technology Co., Ltd. is a technology company incubated by Beijing Institute of Technology and co-founded by an academician-led research team and seasoned industry professionals. The company specializes in the development and commercialization of advanced batteries with high specific energy and enhanced safety, serving frontier applications in low-altitude aviation, embodied intelligence, deep-space and deep-sea operations, and high-end specialized equipment. Through integrated innovation across materials systems, cell design, advanced manufacturing, and artificial intelligence, Swift Safe Energy develops batteries that combine high energy density, enhanced safety, and robust performance in demanding environments—expanding the capabilities and applications of next-generation intelligent mobile platforms. The company is already supplying batteries in volume to leading customers across the drone, eVTOL, robotics, and construction machinery sectors."
   },
   "advantages": {
     "title": "Core Advantages",
@@ -340,30 +335,32 @@
   },
   "timeline": {
     "title": "Our Journey",
-    "subtitle": "From Research to Industrialization",
+    "subtitle": "From Research to Commercialization",
     "items": {
-      "2014": "Research Initiated",
-      "2016": "Nature Publication",
-      "2018": "Extreme Cold Fast Charging",
-      "2019": "6C Ultra-Fast Charging",
-      "2021": "Industrialization Team",
-      "2022": "Trial Platform Built",
-      "2023": "Mass Production Process",
-      "2024": "Shenzhen HQ",
-      "2025": "100M+ RMB Funding",
-      "2026": "0.5GWh Production Base"
+      "2014": "Advancing Solid-State Battery Research",
+      "2016": "All-Climate Battery Research Published in Nature",
+      "2017": "Pioneering Lithium-Ion Battery Life Prediction",
+      "2018": "A Breakthrough in Fast Charging at −50°C",
+      "2019": "Pioneering Thermally-modulated 6C Ultrafast Charging",
+      "2020": "Defining Battery Requirements for eVTOL Aircraft",
+      "2021": "Returning to China to Bring Research to Market",
+      "2023": "Tonne-Scale Pilot Production of High-Performance Solid Electrolytes",
+      "2024": "Swift Safe Energy Founded",
+      "2025": "High-Specific-Energy Cells Validated by Leading Customers",
+      "2026": "New Funding Secured to Scale Manufacturing"
     },
     "details": {
-      "2014": "Low-temp battery research | Solid-state battery research | Battery simulation research",
-      "2016": "All-climate battery technology published in Nature",
-      "2018": "Extreme cold fast charging (3.5C@-50℃) published in PNAS",
-      "2019": "World's first 6C ultra-fast heating technology, published in Joule",
-      "2021": "Ultra-fast charging SSB industrialization team formed | SSB key materials development | National Engineering Research Center for EVs · BIT",
-      "2022": "SSB trial and testing platform completed | 100kg-level SSE material scale-up | Ultra-fast charging SSB prototype development",
-      "2023": "100-ton-level SSE mass production process | A-sample high-energy ultra-fast charging SSB development completed",
-      "2024": "Shenzhen headquarters established",
-      "2025": "Funding exceeding 100 million RMB",
-      "2026": "0.5GWh production base construction"
+      "2014": "The founder joined a world-leading battery research institute and collaborated with leading solid-state battery companies to advance core technologies.",
+      "2016": "A breakthrough in low-temperature battery performance laid the scientific groundwork for all-climate electric vehicle applications at the Beijing Winter Olympics.",
+      "2017": "Developed the world’s first physics-based model that can predict the full lifespan of lithium-ion batteries. The research paper has been cited more than 1,200 times.",
+      "2018": "Advanced fast-charging technology for extreme cold, with research demonstrating 15-minute charging and 4,500 cycles. The findings were published in PNAS.",
+      "2019": "Developed an asymmetric thermal modulation approach that enabled 10-minute charging. The research was published in Joule.",
+      "2020": "Published the world’s first paper dedicated to eVTOL battery requirements, setting out the core performance criteria for electric flight.",
+      "2021": "The founder returned to China to focus on commercialization, assembling a team to develop technologies for ultrafast charging, high energy density, and solid-state batteries.",
+      "2023": "Overcame key manufacturing challenges in oxide and polymer solid electrolytes, achieving pilot production at the tonne scale.",
+      "2024": "Began construction of an MWh-scale solid-state battery pilot line and a 100-tonne-scale solid electrolyte production line, accelerating the transition from research to production.",
+      "2025": "Products passed third-party testing and certification, including assessments by CATARC. Successful sample validation with leading industry customers marked a further step toward commercialization.",
+      "2026": "Raised hundreds of millions of yuan in funding, secured volume orders for solid-state batteries with high specific energy, and began construction of a 0.5 GWh production line."
     }
   },
   "casesPage": {
@@ -820,7 +817,7 @@
               "title": "Competitor comparison",
               "columns": [
                 "Competitor module",
-                "SSE customer"
+                "SSE module"
               ],
               "highlightColumn": 1,
               "rows": [
