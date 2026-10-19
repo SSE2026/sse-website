@@ -34,8 +34,8 @@
       "subtitle": "Breaking through materials, cell architecture, and intelligent operations to build industrial-grade high-safety energy cores.",
       "stats": {
         "patents": "Invention Patents",
-        "papers": "Nature Publications",
-        "production": "Production Capacity",
+        "papers": "Nature & Top Journals",
+        "production": "High-Standard Production Lines",
         "samples": "Smart Manufacturing Plant"
       }
     },
@@ -819,7 +819,7 @@
             "comparison": {
               "title": "Competitor comparison",
               "columns": [
-                "FC200",
+                "Competitor module",
                 "SSE customer"
               ],
               "highlightColumn": 1,

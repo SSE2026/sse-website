@@ -158,7 +158,7 @@ export function CaseBlock({ title, cases }: CaseBlockProps) {
               {/* Comparison table — spans full card width, sits
                   beneath the image+content row. The row list supports
                   an optional `group` field, which renders as a slim
-                  sub-header row (used in the FC200 vs deep-anchor table). */}
+                  sub-header row (used in the competitor vs deep-anchor table). */}
               {c.comparison && <ComparisonTable comparison={c.comparison} />}
             </motion.article>
           ))}

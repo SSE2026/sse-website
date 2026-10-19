@@ -34,8 +34,8 @@
       "subtitle": "突破材料体系、电芯架构与智能化运维边界，打造工业级高安全能量核心。",
       "stats": {
         "patents": "发明专利",
-        "papers": "Nature 顶刊论文",
-        "production": "生产能力",
+        "papers": "Nature 等顶刊",
+        "production": "高标准产线",
         "samples": "智造工厂"
       }
     },
@@ -722,7 +722,7 @@
               "title": "竞品对比",
               "columns": [
                 "竞品模组",
-                "深安模组"
+                "深安锂能模组"
               ],
               "highlightColumn": 1,
               "rows": [
@@ -815,7 +815,7 @@
             "comparison": {
               "title": "竞品对比",
               "columns": [
-                "FC200",
+                "竞品模组",
                 "深安客户"
               ],
               "highlightColumn": 1,
