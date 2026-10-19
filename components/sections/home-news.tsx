@@ -77,26 +77,26 @@ export function HomeNews({ locale, translations }: HomeNewsProps) {
             >
               <Link
                 href={`/news/${it.slug}`}
-                className="group grid grid-cols-1 gap-x-8 gap-y-4 border-b border-[#E4E4E7] py-7 no-underline md:grid-cols-12 md:items-center md:py-8"
+                className="group grid grid-cols-[128px_minmax(0,1fr)] items-start gap-x-3 border-b border-[#E4E4E7] py-5 no-underline max-[359px]:grid-cols-[112px_minmax(0,1fr)] md:grid-cols-12 md:items-center md:gap-x-8 md:py-8"
               >
                 {/* 缩略图 —— 统一 1080:546。
                     新闻图里有几张是"方形画布 + 上下纯蓝填充"的模板图,
                     已离线按内容带裁成同比例(模板图零内容损失),
                     所以这里直接 object-cover 严丝合缝填满,既不留白也不裁掉内容 */}
-                <div className="relative aspect-[1080/546] w-full overflow-hidden md:col-span-3">
+                <div className="relative aspect-[1080/546] w-full self-center overflow-hidden md:col-span-3">
                   <Image
                     src={`/images/news/thumb/${it.slug}.jpg`}
                     alt={isZh ? it.title : it.titleEn ?? it.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
+                    sizes="(max-width: 768px) 128px, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.015]"
                   />
                 </div>
 
                 {/* 文字 */}
-                <div className="md:col-span-9">
+                <div className="min-w-0 md:col-span-9">
                   <div
-                    className="mb-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] uppercase tracking-[0.18em] text-[#A1A1AA]"
+                    className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9.5px] uppercase tracking-[0.16em] text-[#A1A1AA] md:mb-2.5 md:gap-x-3 md:text-[11px] md:tracking-[0.18em]"
                     style={{ fontFamily: GROTESK }}
                   >
                     <span>{it.date}</span>
@@ -105,7 +105,7 @@ export function HomeNews({ locale, translations }: HomeNewsProps) {
                   </div>
 
                   <h3
-                    className="text-[16px] font-semibold leading-snug text-[#0A0A0F] transition-colors duration-200 group-hover:text-[#2563EB] md:text-[18px]"
+                    className="line-clamp-3 text-[14px] font-semibold leading-snug text-[#0A0A0F] transition-colors duration-200 group-hover:text-[#2563EB] md:line-clamp-none md:text-[18px]"
                     style={{ fontFamily: CJK }}
                   >
                     {isZh ? it.title : it.titleEn ?? it.title}
@@ -113,7 +113,7 @@ export function HomeNews({ locale, translations }: HomeNewsProps) {
 
                   {(isZh ? it.excerpt : it.excerptEn ?? it.excerpt) && (
                     <p
-                      className="mt-2.5 max-w-[76ch] text-[13px] leading-[1.8] text-[#71717A]"
+                      className="mt-2 line-clamp-2 max-w-[76ch] text-[11.5px] leading-[1.75] text-[#71717A] md:mt-2.5 md:line-clamp-none md:text-[13px] md:leading-[1.8]"
                       style={{ fontFamily: CJK }}
                     >
                       {isZh ? it.excerpt : it.excerptEn ?? it.excerpt}

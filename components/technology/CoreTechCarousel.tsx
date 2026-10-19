@@ -174,9 +174,11 @@ export function CoreTechCarousel({
           </div>
         </div>
 
-        {/* Controls, pinned to the bottom. */}
+        {/* Controls — 紧跟在文案下方。
+            原来是 mt-auto 贴到区块底部,区块比视口高时按钮会掉到下一屏,
+            得往下滚才看得到,而一滚图片上沿又出了视野。 */}
         <div
-          className="mt-auto flex items-center justify-center gap-2 pt-10"
+          className="mt-8 flex items-center justify-start gap-2 md:mt-10"
           onMouseEnter={() => setHeld(true)}
           onMouseLeave={() => setHeld(false)}
         >
