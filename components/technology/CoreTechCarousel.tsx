@@ -35,12 +35,9 @@ interface CoreTechCarouselProps {
  * the crop intact.
  *
  * The copy sits straight on the picture in plain white — no scrim, no
- * panel, no shadow. These renders measure 164–222 luma where the text
- * sits, so white scores only about 1.3–3.9 against them, under the 4.5
- * that body text needs. That trade is deliberate. Legibility therefore
- * rides entirely on the artwork, which is why the two copy bands are
- * kept visually quiet in each render: 01 and 03 are clean, 02 and 05
- * still carry clutter in the lower band.
+ * panel, no shadow. These renders measure 241–254 luma across the whole
+ * band the text lands on, with under 1% of pixels below 90, so the dark
+ * copy reads without any help from the artwork.
  */
 export function CoreTechCarousel({
   label,
@@ -89,6 +86,12 @@ export function CoreTechCarousel({
   const active = slides[index];
   const points = active.points ?? [];
 
+  // 序号和标题分开:标题写在第二列里,换行后的第二行自然跟首字对齐,
+  // 不会退回序号那条线;副标题也放在同一列,所以同样从首字起。
+  const [number, ...rest] = active.title.split("｜");
+  const hasNumber = rest.length > 0;
+  const heading = hasNumber ? rest.join("｜") : active.title;
+
   return (
     <section
       ref={sectionRef}
@@ -100,9 +103,8 @@ export function CoreTechCarousel({
       onBlurCapture={() => setHeld(false)}
     >
       {/* Full-bleed picture, cross-faded on opacity alone.
-          手机用 16:9 画框 + object-contain:这五张原图比例 1.78~2.37,
-          只有 contain 能让整张图可见(2.37 的那两张上下各留 26px 暗边);
-          md 起铺满整屏。 */}
+          这六张原图都是 1672×941(16:9),和手机端的 16:9 画框同比例,
+          object-cover 在任何宽度下都刚好铺满、不裁内容; md 起占满整屏。 */}
       <div className="relative w-full aspect-[16/9] md:absolute md:inset-0 md:aspect-auto">
         {slides.map((slide, i) => (
           <div
@@ -130,34 +132,58 @@ export function CoreTechCarousel({
           所以这里不再加任何蒙版 —— 加暗色底会把留白和画面一起压暗,
           黑字也就没法读了。文案宽度由下面的 max-w 控制在留白区内。 */}
 
-      {/* Copy, laid over the picture. The section title and the technology
-          it introduces are one block at the top-left: splitting them to
-          opposite corners left 433px of dead space between them.
-          桌面端把整块文案限制在图片左侧的留白区内(24% 左右),
-          保证右侧的画面不被文字盖住。 */}
-      <div className="relative z-10 flex flex-col px-8 pt-6 pb-8 md:h-full md:px-16 md:pt-24">
-        <div className="max-w-3xl md:max-w-[340px] lg:max-w-[360px]">
+      {/* Copy, laid over the picture at every width. The section title and
+          the technology it introduces are one block at the top-left:
+          splitting them to opposite corners left 433px of dead space.
+          手机端也压在图上(画框只有 390×219,上下排会把整屏拉得过长),
+          所以字号整体收小,文案列宽限制在图片左侧留白区(约 34%)内 ——
+          这批图在文案所处高度上,32% 以内基本是留白(平均亮度 220–254),
+          超过这条线 03 号图会开始压到碳颗粒,所以宁可窄也不外扩。 */}
+      <div className="absolute inset-0 z-10 flex flex-col px-5 pt-4 pb-4 md:px-16 md:pt-24 md:pb-10">
+        <div className="max-w-[34%] md:max-w-[380px] lg:max-w-[430px]">
           {/* Section header — top-padded to clear the fixed nav. */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="mb-2 text-[10px] tracking-[0.3em] text-[#A1A1AA] uppercase">
+            <p className="mb-1 text-[8px] tracking-[0.3em] text-[#A1A1AA] uppercase md:mb-2 md:text-[10px]">
               {label || "CORE TECHNOLOGY"}
             </p>
-            <h2 className="text-[clamp(1.4rem,2.2vw,2rem)] font-medium leading-tight tracking-tight text-[#0A0A0F]">
+            <h2 className="text-[12px] font-medium leading-tight tracking-tight text-[#0A0A0F] md:text-[clamp(1.4rem,2.2vw,2rem)]">
               {title}
             </h2>
           </motion.div>
 
-          <div aria-live="polite" className="mt-8 md:mt-12">
-            <h3 className="text-[clamp(1.5rem,2.6vw,2.25rem)] font-semibold leading-tight tracking-tight text-[#0A0A0F]">
-              {active.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#52525B] md:text-base">
-              {active.summary}
-            </p>
+          <div aria-live="polite" className="mt-2.5 md:mt-12">
+            <div
+              className={cn(
+                "grid items-baseline gap-x-[0.4em]",
+                hasNumber ? "grid-cols-[auto_minmax(0,1fr)]" : "grid-cols-1",
+              )}
+            >
+              {hasNumber && (
+                <span className="col-start-1 row-start-1 text-[12.5px] font-semibold tabular-nums text-[#0A0A0F] md:text-[clamp(1.5rem,2.6vw,2.25rem)]">
+                  {number}
+                </span>
+              )}
+              <h3
+                className={cn(
+                  "col-start-2 row-start-1 whitespace-pre-line text-[12.5px] font-semibold leading-[1.3] tracking-tight text-[#0A0A0F] md:text-[clamp(1.5rem,2.6vw,2.25rem)] md:leading-tight",
+                  !hasNumber && "col-start-1",
+                )}
+              >
+                {heading}
+              </h3>
+              <p
+                className={cn(
+                  "col-start-2 row-start-2 mt-1 text-[9.5px] leading-[1.55] text-[#52525B] md:mt-2 md:text-base md:leading-relaxed",
+                  !hasNumber && "col-start-1",
+                )}
+              >
+                {active.summary}
+              </p>
+            </div>
 
             {points.length > 0 && (
               <ul className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
@@ -178,7 +204,7 @@ export function CoreTechCarousel({
             原来是 mt-auto 贴到区块底部,区块比视口高时按钮会掉到下一屏,
             得往下滚才看得到,而一滚图片上沿又出了视野。 */}
         <div
-          className="mt-8 flex items-center justify-start gap-2 md:mt-10"
+          className="mt-3 flex items-center justify-start gap-2 md:mt-10"
           onMouseEnter={() => setHeld(true)}
           onMouseLeave={() => setHeld(false)}
         >
@@ -186,9 +212,9 @@ export function CoreTechCarousel({
             type="button"
             onClick={() => go(-1)}
             aria-label="Previous technology"
-            className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[#E4E4E7] bg-white/90 text-[#0A0A0F] backdrop-blur-[2px] transition-colors hover:border-[#D4D4D8] hover:bg-white"
+            className="grid h-8 w-8 cursor-pointer place-items-center rounded-full border border-[#E4E4E7] bg-white/90 text-[#0A0A0F] backdrop-blur-[2px] transition-colors hover:border-[#D4D4D8] hover:bg-white md:h-10 md:w-10"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
@@ -196,9 +222,9 @@ export function CoreTechCarousel({
             type="button"
             onClick={() => go(1)}
             aria-label="Next technology"
-            className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[#E4E4E7] bg-white/90 text-[#0A0A0F] backdrop-blur-[2px] transition-colors hover:border-[#D4D4D8] hover:bg-white"
+            className="grid h-8 w-8 cursor-pointer place-items-center rounded-full border border-[#E4E4E7] bg-white/90 text-[#0A0A0F] backdrop-blur-[2px] transition-colors hover:border-[#D4D4D8] hover:bg-white md:h-10 md:w-10"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M9 6l6 6-6 6" />
             </svg>
           </button>

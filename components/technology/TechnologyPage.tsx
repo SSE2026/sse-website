@@ -15,11 +15,11 @@ import { useCmsContent } from "@/lib/cms/use-cms";
 // Fixed slide imagery. The CMS owns the copy, never the pictures.
 // 顺序与文件名 01–06 一致,与 messages 里 coreTech.slides 的六条文案逐条对应。
 const CORE_TECH_IMAGES = [
-  "/images/technology/tech/01-oxide-electrolyte.webp",
-  "/images/technology/tech/02-condensed-electrolyte.webp",
-  "/images/technology/tech/03-silicon-anode.webp",
-  "/images/technology/tech/04-anode-free.webp",
-  "/images/technology/tech/05-fast-charging.webp",
+  "/images/technology/tech/01-oxide-solid-electrolyte.webp",
+  "/images/technology/tech/02-gel-electrolyte.webp",
+  "/images/technology/tech/03-silicon-carbon-anode.webp",
+  "/images/technology/tech/04-anode-free-lithium-metal.webp",
+  "/images/technology/tech/05-rapid-thermal-charging.webp",
   "/images/technology/tech/06-ai-rnd.webp",
 ];
 

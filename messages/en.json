@@ -78,27 +78,27 @@
       "slides": [
         {
           "title": "01｜High-Performance Oxide Solid Electrolyte",
-          "summary": "High purity and conductivity, balancing efficient ion transport with pack-level thermal safety."
+          "summary": "High purity and conductivity, easy dispersion, nanoscale encapsulation."
         },
         {
-          "title": "02｜Highly Elastic Condensed Electrolyte",
-          "summary": "Self-adaptive conformal interfaces relieve solid–solid contact and build stable ion-transport channels."
+          "title": "02｜Highly Elastic Gel Electrolyte",
+          "summary": "Elastic compliance keeps it in contact with the electrode interface."
         },
         {
-          "title": "03｜Low-Expansion Pure-Silicon Anode",
-          "summary": "A novel scaffold buffer structure tames silicon expansion and unlocks high capacity."
+          "title": "03｜Low-Expansion Silicon–Carbon Anode",
+          "summary": "A carbon scaffold supports the structure and buffers silicon's volume change."
         },
         {
           "title": "04｜Anode-Free Lithium Metal Battery",
-          "summary": "In-situ lithium plating forms the anode, simplifying cell architecture and extending the energy-density boundary."
+          "summary": "No anode at the start; lithium metal is deposited in situ."
         },
         {
           "title": "05｜Rapid-Heating Ultra-Fast Charging",
-          "summary": "Fast thermal control improves charging kinetics, optimising both charging speed and cycle life."
+          "summary": "Short-duration precise thermal control balances charging efficiency and cycle life."
         },
         {
           "title": "06｜AI-Driven Battery R&D and Manufacturing",
-          "summary": "Integrating materials screening, cell design and process optimisation to accelerate iteration and productisation."
+          "summary": "Predict–validate–feedback loops drive continuous optimisation."
         }
       ]
     },
