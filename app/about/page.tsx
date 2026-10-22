@@ -142,7 +142,7 @@ export default function AboutPage() {
                 transition={{ delay: 1.3, duration: 0.8 }}
                 style={{ color: 'rgba(100, 113, 135, 0.75)' }}
               >
-                {heroCms.auxText || (isZh ? "固态电池技术专家" : "Solid-State Battery Expert")}
+                {heroCms.auxText || (isZh ? "高比能高安全新型电池引领者" : "Leader in High-Energy, High-Safety Batteries")}
               </motion.p>
             </motion.div>
           </div>
