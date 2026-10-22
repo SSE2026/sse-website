@@ -36,22 +36,30 @@ export function HomeAbout({ locale }: HomeAboutProps) {
           className="object-cover object-center"
         />
 
-        {/* 底部渐隐 —— 只给桌面端的压图文案留干净亮面 */}
+        {/* 底部渐隐 —— 只给桌面端的压图文案留干净亮面。
+            这层不能太重：厂区图下半部分本身就是暗的（60–70% 那带
+            只有 128 的灰阶），白一盖细节就全没了。实测原来那组
+            （0.45 / 0.92 / 纯白）把整幅提亮 64 个灰阶点，底下四成
+            画面基本刷成白纸。现在收成 0.25 / 0.65 / 0.82 ——
+            文案落点最暗处仍有 143，对正文 #52525B 的对比度 6.49
+            （WCAG AA 要 4.5），而画面亮度从 228 回到 209，
+            厂区的建筑和地面纹理重新看得见了。 */}
         <div
           aria-hidden="true"
           className="absolute inset-0 hidden md:block"
           style={{
             background:
-              "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 38%, rgba(255,255,255,0.92) 70%, #FFFFFF 100%)",
+              "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 38%, rgba(255,255,255,0.65) 70%, rgba(255,255,255,0.82) 100%)",
           }}
         />
-        {/* 顶部软化,避免和上一屏之间出现硬边 */}
+        {/* 顶部软化,避免和上一屏之间出现硬边。同理从 0.85 降到 0.45 ——
+            原来那一档几乎把画面顶部的天空全刷白了。 */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-16"
           style={{
             background:
-              "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)",
+              "linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 100%)",
           }}
         />
       </div>

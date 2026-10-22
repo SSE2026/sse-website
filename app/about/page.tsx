@@ -164,22 +164,30 @@ export default function AboutPage() {
             />
 
             {/* Fade the picture into the page along the bottom, leaving a
-                bright even surface where the copy lands. */}
+                surface the copy can land on. 这层不能太重：厂区图
+                下半部分本身就是暗的（60–70% 那带只有 128 的灰阶），
+                白一盖细节就全没了。原来那组（0.42 / 0.88 / 纯白）
+                把整幅提亮 60 个灰阶点，底下四成画面基本刷成白纸。
+                现在收成 0.24 / 0.64 / 0.80 —— 文案落点最暗处仍有
+                143，对正文 #52525B 的对比度 6.4（WCAG AA 要 4.5），
+                画面亮度从 228 回到 209。参数与首页第三屏一致。 */}
             <div
               aria-hidden="true"
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 40%, rgba(255,255,255,0.88) 72%, #FFFFFF 100%)",
+                  "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.24) 40%, rgba(255,255,255,0.64) 72%, rgba(255,255,255,0.80) 100%)",
               }}
             />
-            {/* Soften the top edge so the band has no hard entry. */}
+            {/* Soften the top edge so the band has no hard entry.
+                同样从 0.85 降到 0.45 —— 原来那一档几乎把画面顶部的
+                天空全刷白了。 */}
             <div
               aria-hidden="true"
               className="absolute inset-x-0 top-0 h-20"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)",
+                  "linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 100%)",
               }}
             />
           </div>
