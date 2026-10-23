@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Github, Linkedin, Twitter, Youtube, Mail, MapPin, Phone } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 interface FooterProps {
   translations: {
@@ -34,13 +33,6 @@ interface FooterProps {
 }
 
 export function Footer({ translations, locale }: FooterProps) {
-  const socialLinks = [
-    { icon: Github, href: "#", label: "GitHub", key: "social-github" },
-    { icon: Linkedin, href: "#", label: "LinkedIn", key: "social-linkedin" },
-    { icon: Twitter, href: "#", label: "Twitter", key: "social-twitter" },
-    { icon: Youtube, href: "#", label: "YouTube", key: "social-youtube" },
-  ];
-
   const quickLinks = [
     { href: "/products/cloudchi-360-p", label: translations.nav.products, key: "quick-products" },
     { href: "/technology", label: translations.nav.technology, key: "quick-technology" },
@@ -120,27 +112,30 @@ export function Footer({ translations, locale }: FooterProps) {
             </ul>
           </div>
 
-          {/* Social Links */}
+          {/* 微信公众号二维码 —— 原来这里是 GitHub / LinkedIn / Twitter /
+              YouTube 四个占位链接（href 全是 #，点了什么也不会发生），
+              已全部删除，换成真正能扫的公众号入口。 */}
           <div>
             <h4 className="font-semibold text-white text-sm mb-6">
               {locale === "zh" ? "关注我们" : "Follow Us"}
             </h4>
-            <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className={cn(
-                    "w-10 h-10 rounded-lg bg-[#18181B] border border-[#27272A]",
-                    "flex items-center justify-center",
-                    "text-[#71717A] hover:text-white hover:bg-[#27272A] hover:border-[#3F3F46]",
-                    "transition-all duration-200 cursor-pointer"
-                  )}
-                >
-                  <social.icon className="w-4 h-4" />
-                </a>
-              ))}
+            <div className="flex items-start gap-4">
+              <Image
+                src="/images/wechat-qrcode.jpg"
+                alt={locale === "zh" ? "深安锂能微信公众号二维码" : "Swift Safe Energy WeChat QR code"}
+                width={258}
+                height={258}
+                sizes="180px"
+                className="h-[88px] w-[88px] shrink-0 rounded-lg bg-white p-1.5 object-contain"
+              />
+              <div className="pt-0.5">
+                <p className="text-sm font-medium text-white">
+                  {locale === "zh" ? "微信公众号" : "WeChat"}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-[#71717A]">
+                  {locale === "zh" ? "扫码关注，获取最新动态" : "Scan to follow our updates"}
+                </p>
+              </div>
             </div>
           </div>
         </div>

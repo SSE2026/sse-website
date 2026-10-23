@@ -108,6 +108,13 @@ export function EnergyStackHero({ translations }: HeroProps) {
       {/* === MAIN CONTENT ============================================ */}
       <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16">
         <div className="brand-hero-grid grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center min-h-[calc(100vh-72px-104px)] py-14 md:py-20">
+          {/* Hero 排版 —— 之前 H1 只有 40px、副标题 14px，字号比 2.86:1，
+           左侧文字撑不住 1430px 的画框：字宽只有 245px，到右侧
+           Logo 有 656px 空白，整屏看着空。H1 提到 64px 后字宽 394px、
+           间距收到 507px，比例 4:1（设计库标尺要求 ≥5:1，72px 可到
+           4.5:1）。480px 的列到 72px 都装得下，所以不用动列宽结构。
+           手机端原来 H1 15px / 正文 9px / 按钮 9px，都低于 12px 正文
+           下限，一并提到 22 / 11 / 11。 */}
           {/* LEFT — wrapper handles the static downward shift so the
               block lines up with the Logo cube. motion.div inside
               handles the entrance animation only. */}
@@ -122,7 +129,7 @@ export function EnergyStackHero({ translations }: HeroProps) {
               className="flex flex-col"
             >
               <h1
-                className="text-[15px] md:text-[32px] lg:text-[40px] font-bold leading-[1.12] tracking-[-0.015em] text-[#0A0A0F]"
+                className="text-[22px] font-bold leading-[1.12] tracking-[-0.015em] text-[#0A0A0F] md:text-[40px] lg:text-[64px]"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 <span className="block">{titleLine1}</span>
@@ -130,7 +137,7 @@ export function EnergyStackHero({ translations }: HeroProps) {
               </h1>
 
               <p
-                className="mt-1.5 md:mt-7 text-[9px] md:text-[13px] lg:text-[14px] text-[#3F3F46] leading-[1.7] whitespace-nowrap overflow-hidden text-ellipsis"
+                className="mt-1.5 md:mt-7 text-[11px] md:text-[14px] lg:text-[16px] text-[#3F3F46] leading-[1.7] whitespace-nowrap overflow-hidden text-ellipsis"
                 style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
               >
                 {subtitle}
@@ -139,7 +146,7 @@ export function EnergyStackHero({ translations }: HeroProps) {
               <div className="mt-3 md:mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 md:gap-x-5 md:gap-y-3">
                 <a
                   href="/technology"
-                  className="group inline-flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2.5 bg-[#0A0A0F] text-white text-[9px] md:text-[11px] font-semibold rounded-full hover:bg-[#1F1F2A] transition-colors shadow-[0_10px_30px_-14px_rgba(10,10,15,0.6)]"
+                  className="group inline-flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2.5 bg-[#0A0A0F] text-white text-[11px] md:text-[12px] font-semibold rounded-full hover:bg-[#1F1F2A] transition-colors shadow-[0_10px_30px_-14px_rgba(10,10,15,0.6)]"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaExplore}
@@ -147,7 +154,7 @@ export function EnergyStackHero({ translations }: HeroProps) {
                 </a>
                 <a
                   href="/about"
-                  className="group inline-flex items-center gap-1.5 text-[9px] md:text-[11px] font-medium text-[#0A0A0F] border-b border-[#0A0A0F]/40 hover:border-[#0A0A0F] pb-0.5 transition-colors"
+                  className="group inline-flex items-center gap-1.5 text-[11px] md:text-[12px] font-medium text-[#0A0A0F] border-b border-[#0A0A0F]/40 hover:border-[#0A0A0F] pb-0.5 transition-colors"
                   style={{ fontFamily: "var(--font-noto-sc, sans-serif)" }}
                 >
                   {ctaContact}
