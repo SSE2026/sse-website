@@ -146,6 +146,18 @@ export function Footer({ translations, locale }: FooterProps) {
             <p className="text-xs text-[#52525B]">
               {translations.footer.copyright}
             </p>
+            {/* 工信部 ICP 备案号 —— 境内托管站点必须显著标示，点击进备案管理系统。
+                这里用 #A1A1AA 而不是版权行的 #52525B：后者在 #0A0A0A 上只有
+                2.55:1 的对比度，备案号属于法定公示信息，按正文标准做到 7.7:1。
+                中英文页面都显示，备案号本身不翻译。 */}
+            <a
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 text-xs text-[#A1A1AA] no-underline transition-colors hover:text-white"
+            >
+              粤ICP备2025380610号-1
+            </a>
           </div>
         </div>
       </div>
