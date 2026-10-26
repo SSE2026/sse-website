@@ -49,12 +49,12 @@ export default function ContactPage() {
   // 公司信息 —— 与页脚保持一致(地址 / 电话 / 邮箱三处)
   const contactData = {
     address: c.address || (isZh ? "深圳市坪山区源通科技园" : "Shenzhen, China"),
-    phone: c.phone || "15814654041",
+    phone: c.phone || "18902846763",
     email: c.email || "zhanwenwei@ssebatt.com",
     coords: { lng: 114.402008, lat: 22.760216 },
   };
 
-  // 显示值和拨号值分开:页脚用的是 tel:+8615814654041。11 位纯数字在国内号
+  // 显示值和拨号值分开:页脚用的是 tel:+8618902846763。11 位纯数字在国内号
   // 前补 +86;如果 CMS 里填的是带国家码的写法,就原样使用。
   const phoneHref = /^\d{11}$/.test(contactData.phone)
     ? `tel:+86${contactData.phone}`

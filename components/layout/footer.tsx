@@ -86,8 +86,8 @@ export function Footer({ translations, locale }: FooterProps) {
               </div>
               <div className="flex items-center gap-3 text-sm text-[#71717A]">
                 <Phone className="w-4 h-4 text-[#52525B]" />
-                <a href="tel:+8615814654041" className="hover:text-white transition-colors">
-                  15814654041
+                <a href="tel:+8618902846763" className="hover:text-white transition-colors">
+                  18902846763
                 </a>
               </div>
             </div>

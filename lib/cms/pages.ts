@@ -311,7 +311,7 @@ export const PAGE_DEFS: CmsPageDef[] = [
         title: "携手深安锂能，共创智慧能源未来",
         subtitle: "",
         email: "zhanwenwei@ssebatt.com",
-        phone: "15814654041",
+        phone: "18902846763",
         address: "深圳市坪山区源通科技园",
         studioTitle: "",
         studioDesc: "",
