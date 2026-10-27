@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import { newsItems } from "@/data/news";
 import { SERIES_ORDER, seriesProfiles } from "@/data/products";
-
-const SITE_URL = "https://sse-website.vercel.app";
+import { SITE_URL } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
