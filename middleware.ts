@@ -7,6 +7,17 @@ export default withAuth(
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
+    // 临时探针：确认边缘运行时到底能读到什么。排查完应删除。
+    // 只报告「是不是占位符」和 cookie 名字，不涉及任何密钥内容。
+    if (path === "/__mw") {
+      return NextResponse.json({
+        secretIsFallback: AUTH_SECRET === "dev-secret-for-build-time",
+        nextauthUrlPresent: Boolean(process.env.NEXTAUTH_URL),
+        cookieNames: req.cookies.getAll().map((c) => c.name),
+        tokenPresent: Boolean(token),
+      });
+    }
+
     const isAdminRoute = path.startsWith("/admin");
 
     // ADMIN role passes through everywhere.
