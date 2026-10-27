@@ -1,6 +1,8 @@
 // 后端生产入口（CloudBase 云托管 Docker 用）
 // 复用 server/api/index.js 的 Vercel serverless handler，包一层 Express 监听 PORT
 const handler = require('./api/index.js');
+const fs = require('fs');
+const path = require('path');
 
 const express = require('express');
 const app = express();
@@ -8,8 +10,35 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// 简单健康检查（Dockerfile 的 HEALTHCHECK 用）
-app.get('/v1/health', (_req, res) => res.json({ ok: true }));
+// 健康检查。除了探活，还带上运行环境的自检信息 ——
+// 之前排查「Prisma 引擎加载不了」时，光看 500 分不清是镜像没更新、
+// 还是镜像里引擎/openssl 不对，每次都要重来一轮构建。
+app.get('/v1/health', (_req, res) => {
+  let engines = [];
+  try {
+    engines = fs
+      .readdirSync(path.join(__dirname, 'node_modules/.prisma/client'))
+      .filter((f) => f.startsWith('libquery_engine'));
+  } catch (e) {
+    engines = [`read-error: ${e.code || e.message}`];
+  }
+
+  res.json({
+    ok: true,
+    platform: `${process.platform}-${process.arch}`,
+    node: process.version,
+    openssl: process.versions.openssl,
+    // 镜像里实际存在的 Prisma 引擎文件名，用来判断是不是那一版镜像
+    prismaEngines: engines,
+    // 该有的运行时变量是否就位（只报有没有，不报值）
+    env: {
+      databaseUrl: Boolean(process.env.DATABASE_URL),
+      jwtSecret: Boolean(process.env.JWT_SECRET),
+      corsOrigin: Boolean(process.env.CORS_ORIGIN),
+      frontendUrl: Boolean(process.env.FRONTEND_URL),
+    },
+  });
+});
 
 // 所有其他请求走 handler
 app.use((req, res) => handler(req, res));
