@@ -267,26 +267,13 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    if (url === '/v1/auth/bootstrap' && req.method === 'POST') {
-      const body = await readBody(req);
-      const existing = await db.user.findFirst({ where: { role: 'ADMIN' } });
-      if (existing) {
-        fail(res, 409, 'Admin already exists');
-        return;
-      }
-      const hashed = await bcrypt.hash(body.password || 'Admin123!', 10);
-      const admin = await db.user.create({
-        data: {
-          email: body.email || 'admin@example.com',
-          password: hashed,
-          name: 'Admin',
-          role: 'ADMIN',
-          isActive: true,
-        },
-      });
-      ok(res, { user: { id: admin.id, email: admin.email, role: 'ADMIN' } });
-      return;
-    }
+    // /v1/auth/bootstrap 已移除（2026-10-27）。
+    // 它原本在「库里没有 ADMIN」时用请求体里的密码（缺省 Admin123!）创建一个
+    // 管理员，且没有任何鉴权 —— 只要有人先把 ADMIN 清空（或库里本来就没有），
+    // 任何访问公网的人都能立刻拿到后台权限。前端的 /api/auth/register PUT
+    // 只是调用它的代理，已一并删除。
+    // 万一真的需要重建管理员：直接连库用 server/reset-admin-password.sql，
+    // 或在本地跑一次带 DATABASE_URL 的脚本，不要再开这种公开入口。
 
     // ---------------- PUBLIC PRODUCTS ----------------
     const prodList = /^\/v1\/products\/?$/.test(url);

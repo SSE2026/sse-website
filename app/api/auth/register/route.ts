@@ -41,32 +41,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
-// Bootstrap admin endpoint - call after deployment
-export async function PUT() {
-  try {
-    if (!getConfiguredApiBaseUrl()) {
-      return NextResponse.json(
-        { message: 'API not configured' },
-        { status: 503 }
-      );
-    }
-
-    const res = await fetch(`${getApiBaseUrl()}/v1/auth/bootstrap-admin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: 'admin@ssebatt.com',
-        password: 'SSEadmin2026!',
-      }),
-    });
-
-    const data = await res.json();
-    return NextResponse.json(data, { status: res.status });
-  } catch (error) {
-    return NextResponse.json(
-      { message: 'Bootstrap failed' },
-      { status: 500 }
-    );
-  }
-}
