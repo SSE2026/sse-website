@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getApiBaseUrl, getConfiguredApiBaseUrl } from '@/lib/api/config';
 
 export async function POST(request: Request) {
   try {
@@ -13,14 +14,14 @@ export async function POST(request: Request) {
     }
 
     // Skip if no API URL configured (e.g., during build)
-    if (!process.env.NEXT_PUBLIC_API_URL) {
+    if (!getConfiguredApiBaseUrl()) {
       return NextResponse.json(
         { message: 'API not configured' },
         { status: 503 }
       );
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/register`, {
+    const res = await fetch(`${getApiBaseUrl()}/v1/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
@@ -44,14 +45,14 @@ export async function POST(request: Request) {
 // Bootstrap admin endpoint - call after deployment
 export async function PUT() {
   try {
-    if (!process.env.NEXT_PUBLIC_API_URL) {
+    if (!getConfiguredApiBaseUrl()) {
       return NextResponse.json(
         { message: 'API not configured' },
         { status: 503 }
       );
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/bootstrap-admin`, {
+    const res = await fetch(`${getApiBaseUrl()}/v1/auth/bootstrap-admin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

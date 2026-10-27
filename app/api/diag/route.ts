@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { getApiBaseUrl, API_PREFIX } from "@/lib/api/config";
+import {
+  getApiBaseUrl,
+  getConfiguredApiBaseUrl,
+  getApiBaseUrlSource,
+  API_PREFIX,
+} from "@/lib/api/config";
 
 /**
  * 部署诊断（只读）。排查「页面能打开、但登录和询盘都失败」这类问题：
@@ -16,7 +21,6 @@ import { getApiBaseUrl, API_PREFIX } from "@/lib/api/config";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const configuredValue = (process.env.NEXT_PUBLIC_API_URL ?? "").trim();
   const baseUrl = getApiBaseUrl();
   const target = `${baseUrl}${API_PREFIX}/health`;
 
@@ -40,9 +44,11 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    // 环境变量是否配置。false 说明落到了 localhost:3001 的兜底值。
-    configured: configuredValue.length > 0,
-    // 服务端实际使用的基础地址
+    // 是否配置了后端地址。false 说明落到了 localhost:3001 的兜底值。
+    configured: getConfiguredApiBaseUrl() !== null,
+    // 地址是从哪个变量读来的。fallback = 两个都没配；
+    // NEXT_PUBLIC_API_URL 在构建期被内联，只有构建时存在才读得到。
+    envSource: getApiBaseUrlSource(),
     apiBaseUrl: baseUrl,
     // 健康检查地址
     target,
@@ -50,5 +56,9 @@ export async function GET() {
     status,
     error,
     latencyMs: Date.now() - startedAt,
+    // NextAuth 这两项只报「配没配」，不报值。缺 secret 时会退到构建期
+    // 占位符（登录仍可用但会话不安全）；缺 url 时回调地址可能算错。
+    nextauthUrlConfigured: (process.env.NEXTAUTH_URL ?? "").trim().length > 0,
+    nextauthSecretConfigured: (process.env.NEXTAUTH_SECRET ?? "").trim().length > 0,
   });
 }

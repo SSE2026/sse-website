@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/options';
+import { getConfiguredApiBaseUrl } from '@/lib/api/config';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// 运行时读取（NEXT_PUBLIC_ 前缀会被构建期内联，见 lib/api/config.ts）
+const API_BASE_URL = getConfiguredApiBaseUrl();
 
 // GET /api/admin/products - List all products (admin)
 export async function GET(request: NextRequest) {

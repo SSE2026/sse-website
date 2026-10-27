@@ -1,13 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { AUTH_SECRET } from './secret';
-
-// Use a valid URL format to prevent build-time URL validation errors
-const getApiUrl = (): string => {
-  const url = process.env.NEXT_PUBLIC_API_URL;
-  if (!url) return 'http://localhost:3001';
-  return url;
-};
+import { getApiBaseUrl, API_PREFIX } from '@/lib/api/config';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -22,13 +16,13 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Skip if no real API URL configured (e.g., during build)
-        if (!process.env.NEXT_PUBLIC_API_URL) {
-          return null;
-        }
-
+        // 原来这里有一句「没配 API 地址就直接返回 null」。它本意是
+        // 避免构建期取不到 env，但 authorize 只在请求时执行，构建期根本
+        // 不会走到这里；留着反而让「没配地址」和「密码错」变成同一个
+        // 不可区分的现象。现在交给 fetch 自己失败，错误仍然回到同一个
+        // null 分支，但代码里不再有这层误导。
         try {
-          const res = await fetch(`${getApiUrl()}/v1/auth/login`, {
+          const res = await fetch(`${getApiBaseUrl()}${API_PREFIX}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

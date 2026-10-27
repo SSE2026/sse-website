@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getConfiguredApiBaseUrl } from '@/lib/api/config';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// 运行时读取（NEXT_PUBLIC_ 前缀会被构建期内联，见 lib/api/config.ts）
+const API_BASE_URL = getConfiguredApiBaseUrl();
 
 // Mock product data - used when backend API is not available
 const MOCK_PRODUCTS = [
