@@ -1,25 +1,29 @@
 # ---------- 后端 Express + Prisma ----------
 # Build context: server/
-# Build command path: server/Dockerfile
-# Container port: 9000（腾讯云 SCF Web 函数固定要求 9000；
-#                  普通主机上可用环境变量 PORT 覆盖）
+# Dockerfile 路径: server/Dockerfile
+# 容器端口: 9000（腾讯云 SCF Web 函数固定要求；普通主机可用 PORT 覆盖）
 # 启动命令: node server.js
+#
+# 镜像体积说明：生产入口只有 api/index.js + server.js，用到的包就是
+# package.prod.json 里那 6 个。server/package.json 里的 NestJS 全套、
+# typescript、jest 等只服务于旧入口，全部不进镜像 —— 之前整包安装让镜像
+# 多出约 300MB，而从 GitHub 跨洋推到 TCR 慢得离谱。
 
 FROM node:20-alpine AS deps
 WORKDIR /app
-COPY package.json package-lock.json* ./
-# 显式安装 express（server.js 需要；server/package.json 未声明）
-# 运行期只需要正式依赖（prisma CLI 本身就在 dependencies 里，
-# 所以下面的 generate 不受影响）；省掉 22 个 devDependencies 能显著减小镜像。
-RUN npm ci --omit=dev --no-audit --no-fund && \
-    npm install --no-save --no-audit --no-fund express@4
+COPY package.prod.json ./package.json
+RUN npm install --omit=dev --no-audit --no-fund
 
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-# Prisma 需要在 build 时生成匹配 Linux 的引擎二进制
-RUN npx prisma generate --schema=./prisma/schema.prisma
+COPY --from=deps /app/package.json ./package.json
+COPY prisma ./prisma
+# Prisma CLI 用 npx 临时下载，不留在镜像里；生成后只保留 alpine(musl)
+# 用的引擎，其余平台的引擎删掉再省约 40MB。
+RUN npx --yes prisma@5.22.0 generate --schema=./prisma/schema.prisma && \
+    find node_modules/.prisma node_modules/@prisma \
+      -name 'libquery_engine-*.so.node' ! -name '*musl*' -delete 2>/dev/null || true
 
 FROM node:20-alpine AS runner
 WORKDIR /app
@@ -32,9 +36,9 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/prisma ./prisma
-COPY --from=builder --chown=nodejs:nodejs /app/api ./api
-COPY --from=builder --chown=nodejs:nodejs /app/server.js ./server.js
-COPY --from=builder --chown=nodejs:nodejs /app/package.json ./package.json
+COPY --chown=nodejs:nodejs api ./api
+COPY --chown=nodejs:nodejs server.js ./server.js
+COPY --chown=nodejs:nodejs package.prod.json ./package.json
 
 USER nodejs
 EXPOSE 9000

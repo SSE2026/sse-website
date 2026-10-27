@@ -1,0 +1,13 @@
+{
+  "name": "sse-api",
+  "private": true,
+  "description": "运行期依赖清单（Docker 镜像用）。server/package.json 里的 NestJS 全套、typescript、jest 等只服务于旧的 NestJS 入口，生产用的是 api/index.js，用不到。",
+  "dependencies": {
+    "@prisma/client": "5.22.0",
+    "bcryptjs": "3.0.3",
+    "cloudinary": "2.10.1",
+    "express": "^4.21.0",
+    "jsonwebtoken": "9.0.3",
+    "streamifier": "0.1.1"
+  }
+}
