@@ -1,0 +1,18 @@
+name: build-and-push-tcr
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to TCR
+        run: echo "${{ secrets.TCR_PASSWORD }}" | docker login ccr.ccs.tencentyun.com -u "${{ secrets.TCR_USERNAME }}" --password-stdin
+      - name: Build image
+        run: docker build -f server/Dockerfile -t ccr.ccs.tencentyun.com/ssebatt/sse-api:latest ./server
+      - name: Push image
+        run: docker push ccr.ccs.tencentyun.com/ssebatt/sse-api:latest
