@@ -1,18 +1,55 @@
 name: build-and-push-tcr
 
+# 只在 server/ 有改动时构建，前端提交不再白白跑一次镜像构建。
 on:
   push:
     branches: [main]
+    paths:
+      - "server/**"
+      - ".github/workflows/build-push-tcr.yml"
   workflow_dispatch:
+
+concurrency:
+  group: build-and-push-tcr
+  cancel-in-progress: true
+
+env:
+  IMAGE: ccr.ccs.tencentyun.com/ssebatt/sse-api
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check secrets
+        env:
+          TCR_USERNAME: ${{ secrets.TCR_USERNAME }}
+          TCR_PASSWORD: ${{ secrets.TCR_PASSWORD }}
+        run: |
+          missing=""
+          [ -z "$TCR_USERNAME" ] && missing="$missing TCR_USERNAME"
+          [ -z "$TCR_PASSWORD" ] && missing="$missing TCR_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::缺少仓库 Secrets:$missing（Settings → Secrets and variables → Actions）"
+            exit 1
+          fi
+
+      - uses: docker/setup-buildx-action@v3
+
       - name: Login to TCR
         run: echo "${{ secrets.TCR_PASSWORD }}" | docker login ccr.ccs.tencentyun.com -u "${{ secrets.TCR_USERNAME }}" --password-stdin
-      - name: Build image
-        run: docker build -f server/Dockerfile -t ccr.ccs.tencentyun.com/ssebatt/sse-api:latest ./server
-      - name: Push image
-        run: docker push ccr.ccs.tencentyun.com/ssebatt/sse-api:latest
+
+      # 构建上下文是 server/，Dockerfile 里的 COPY 路径都相对于它
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -12,21 +12,25 @@
 
 # 方案 1：腾讯云 SCF Web 函数（推荐，免运维）
 
-## 1.1 构建镜像并推送到 TCR
+## 1.1 由 GitHub Actions 构建镜像
 
-在本地项目根目录：
+**不需要本地装 Docker。** 仓库里的 `.github/workflows/build-push-tcr.yml`
+会在 `server/` 有改动推到 `main` 时自动构建并推送镜像。
 
-```bash
-cd server
-docker build -t sse-api .
+需要在 GitHub 仓库 → Settings → Secrets and variables → Actions 里配置两个 Secret：
 
-# 腾讯云容器镜像服务（TCR）地址，namespace 换成你自己的
-docker login ccr.ccs.tencentyun.com
-docker tag sse-api ccr.ccs.tencentyun.com/<namespace>/sse-api:latest
-docker push ccr.ccs.tencentyun.com/<namespace>/sse-api:latest
+| Secret 名 | 值 |
+|-----------|-----|
+| `TCR_USERNAME` | TCR 登录用户名（TCR 控制台 →「访问凭证」）|
+| `TCR_PASSWORD` | TCR 登录密码（同一页面设置）|
+
+产物镜像固定为：
+
+```
+ccr.ccs.tencentyun.com/ssebatt/sse-api:latest
 ```
 
-> 镜像约 300–500MB（Prisma 引擎占大头），在 SCF 限制范围内。
+配好后可在 Actions 页面手动跑一次 `build-and-push-tcr`，成功后日志里能看到推送结果。
 
 ## 1.2 创建函数
 
@@ -122,3 +126,15 @@ curl http://localhost:3001/v1/health            # 应返回 {"ok":true}
 | `/v1/health` 通但登录 401 | 账号密码错，或连到了错误的数据库 |
 | EdgeOne 侧仍 `reachable: false` | 触发器没加、路径前缀不对，或 `API_BASE_URL` 少了端口/路径 |
 | 冷启动超时 | 调大函数超时时间，或启用预置并发 |
+
+---
+
+## 附：本地构建（装了 Docker 才用）
+
+```bash
+cd server
+docker build -t sse-api .
+docker login ccr.ccs.tencentyun.com
+docker tag sse-api ccr.ccs.tencentyun.com/ssebatt/sse-api:latest
+docker push ccr.ccs.tencentyun.com/ssebatt/sse-api:latest
+```
