@@ -15,17 +15,23 @@ COPY package.prod.json ./package.json
 RUN npm install --omit=dev --no-audit --no-fund
 
 FROM node:20-alpine AS builder
+# Prisma 靠系统里的 OpenSSL 决定用哪个引擎。alpine 默认不带 openssl，
+# 探不到 OpenSSL 3 就会退回要 libssl.so.1 的老引擎，而 alpine 只有 3 ——
+# 运行时报 "Error loading shared library libssl.so.1"。装上是必须的。
+RUN apk add --no-cache openssl
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./package.json
 COPY prisma ./prisma
-# Prisma CLI 用 npx 临时下载，不留在镜像里；生成后只保留 alpine(musl)
-# 用的引擎，其余平台的引擎删掉再省约 40MB。
+# Prisma CLI 用 npx 临时下载，不留在镜像里；生成后只保留 musl 用的引擎，
+# 其余平台（debian / rhel）的引擎删掉再省约 40MB。
 RUN npx --yes prisma@5.22.0 generate --schema=./prisma/schema.prisma && \
     find node_modules/.prisma node_modules/@prisma \
-      -name 'libquery_engine-*.so.node' ! -name '*musl*' -delete 2>/dev/null || true
+      -name 'libquery_engine-*.so.node' ! -name '*linux-musl*' -delete 2>/dev/null || true
 
 FROM node:20-alpine AS runner
+# 运行期同样需要 —— 引擎是动态链接 libssl.so.3 的。
+RUN apk add --no-cache openssl
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=9000
